@@ -5,15 +5,26 @@ pluginManagement {
         mavenCentral()
         maven { url "https://jitpack.io" }
     }
+
+
+
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
+        maven {url "https://jitpack.io"}
+    }
+    buildscript {
+        dependencies {
+            classpath "com.github.dcendents:android-maven-google-plugin:2.0"
+        }
     }
 
+
 }
+
 
 rootProject.name = "retrofitOff"
 include ':app'
