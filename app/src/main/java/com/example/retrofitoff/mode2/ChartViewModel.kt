@@ -8,16 +8,16 @@ import kotlinx.coroutines.launch
 import retrofit2.Response
 
 
-class CharViewModel(
+class ChartViewModel(
     private val repository: Repository
 ): ViewModel() {
 
     
-    val myResponse2: MutableLiveData<Response<StatiStarsUsers>> = MutableLiveData()
+    val myResponse2: MutableLiveData<Response<StatiStarsUsersClass>> = MutableLiveData()
     
     fun getPosStat(userName: String, repoName:String) {
         viewModelScope.launch {
-            val response2: Response<StatiStarsUsers> = repository.getRepoStat(userName, repoName)
+            val response2: Response<StatiStarsUsersClass> = repository.getRepoStat(userName, repoName)
             myResponse2.value = response2
         }
     }

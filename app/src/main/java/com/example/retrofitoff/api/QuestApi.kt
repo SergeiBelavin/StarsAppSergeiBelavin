@@ -1,7 +1,9 @@
 package com.example.retrofitoff.api
-import com.example.retrofitoff.mode2.ReposUser
+import com.example.retrofitoff.mode2.RepositoriesUserItemClass
 
-import com.example.retrofitoff.mode2.StatiStarsUsers
+
+import com.example.retrofitoff.mode2.StatiStarsUsersClass
+import retrofit2.Call
 
 import retrofit2.Response
 import retrofit2.http.GET
@@ -11,7 +13,7 @@ import retrofit2.http.Path
 
 interface getRepoList {
     @GET("/users/{user}/repos?per_page=100")
-    suspend fun getRepo(@Path("user") userName: String): Response<ReposUser>
+     fun getRepo(@Path("user") userName: String): Call<List<RepositoriesUserItemClass?>?>
 
     //https://api.github.com/repos/digoal/blog/stargazers?per_page=100
     //Кто поставил звезды
@@ -32,5 +34,5 @@ interface getRepoStars {
     suspend fun getRepoStat(
         @Path("user") userName: String,
         @Path("repo") repoName: String
-    ): Response<StatiStarsUsers>
+    ): Response<StatiStarsUsersClass>
 }

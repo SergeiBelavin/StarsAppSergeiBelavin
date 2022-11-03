@@ -5,34 +5,19 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.provider.ContactsContract.Data
-import android.provider.ContactsContract.Intents
 import android.util.Log
 import androidx.annotation.RequiresApi
-
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.toColorLong
-
 import androidx.lifecycle.ViewModelProvider
-
 import com.example.retrofitoff.databinding.ActivityChartRepoBinding
-import com.example.retrofitoff.mode2.CharViewModel
-import com.example.retrofitoff.mode2.StatiStarsUsers
-import com.example.retrofitoff.mode2.StatiStarsUsersItem
-
-
+import com.example.retrofitoff.mode2.ChartViewModel
+import com.example.retrofitoff.mode2.StatiStarsUsersClass
 import com.example.retrofitoff.repository.Repository
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-
 import okhttp3.logging.HttpLoggingInterceptor
-import org.json.JSONStringer
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -41,16 +26,11 @@ import kotlin.collections.ArrayList
 
 class ChartRepoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChartRepoBinding
-    private lateinit var viewModel2: CharViewModel
-    private val JSONResponce = ArrayList<StatiStarsUsers>()
-
+    private lateinit var viewModel2: ChartViewModel
+    private val JSONResponce = ArrayList<StatiStarsUsersClass>()
     lateinit var barChart: BarChart
     lateinit var barData: BarData
     lateinit var barDataSet: BarDataSet
-
-    lateinit var mService: RetrofitInstance
-    lateinit var dialog: AlertDialog
-
     lateinit var barEntriesList: ArrayList<BarEntry>
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -60,7 +40,6 @@ class ChartRepoActivity : AppCompatActivity() {
         setContentView(binding.root)
         val GET_KEY_NAME = "RepoName"
         val GET_KEY_REPOS = "UserName"
-
         val name = intent.getSerializableExtra(GET_KEY_NAME)
         val repos= intent.getSerializableExtra(GET_KEY_REPOS)
         binding.test.text = name.toString()
@@ -68,7 +47,7 @@ class ChartRepoActivity : AppCompatActivity() {
         val repository = Repository()
         val viewModelFactory = CharViewModelFactory(repository)
 
-        viewModel2 = ViewModelProvider(this, viewModelFactory)[CharViewModel::class.java]
+        viewModel2 = ViewModelProvider(this, viewModelFactory)[ChartViewModel::class.java]
 
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
