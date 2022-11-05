@@ -9,7 +9,7 @@ import retrofit2.Response
 
 
 class Repository {
-    suspend fun getPost(userName: String): Call<List<RepositoriesUserItemClass?>?> {
+    suspend fun getPost(userName: String): Call<List<RepositoriesUserItemClass>> {
         return RetrofitInstance.api.getRepo(userName)
 
     }

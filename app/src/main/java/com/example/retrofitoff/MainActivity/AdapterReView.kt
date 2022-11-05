@@ -11,7 +11,7 @@ import retrofit2.Response
 
 class AdapterReposNameReView(val listener: Listener): RecyclerView.Adapter<AdapterReposNameReView.StartViewHolder>() {
 
-    var listStart=emptyList<Call<List<RepositoriesUserItemClass?>?>>()
+    var listStart=emptyList<Call<List<RepositoriesUserItemClass>>>()
 
     class StartViewHolder(item: View): RecyclerView.ViewHolder(item) {
         val binding = ReposNameListBinding.bind(item)
@@ -36,13 +36,13 @@ class AdapterReposNameReView(val listener: Listener): RecyclerView.Adapter<Adapt
     override fun getItemCount(): Int {
         return listStart.size
     }
-    fun setList(list: Call<List<RepositoriesUserItemClass?>?>) {
+    fun setList(list: Call<List<RepositoriesUserItemClass>>) {
         listStart = listOf(list)
         notifyDataSetChanged()
 
     }
     interface  Listener{
-        fun onClick(list: Call<List<RepositoriesUserItemClass?>?>) {
+        fun onClick(list: Call<List<RepositoriesUserItemClass>>) {
 
         }
     }

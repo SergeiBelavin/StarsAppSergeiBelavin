@@ -17,11 +17,11 @@ class MainViewModel(
     private val repository: Repository): ViewModel() {
 
 
-    val myResponse: MutableLiveData<Call<List<RepositoriesUserItemClass?>?>> = MutableLiveData()
+    val myResponse: MutableLiveData<Call<List<RepositoriesUserItemClass>>> = MutableLiveData()
 
     fun getPost(userName: String) {
         viewModelScope.launch {
-            val response: Call<List<RepositoriesUserItemClass?>?> = repository.getPost(userName)
+            val response: Call<List<RepositoriesUserItemClass>> = repository.getPost(userName)
             myResponse.value = response
     }
 }

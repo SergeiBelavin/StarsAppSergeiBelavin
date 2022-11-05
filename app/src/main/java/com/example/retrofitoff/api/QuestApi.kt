@@ -13,7 +13,7 @@ import retrofit2.http.Path
 
 interface getRepoList {
     @GET("/users/{user}/repos?per_page=100")
-     fun getRepo(@Path("user") userName: String): Call<List<RepositoriesUserItemClass?>?>
+     fun getRepo(@Path("user") userName: String): Call<List<RepositoriesUserItemClass>>
 
     //https://api.github.com/repos/digoal/blog/stargazers?per_page=100
     //Кто поставил звезды
@@ -24,7 +24,7 @@ interface getRepoList {
 ///repos/{owner}/{repo}/traffic/clones
     ///repos/robb-oat/stats/traffic/clones
 }
-interface getRepoStars {
+public interface getRepoStars {
    // /repos/repos/robb-oat/stats/commit_activity
    // https://api.github.com/repos/digoal/blog/stargazers
    @Headers("Accept: application/vnd.github.star+json")

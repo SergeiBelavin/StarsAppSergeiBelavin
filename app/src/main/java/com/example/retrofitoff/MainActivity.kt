@@ -3,7 +3,9 @@ package com.example.retrofitoff
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.util.Log.i
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitoff.databinding.ActivityMainBinding
 import com.example.retrofitoff.mode2.RepositoriesUserItemClass
@@ -39,17 +41,13 @@ class MainActivity : AppCompatActivity(), AdapterReposNameReView.Listener {
             viewModel.getPost(searchName)
 
             viewModel.myResponse.observe(this) {
-
-RetrofitInstance.api2.
-
-
-                /*responce ->
+                responce ->
                 responce.let { adapter.setList(it) }
                 Log.d("MyLog", "${it}")
                 Log.d("MyLog", "${responce}")
-               // responce.let { adapter.setList() }
 
-                 */
+
+
             }
 
         }
@@ -57,10 +55,12 @@ RetrofitInstance.api2.
 
 }
 
-    override fun onClick(list: Call<List<RepositoriesUserItemClass?>?>) {
-    //val putNameRepo = Intent(this@MainActivity, ChartRepoActivity::class.java).putExtra(KEY_PUT_REPO, list.body()?.name)
-      //  .putExtra(KEY_PUT_NAME, list.body()?.owner?.login)
-        //startActivity(putNameRepo)
+    override fun onClick(list: Call<List<RepositoriesUserItemClass>>) {
+
+    //val putNameRepo = Intent(this@MainActivity, ChartRepoActivity::class.java)
+       // .putExtra(KEY_PUT_REPO, list.name)
+        //putExtra(KEY_PUT_NAME, list.owner)
+     //   startActivity(putNameRepo)
 
         }
 
