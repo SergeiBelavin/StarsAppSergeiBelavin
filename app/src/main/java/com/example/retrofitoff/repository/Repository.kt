@@ -1,19 +1,20 @@
 package com.example.retrofitoff.repository
 
 import com.example.retrofitoff.RetrofitInstance
-import com.example.retrofitoff.mode2.RepositoriesUserItemClass
+import com.example.retrofitoff.mode2.RepositoriesUser
+import com.example.retrofitoff.mode2.RepositoriesUserItem
 
-import com.example.retrofitoff.mode2.StatiStarsUsersClass
+import com.example.retrofitoff.mode2.StatisticsStars
 import retrofit2.Call
 import retrofit2.Response
 
 
 class Repository {
-    suspend fun getPost(userName: String): Call<List<RepositoriesUserItemClass>> {
-        return RetrofitInstance.api.getRepo(userName)
+    suspend fun getRepoList(userName: String): Call<RepositoriesUserItem> {
+        return RetrofitInstance.api.getRepoList(userName)
 
     }
-    suspend fun getRepoStat(userName: String, repoName: String): Response<StatiStarsUsersClass> {
+    suspend fun getRepoStat(userName: String, repoName: String): Response<StatisticsStars> {
         return RetrofitInstance.api2.getRepoStat(userName, repoName)
 
     }

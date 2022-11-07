@@ -10,24 +10,24 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitoff.databinding.ActivityChartRepoBinding
-import com.example.retrofitoff.mode2.ChartViewModel
-import com.example.retrofitoff.mode2.StatiStarsUsersClass
+import com.example.retrofitoff.mode2.StatisticsStars
 import com.example.retrofitoff.repository.Repository
+import com.example.retrofitoff.util.Constants.Companion.KEY_NAME
+import com.example.retrofitoff.util.Constants.Companion.KEY_REPOS
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import okhttp3.logging.HttpLoggingInterceptor
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class ChartRepoActivity : AppCompatActivity() {
+class ChartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChartRepoBinding
-    private lateinit var viewModel2: ChartViewModel
-    private val JSONResponce = ArrayList<StatiStarsUsersClass>()
+    private lateinit var viewModel2: ChartView
+    private val ResponceApi = ArrayList<StatisticsStars>()
     lateinit var barChart: BarChart
     lateinit var barData: BarData
     lateinit var barDataSet: BarDataSet
@@ -38,29 +38,26 @@ class ChartRepoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityChartRepoBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val GET_KEY_NAME = "RepoName"
-        val GET_KEY_REPOS = "UserName"
-        val name = intent.getSerializableExtra(GET_KEY_NAME)
-        val repos= intent.getSerializableExtra(GET_KEY_REPOS)
+
+        val name = intent.getSerializableExtra(KEY_NAME)
+        val repos = intent.getSerializableExtra(KEY_REPOS)
         binding.test.text = name.toString()
 
         val repository = Repository()
-        val viewModelFactory = CharViewModelFactory(repository)
+        val viewModelFactory = CharViewFactory(repository)
 
-        viewModel2 = ViewModelProvider(this, viewModelFactory)[ChartViewModel::class.java]
+        viewModel2 = ViewModelProvider(this, viewModelFactory)[ChartView::class.java]
 
-        val loggingInterceptor = HttpLoggingInterceptor()
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        viewModel2.getPosStat(repos.toString(),name.toString())
+       // viewModel2.getPosStat(repos.toString(),name.toString())
         viewModel2.myResponse2.observe(this) { responce ->
 
-            JSONResponce.add(responce.body()!!)
-            val JSONRes = JSONResponce[0]
+            ResponceApi.add(responce.body()!!)
+            val ResponceApiForIndex = ResponceApi[0]
 
-            Log.d("MyLog", "Log, ${JSONRes.size}")
-            Log.d("MyLog", "Log, ${JSONRes[1]}")
+            Log.d("MyLog", "Log, ${ResponceApiForIndex.size}")
+            Log.d("MyLog", "Log, ${ResponceApiForIndex[1]}")
 //Добавить цикл
-            val ObjStars = JSONRes[1].toString()
+            val ObjStars = ResponceApiForIndex[1].toString()
             val step1 = ObjStars.dropLast(11)
             val step2 = step1.drop(31)
             val step3StringForData = DateTimeFormatter.ofPattern("yyyy-dd-MM")
@@ -88,7 +85,7 @@ class ChartRepoActivity : AppCompatActivity() {
 
 
         barChart.setOnClickListener{
-            val i = Intent(this@ChartRepoActivity, MainActivity::class.java)
+            val i = Intent(this@ChartActivity, MainActivity::class.java)
             startActivity(i)
         }
 

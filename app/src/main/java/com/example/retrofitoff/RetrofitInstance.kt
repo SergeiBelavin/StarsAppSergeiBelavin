@@ -2,12 +2,14 @@ package com.example.retrofitoff
 
 
 import com.example.retrofitoff.api.getRepoStars
-import com.example.retrofitoff.api.getRepoList
+import com.example.retrofitoff.api.APIInterface
+import com.example.retrofitoff.util.Constants.Companion.BASE_URL
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 object RetrofitInstance {
 
@@ -22,7 +24,7 @@ object RetrofitInstance {
 
 
         Retrofit.Builder()
-            .baseUrl("https://api.github.com")
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
@@ -31,8 +33,8 @@ object RetrofitInstance {
     }
 
 
-    val api: getRepoList by lazy {
-        retrofit.create(getRepoList::class.java)
+    val api: APIInterface by lazy {
+        retrofit.create(APIInterface::class.java)
     }
     val api2: getRepoStars by lazy {
         retrofit.create(getRepoStars::class.java)
