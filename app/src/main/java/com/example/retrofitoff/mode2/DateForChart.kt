@@ -1,4 +1,9 @@
 package com.example.retrofitoff.mode2
 
-object DateForChart {
+import android.content.Context
+import android.view.View
+
+class adapterRecyclerView {
+
+
 }

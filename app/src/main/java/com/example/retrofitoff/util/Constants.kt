@@ -4,7 +4,6 @@ class Constants {
     companion object {
 
         const val BASE_URL ="https://api.github.com"
-        const val KEY_NAME = "RepoName"
-        const val KEY_REPOS = "UserName"
+
     }
 }

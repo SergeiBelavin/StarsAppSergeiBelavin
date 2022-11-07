@@ -1,6 +1,7 @@
 package com.example.retrofitoff
 
 import android.R
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
@@ -12,8 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitoff.databinding.ActivityChartRepoBinding
 import com.example.retrofitoff.mode2.StatisticsStars
 import com.example.retrofitoff.repository.Repository
-import com.example.retrofitoff.util.Constants.Companion.KEY_NAME
-import com.example.retrofitoff.util.Constants.Companion.KEY_REPOS
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -25,6 +24,10 @@ import kotlin.collections.ArrayList
 
 
 class ChartActivity : AppCompatActivity() {
+
+
+
+
     private lateinit var binding: ActivityChartRepoBinding
     private lateinit var viewModel2: ChartView
     private val ResponceApi = ArrayList<StatisticsStars>()
@@ -33,22 +36,21 @@ class ChartActivity : AppCompatActivity() {
     lateinit var barDataSet: BarDataSet
     lateinit var barEntriesList: ArrayList<BarEntry>
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChartRepoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val name = intent.getSerializableExtra(KEY_NAME)
-        val repos = intent.getSerializableExtra(KEY_REPOS)
+        val name = intent.getSerializableExtra("UserName")
+        val repos = intent.getSerializableExtra("RepoName")
         binding.test.text = name.toString()
 
         val repository = Repository()
         val viewModelFactory = CharViewFactory(repository)
 
         viewModel2 = ViewModelProvider(this, viewModelFactory)[ChartView::class.java]
-
-       // viewModel2.getPosStat(repos.toString(),name.toString())
         viewModel2.myResponse2.observe(this) { responce ->
 
             ResponceApi.add(responce.body()!!)
@@ -56,7 +58,7 @@ class ChartActivity : AppCompatActivity() {
 
             Log.d("MyLog", "Log, ${ResponceApiForIndex.size}")
             Log.d("MyLog", "Log, ${ResponceApiForIndex[1]}")
-//Добавить цикл
+
             val ObjStars = ResponceApiForIndex[1].toString()
             val step1 = ObjStars.dropLast(11)
             val step2 = step1.drop(31)
@@ -67,8 +69,6 @@ class ChartActivity : AppCompatActivity() {
             Log.d("MyLog1", "Log, $dDate")
             Log.d("MyLog1", "Log, $dDateMinus")
 
-            //val calendar = Calendar.getInstance()
-            //calendar.add()
         }
 
             barChart = binding.barChart
@@ -90,42 +90,43 @@ class ChartActivity : AppCompatActivity() {
         }
 
     }
-    private fun settingGetBar() {
-
-    }
 
     private fun getBarChartData() {
-        barEntriesList = ArrayList()
-        val stars1days = arrayListOf("2022-10-11",).size.toFloat()
-        val stars2days = arrayListOf("2022-10-11", "2022-10-11",).size.toFloat()
-        val stars3days = arrayListOf("2022-10-11", "2022-10-11","2022-10-11",).size.toFloat()
-        val stars4days = arrayListOf("2022-10-11", "2022-10-11","2022-10-11","2022-10-11",).size.toFloat()
-        val stars5days = arrayListOf("2022-10-11",).size.toFloat()
-        val stars6days = arrayListOf("2022-10-11", "2022-10-11",).size.toFloat()
-        val stars7days = arrayListOf("2022-10-11", "2022-10-11","2022-10-11",).size.toFloat()
-        val stars8days = arrayListOf("2022-10-11", "2022-10-11","2022-10-11","2022-10-11",).size.toFloat()
-        val stars9days = arrayListOf("2022-10-11", "2022-10-11","2022-10-11","2022-10-11","2022-10-11",).size.toFloat()
-        val stars10days = arrayListOf("2022-10-11", "2022-10-11","2022-10-11","2022-10-11","2022-10-11","2022-10-11",).size.toFloat()
-        val stars11days = arrayListOf("2022-10-11", "2022-10-11","2022-10-11","2022-10-11","2022-10-11","2022-10-11","2022-10-11").size.toFloat()
-        val stars12days = arrayListOf("2022-10-11", "2022-10-11","2022-10-11","2022-10-11","2022-10-11","2022-10-11",).size.toFloat()
-        val stars13days = arrayListOf("2022-10-11", "2022-10-11","2022-10-11","2022-10-11","2022-10-11",).size.toFloat()
-        val stars14days = arrayListOf("2022-10-11", "2022-10-11",).size.toFloat()
 
-        barEntriesList.add(BarEntry(1f, stars1days))
-        barEntriesList.add(BarEntry(2f, stars2days))
-        barEntriesList.add(BarEntry(3f, stars3days))
-        barEntriesList.add(BarEntry(4f, stars4days))
-        barEntriesList.add(BarEntry(5f, stars5days))
-        barEntriesList.add(BarEntry(6f, stars6days))
-        barEntriesList.add(BarEntry(7f,stars7days))
-        barEntriesList.add(BarEntry(8f,stars8days))
-        barEntriesList.add(BarEntry(9f,stars9days))
-        barEntriesList.add(BarEntry(10f,stars10days))
-        barEntriesList.add(BarEntry(11f,stars11days))
-        barEntriesList.add(BarEntry(12f,stars12days))
-        barEntriesList.add(BarEntry(13f,stars13days))
-        barEntriesList.add(BarEntry(14f,stars14days))
+        barEntriesList = ArrayList()
+        barEntriesList.add(BarEntry(1f, 1f))
+        barEntriesList.add(BarEntry(2f, 2f))
+        barEntriesList.add(BarEntry(3f, 3f))
+        barEntriesList.add(BarEntry(4f, 4f))
+        barEntriesList.add(BarEntry(5f, 5f))
+        barEntriesList.add(BarEntry(6f, 6f))
+        barEntriesList.add(BarEntry(7f,7f))
+        barEntriesList.add(BarEntry(8f,8f))
+        barEntriesList.add(BarEntry(9f,9f))
+        barEntriesList.add(BarEntry(10f,10f))
+        barEntriesList.add(BarEntry(11f,11f))
+        barEntriesList.add(BarEntry(12f, 12f))
+        barEntriesList.add(BarEntry(13f,13f))
+        barEntriesList.add(BarEntry(14f,15f))
 
     }
+
+    interface IntentChart {
+
+    companion object {
+
+        val KEY_NAME = "RepoName"
+        val KEY_REPOS = "UserName"
+
+        fun IntentChartActivity(context: Context, name: String, repo: String): Intent {
+          val intent = Intent(context, ChartActivity::class.java)
+              .putExtra(KEY_NAME, name)
+              .putExtra(KEY_REPOS, repo)
+                return intent
+      }
+        }
+    }
+
+
 
 }

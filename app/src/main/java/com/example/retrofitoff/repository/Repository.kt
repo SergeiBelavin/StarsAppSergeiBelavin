@@ -10,12 +10,12 @@ import retrofit2.Response
 
 
 class Repository {
-    suspend fun getRepoList(userName: String): Call<RepositoriesUserItem> {
+    suspend fun getRepoList(userName: String): List<RepositoriesUserItem> {
         return RetrofitInstance.api.getRepoList(userName)
 
     }
     suspend fun getRepoStat(userName: String, repoName: String): Response<StatisticsStars> {
-        return RetrofitInstance.api2.getRepoStat(userName, repoName)
+        return RetrofitInstance.api.getRepoStat(userName, repoName)
 
     }
 
