@@ -11,14 +11,11 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitoff.databinding.ActivityChartRepoBinding
-import com.example.retrofitoff.mode2.StatisticsStars
 import com.example.retrofitoff.repository.Repository
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -30,7 +27,6 @@ class ChartActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChartRepoBinding
     private lateinit var viewModel2: ChartView
-    private val ResponceApi = ArrayList<StatisticsStars>()
     lateinit var barChart: BarChart
     lateinit var barData: BarData
     lateinit var barDataSet: BarDataSet
@@ -45,30 +41,17 @@ class ChartActivity : AppCompatActivity() {
 
         val name = intent.getSerializableExtra("UserName")
         val repos = intent.getSerializableExtra("RepoName")
-        binding.test.text = name.toString()
+       // binding.test.text = name.toString()
 
         val repository = Repository()
         val viewModelFactory = CharViewFactory(repository)
 
         viewModel2 = ViewModelProvider(this, viewModelFactory)[ChartView::class.java]
+        viewModel2.getReposStars(name.toString(), repos.toString())
         viewModel2.myResponse2.observe(this) { responce ->
-
-            ResponceApi.add(responce.body()!!)
-            val ResponceApiForIndex = ResponceApi[0]
-
-            Log.d("MyLog", "Log, ${ResponceApiForIndex.size}")
-            Log.d("MyLog", "Log, ${ResponceApiForIndex[1]}")
-
-            val ObjStars = ResponceApiForIndex[1].toString()
-            val step1 = ObjStars.dropLast(11)
-            val step2 = step1.drop(31)
-            val step3StringForData = DateTimeFormatter.ofPattern("yyyy-dd-MM")
-            val dDate: LocalDate = LocalDate.parse(step2, step3StringForData)
-            val dDateMinus = dDate.minusDays(2)
-
-            Log.d("MyLog1", "Log, $dDate")
-            Log.d("MyLog1", "Log, $dDateMinus")
-
+            responce.let {
+                Log.d("MyLog", "$it")
+            }
         }
 
             barChart = binding.barChart
@@ -118,15 +101,11 @@ class ChartActivity : AppCompatActivity() {
         val KEY_NAME = "RepoName"
         val KEY_REPOS = "UserName"
 
-        fun IntentChartActivity(context: Context, name: String, repo: String): Intent {
-          val intent = Intent(context, ChartActivity::class.java)
-              .putExtra(KEY_NAME, name)
-              .putExtra(KEY_REPOS, repo)
-                return intent
-      }
+        fun intentChartActivity(context: Context, name: String, repo: String): Intent {
+            return Intent(context, ChartActivity::class.java)
+                .putExtra(KEY_NAME, name)
+                .putExtra(KEY_REPOS, repo)
+        }
         }
     }
-
-
-
 }

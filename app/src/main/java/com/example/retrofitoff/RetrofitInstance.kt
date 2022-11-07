@@ -20,7 +20,6 @@ object RetrofitInstance {
             .addInterceptor(httploggingInterceptor)
             .build()
 
-
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())

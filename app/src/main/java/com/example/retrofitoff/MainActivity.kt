@@ -35,8 +35,7 @@ class MainActivity : AppCompatActivity(), AdapterReposNameReView.Listener {
         }
     }
     override fun onClick(list: RepositoriesUserItem) {
-        val IntentChartActivity =  ChartActivity.IntentChart.IntentChartActivity(this@MainActivity,list.owner.toString(), list.name.toString())
-        startActivity(IntentChartActivity)
-
+        val intentChartActivity =  ChartActivity.IntentChart.intentChartActivity(this@MainActivity,list.owner.toString(), list.name.toString())
+        startActivity(intentChartActivity)
     }
 }
