@@ -13,7 +13,7 @@ class Repository {
         return RetrofitInstance.api.getRepoList(userName)
 
     }
-    suspend fun getRepoStat(userName: String, repoName: String): Response<StatisticStars> {
+    suspend fun getRepoStat(userName: String, repoName: String): List<StatisticStarsItem> {
         return RetrofitInstance.api.getRepoStat(userName, repoName)
 
     }

@@ -22,11 +22,8 @@ import kotlin.collections.ArrayList
 
 class ChartActivity : AppCompatActivity() {
 
-
-
-
     private lateinit var binding: ActivityChartRepoBinding
-    private lateinit var viewModel2: ChartView
+    private lateinit var chartView: ChartView
     lateinit var barChart: BarChart
     lateinit var barData: BarData
     lateinit var barDataSet: BarDataSet
@@ -46,12 +43,11 @@ class ChartActivity : AppCompatActivity() {
         val repository = Repository()
         val viewModelFactory = CharViewFactory(repository)
 
-        viewModel2 = ViewModelProvider(this, viewModelFactory)[ChartView::class.java]
-        viewModel2.getReposStars(name.toString(), repos.toString())
-        viewModel2.myResponse2.observe(this) { responce ->
-            responce.let {
-                Log.d("MyLog", "$it")
-            }
+        chartView = ViewModelProvider(this, viewModelFactory)[ChartView::class.java]
+        chartView.getReposStars(name.toString(), repos.toString())
+        chartView.chartResponseEmitter.observe(this) { dateList ->
+        Log.d("MyLog", "$dateList")
+
         }
 
             barChart = binding.barChart
@@ -98,8 +94,8 @@ class ChartActivity : AppCompatActivity() {
 
     companion object {
 
-        val KEY_NAME = "RepoName"
-        val KEY_REPOS = "UserName"
+        val KEY_NAME = "UserName"
+        val KEY_REPOS = "RepoName"
 
         fun intentChartActivity(context: Context, name: String, repo: String): Intent {
             return Intent(context, ChartActivity::class.java)
