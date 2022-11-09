@@ -23,6 +23,7 @@ interface GitHubInterface {
     suspend fun getRepoStat(
         @Path("user") userName: String,
         @Path("repo") repoName: String,
+       // @Path("number") pageNumber: Int,
     ): List<StatisticStarsItem>
 
 }
