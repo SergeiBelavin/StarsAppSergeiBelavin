@@ -1,5 +1,7 @@
 package com.example.retrofitoff
 
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,6 +18,7 @@ import kotlin.collections.ArrayList
 
 class ChartView(
     private val repository: Repository,
+
 ) : ViewModel() {
 
 
@@ -24,36 +27,39 @@ class ChartView(
     private val chartResponse = MutableLiveData<List<Long>>()
     val chartResponseEmitter: LiveData<List<Long>> = chartResponse
 
-    fun getReposStars(userName: String, repoName: String) {
+
+    fun getReposStars(userName: String, repoName: String, range: Int) {
+
         viewModelScope.launch {
             try {
                 val response: List<StatisticStarsItem> =
-                    repository.getRepoStat(userName, repoName)
+                    repository.getRepoStat(userName, repoName, range)
 
-                Log.d("MyLog2", "$response")
+                Log.d("ResponseCV", "$response")
 
                 val dateLong = ArrayList<Long>()
 
                 //   val dateGroup = ArryList<String>()
 
                 val calendar = Calendar.getInstance()
-                Log.d("MyLogDaysAgo", "$calendar")
-                calendar.add(Calendar.DAY_OF_YEAR, -60)
+                calendar.add(Calendar.DAY_OF_YEAR, -range)
                 val daysAgoUnix = calendar.timeInMillis / 1000
-                Log.d("MyLogDaysAgo", "${daysAgoUnix}")
-                Log.d("MyRes", "${response[0].starred_at}")
+                Log.d("DaysAgoCV", "${daysAgoUnix}")
+                Log.d("resp.starred_at[0]", response[0].starred_at)
 
                 response.forEach {
-                   // val dateUnix = SimpleDateFormat("yyyy-MM-dd").parse(it.starred_at).time
-                   // val dateUnix = SimpleDateFormat("yyyy-MM-dd").parse(it.starred_at).time
-                    val dateUnix = SimpleDateFormat ("yyyy-MM-dd").parse(it.starred_at).time/1000
-                    Log.d("MyLog", "$dateUnix")
+                    val dateUnix = SimpleDateFormat("yyyy-MM-dd").parse(it.starred_at).time / 1000
+                    Log.d("dateUnixCV", "$dateUnix")
                     if (dateUnix > daysAgoUnix) {
                         dateLong.add(dateUnix)
                     }
                 }
-                Log.d("MyLogDateLong", "$dateLong")
 
+
+
+
+
+                Log.d("dateLongCV", "$dateLong")
 
                 //Log.d("LogGetRepos", "$dateLong")
                 chartResponse.value = dateLong
