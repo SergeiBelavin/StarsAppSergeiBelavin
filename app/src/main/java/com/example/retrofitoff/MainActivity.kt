@@ -4,12 +4,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitoff.databinding.ActivityMainBinding
-import com.example.retrofitoff.mode2.Owner
 import com.example.retrofitoff.mode2.RepositoriesUserItem
 import com.example.retrofitoff.repository.Repository
 
 
-class MainActivity : AppCompatActivity(), AdapterReposNameReView.Listener {
+class MainActivity : AppCompatActivity(), ReposAdapter.Listener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainView
@@ -18,7 +17,7 @@ class MainActivity : AppCompatActivity(), AdapterReposNameReView.Listener {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val adapter = AdapterReposNameReView(this)
+        val adapter = ReposAdapter(this)
         binding.rcView.adapter = adapter
 
         val repository = Repository()
@@ -36,7 +35,7 @@ class MainActivity : AppCompatActivity(), AdapterReposNameReView.Listener {
         }
     }
     override fun onClick(list: RepositoriesUserItem) {
-        val intentChartActivity =  ChartActivity.IntentChart.intentChartActivity(this@MainActivity,list.owner?.login.toString(), list.name.toString())
+        val intentChartActivity =  ChartActivity.intentChartActivity(this@MainActivity,list.owner?.login.toString(), list.name.toString())
         startActivity(intentChartActivity)
     }
 }

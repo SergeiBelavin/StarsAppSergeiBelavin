@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitoff.databinding.ReposNameListBinding
 import com.example.retrofitoff.mode2.RepositoriesUserItem
 
-class AdapterReposNameReView(val listener: Listener): RecyclerView.Adapter<AdapterReposNameReView.StartViewHolder>() {
+class ReposAdapter(val listener: Listener): RecyclerView.Adapter<ReposAdapter.StartViewHolder>() {
 
     var listStart=emptyList<RepositoriesUserItem>()
 

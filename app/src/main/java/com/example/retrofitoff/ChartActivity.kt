@@ -4,10 +4,8 @@ import android.R
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitoff.databinding.ActivityChartRepoBinding
@@ -16,12 +14,11 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 
 class ChartActivity : AppCompatActivity() {
+
 
     private lateinit var binding: ActivityChartRepoBinding
     private lateinit var chartView: ChartView
@@ -31,23 +28,24 @@ class ChartActivity : AppCompatActivity() {
     lateinit var barEntriesList: ArrayList<BarEntry>
     lateinit var dateResponseList: ArrayList<Long>
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChartRepoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val name = intent.getSerializableExtra("UserName")
-        val repos = intent.getSerializableExtra("RepoName")
-        // binding.test.text = name.toString()
-
-
+        getBarChartData(14)
 
         val repository = Repository()
         val viewModelFactory = CharViewFactory(repository)
 
         chartView = ViewModelProvider(this, viewModelFactory)[ChartView::class.java]
-        chartView.getReposStars(name.toString(), repos.toString())
+
+
+        val name = intent.getSerializableExtra("UserName")
+        val repos = intent.getSerializableExtra("RepoName")
+
+        chartView.getReposStars(name.toString(), repos.toString(),)
         chartView.chartResponseEmitter.observe(this) { dateList ->
             Log.d("MyLog", "$dateList")
             dateResponseList = dateList as ArrayList<Long>
@@ -56,46 +54,42 @@ class ChartActivity : AppCompatActivity() {
 
         barChart = binding.barChart
 
-        getBarChartData()
-
         barDataSet = BarDataSet(barEntriesList, "Количество звезд по датам")
         barData = BarData(barDataSet)
         barChart.data = barData
         barDataSet.valueTextColor = Color.RED
         barDataSet.color = R.color.holo_purple
-        barDataSet.valueTextSize = 18f
-        barChart.description.isEnabled = false
+        barDataSet.valueTextSize = 0f
+        barChart.description.isEnabled = true
 
 
         barChart.setOnClickListener {
             val i = Intent(this@ChartActivity, MainActivity::class.java)
             startActivity(i)
         }
-        getStars(14)
-    }
 
-    private fun getBarChartData() {
+        binding.sixtyDaysLong.setOnClickListener {
 
-        barEntriesList = ArrayList()
-        barEntriesList.add(BarEntry(1f, 1f))
-        barEntriesList.add(BarEntry(2f, 2f))
-        barEntriesList.add(BarEntry(3f, 3f))
-        barEntriesList.add(BarEntry(4f, 4f))
-        barEntriesList.add(BarEntry(5f, 5f))
-        barEntriesList.add(BarEntry(6f, 6f))
-        barEntriesList.add(BarEntry(7f, 7f))
-        barEntriesList.add(BarEntry(8f, 8f))
-        barEntriesList.add(BarEntry(9f, 9f))
-        barEntriesList.add(BarEntry(10f, 10f))
-        barEntriesList.add(BarEntry(11f, 11f))
-        barEntriesList.add(BarEntry(12f, 12f))
-        barEntriesList.add(BarEntry(13f, 13f))
-        barEntriesList.add(BarEntry(14f, 15f))
+            getBarChartData(60)
+        }
+        binding.thirtyDaysLong.setOnClickListener {
+
+            getBarChartData(30)
+        }
+        binding.fourteenDaysLong.setOnClickListener {
+
+            getBarChartData(14)
+        }
 
     }
 
-    interface IntentChart {
+     fun getBarChartData(range: Int) {
+         barEntriesList = ArrayList()
 
+         for (i in 0..range){
+             barEntriesList.add(BarEntry(i.toFloat(),2f))
+         }
+    }
         companion object {
 
             val KEY_NAME = "UserName"
@@ -107,20 +101,11 @@ class ChartActivity : AppCompatActivity() {
                     .putExtra(KEY_REPOS, repo)
             }
         }
-    }
-    fun getStars (daysAgo: Int): Date {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_YEAR, - daysAgo)
-        return calendar.time
-       // val epoch = System.currentTimeMillis() / 1000
-       // val dateFormat = SimpleDateFormat("yyyy-MM-dd")
 
-        dateResponseList.forEach {
-
-        }
-
-
-
+    fun clickSelectRange() {
+        val name = intent.getSerializableExtra("UserName")
+        val repos = intent.getSerializableExtra("RepoName")
+        chartView.getReposStars(name.toString(), repos.toString(),)
     }
 
 }
