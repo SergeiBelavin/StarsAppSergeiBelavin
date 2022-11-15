@@ -1,3 +1,3 @@
-package com.example.retrofitoff.mode2
+package com.example.retrofitoff.mode
 
 class StatisticStars : ArrayList<StatisticStarsItem>()

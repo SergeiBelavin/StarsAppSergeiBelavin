@@ -1,4 +1,4 @@
-package com.example.retrofitoff.mode2
+package com.example.retrofitoff.mode
 
 data class User(
     val avatar_url: String,

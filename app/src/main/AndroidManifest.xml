@@ -22,7 +22,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ChartActivity"
+            android:name=".ui.chart.ChartActivity"
             android:exported="false"
             android:label="@string/title_activity_repo_gra"
             android:theme="@style/Theme.RetrofitOff.NoActionBar">
@@ -31,9 +31,9 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".ui.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

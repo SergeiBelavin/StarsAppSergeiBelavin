@@ -1,20 +1,18 @@
-package com.example.retrofitoff
+package com.example.retrofitoff.ui.main
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.retrofitoff.mode2.RepositoriesUser
-import com.example.retrofitoff.mode2.RepositoriesUserItem
+import com.example.retrofitoff.mode.RepositoriesUserItem
 
 
-import com.example.retrofitoff.repository.Repository
+import com.example.retrofitoff.data.repository.Repository
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Response
 
 class MainView(
-    private val repository: Repository): ViewModel() {
+    private val repository: Repository
+): ViewModel() {
 
 
     val myResponse: MutableLiveData<List<RepositoriesUserItem>> = MutableLiveData()

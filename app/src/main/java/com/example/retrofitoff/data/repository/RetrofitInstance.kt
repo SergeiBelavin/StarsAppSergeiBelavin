@@ -1,8 +1,8 @@
-package com.example.retrofitoff
+package com.example.retrofitoff.data.repository
 
 
 
-import com.example.retrofitoff.api.GitHubApi
+import com.example.retrofitoff.data.api.GitHubApi
 import com.example.retrofitoff.util.Constants.Companion.BASE_URL
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory

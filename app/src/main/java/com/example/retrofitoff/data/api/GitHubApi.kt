@@ -1,8 +1,8 @@
-package com.example.retrofitoff.api
+package com.example.retrofitoff.data.api
 
 
-import com.example.retrofitoff.mode2.RepositoriesUserItem
-import com.example.retrofitoff.mode2.StatisticStarsItem
+import com.example.retrofitoff.mode.RepositoriesUserItem
+import com.example.retrofitoff.mode.StatisticStarsItem
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path

@@ -1,4 +1,4 @@
-package com.example.retrofitoff
+package com.example.retrofitoff.ui.chart
 
 import android.R
 import android.content.Context
@@ -8,8 +8,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.retrofitoff.ChartView
+import com.example.retrofitoff.ui.main.MainActivity
 import com.example.retrofitoff.databinding.ActivityChartRepoBinding
-import com.example.retrofitoff.repository.Repository
+import com.example.retrofitoff.data.repository.Repository
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -18,6 +20,19 @@ import kotlin.collections.ArrayList
 
 
 class ChartActivity : AppCompatActivity() {
+
+    companion object {
+
+        private val KEY_NAME = "UserName"
+        private val KEY_REPOS = "RepoName"
+
+        fun createIntent(context: Context, name: String, repo: String): Intent {
+            return Intent(context, ChartActivity::class.java)
+                .putExtra(KEY_NAME, name)
+                .putExtra(KEY_REPOS, repo)
+        }
+
+    }
 
 
     private lateinit var binding: ActivityChartRepoBinding
@@ -42,9 +57,8 @@ class ChartActivity : AppCompatActivity() {
         chartView = ViewModelProvider(this, viewModelFactory)[ChartView::class.java]
 
 
-        val name = intent.getSerializableExtra("UserName")
-        val repos = intent.getSerializableExtra("RepoName")
-
+        val name = intent.getSerializableExtra(KEY_NAME)
+        val repos = intent.getSerializableExtra(KEY_REPOS)
         chartView.getReposStars(name.toString(), repos.toString(),)
         chartView.chartResponseEmitter.observe(this) { dateList ->
             Log.d("MyLog", "$dateList")
@@ -90,22 +104,9 @@ class ChartActivity : AppCompatActivity() {
              barEntriesList.add(BarEntry(i.toFloat(),2f))
          }
     }
-        companion object {
 
-            val KEY_NAME = "UserName"
-            val KEY_REPOS = "RepoName"
+    fun RangeSelector() {
 
-            fun intentChartActivity(context: Context, name: String, repo: String): Intent {
-                return Intent(context, ChartActivity::class.java)
-                    .putExtra(KEY_NAME, name)
-                    .putExtra(KEY_REPOS, repo)
-            }
-        }
-
-    fun clickSelectRange() {
-        val name = intent.getSerializableExtra("UserName")
-        val repos = intent.getSerializableExtra("RepoName")
-        chartView.getReposStars(name.toString(), repos.toString(),)
     }
 
 }
