@@ -36,38 +36,30 @@ class ChartView(
                 val response: List<StatisticStarsItem> =
                     repository.getRepoStat(userName, repoName,)
 
-                Log.d("ResponseCV", "$response")
+                 Log.d("ResponseCV", "$response")
 
                 val dateLong = ArrayList<Long>()
 
-                //   val dateGroup = ArryList<String>()
-
                 val calendar = Calendar.getInstance()
-                calendar.add(Calendar.DAY_OF_YEAR, -14) //14 это рендж
-                val daysAgoUnix = calendar.timeInMillis / 1000
-                Log.d("DaysAgoCV", "${daysAgoUnix}")
+                calendar.add(Calendar.DAY_OF_YEAR, -60) //14 это рендж
+                val daysAgoUnix = calendar.timeInMillis
+                Log.d("DaysAgoCV", "$daysAgoUnix")
                 Log.d("resp.starred_at[0]", response[0].starred_at.toString())
 
                 response.forEach {
-                    val dateUnix = it.starred_at.time / 1000
+                    val dateUnix = it.starred_at.time
                     Log.d("dateUnixCV", "$dateUnix")
                     if (dateUnix > daysAgoUnix) {
                         dateLong.add(dateUnix)
                     }
                 }
 
-
-
-
-
                 Log.d("dateLongCV", "$dateLong")
-
-                //Log.d("LogGetRepos", "$dateLong")
                 chartResponse.value = dateLong
 
 
             } catch (e: Exception) {
-                Log.d("ErrorGetReposStat", "Expection: " + "${e}")
+                Log.d("ErrorGetReposStat", "Exception: $e")
             }
         }
     }

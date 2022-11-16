@@ -37,6 +37,8 @@ class ChartActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChartRepoBinding
     private lateinit var chartView: ChartView
+
+
     lateinit var barChart: BarChart
     lateinit var barData: BarData
     lateinit var barDataSet: BarDataSet
@@ -54,17 +56,20 @@ class ChartActivity : AppCompatActivity() {
         val repository = Repository()
         val viewModelFactory = CharViewFactory(repository)
 
-        chartView = ViewModelProvider(this, viewModelFactory)[ChartView::class.java]
 
+        chartView = ViewModelProvider(this, viewModelFactory)[ChartView::class.java]
 
         val name = intent.getSerializableExtra(KEY_NAME)
         val repos = intent.getSerializableExtra(KEY_REPOS)
-        chartView.getReposStars(name.toString(), repos.toString(),)
+        chartView.getReposStars(name.toString(), repos.toString(), )
         chartView.chartResponseEmitter.observe(this) { dateList ->
             Log.d("MyLog", "$dateList")
             dateResponseList = dateList as ArrayList<Long>
             Log.d("MyLog1", "$dateResponseList")
+            RangeSelector()
         }
+
+
 
         barChart = binding.barChart
 
@@ -97,16 +102,19 @@ class ChartActivity : AppCompatActivity() {
 
     }
 
-     fun getBarChartData(range: Int) {
-         barEntriesList = ArrayList()
+    fun getBarChartData(range: Int) {
+        barEntriesList = ArrayList()
 
-         for (i in 0..range){
-             barEntriesList.add(BarEntry(i.toFloat(),2f))
-         }
+        for (i in 0..range) {
+            barEntriesList.add(BarEntry(i.toFloat(), 2f))
+        }
     }
 
     fun RangeSelector() {
-
+        val chartSorting = ChartSorting()
+        chartSorting.sortingDays(
+            5,
+             dateResponseList
+        )
     }
-
 }

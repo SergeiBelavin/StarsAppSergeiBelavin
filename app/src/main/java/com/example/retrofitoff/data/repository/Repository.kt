@@ -10,17 +10,14 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class Repository {
-
-    private val chartResponse = MutableLiveData<List<Long>>()
-    val chartResponseEmitter: LiveData<List<Long>> = chartResponse
+class Repository() {
 
     suspend fun getRepoList(userName: String): List<RepositoriesUserItem> {
         return RetrofitInstance.api.getRepoList(userName)
     }
 
     suspend fun getRepoStat(userName: String, repoName: String): List<StatisticStarsItem> {
-            return RetrofitInstance.api.getRepoStat(userName, repoName)
-        }
-// Надо чарт активити привести в изначальное состояние где листы ловили статистику, а не лонг. Затем передавать данные в репозиторий и обрабатывать их
+        return RetrofitInstance.api.getRepoStat(userName, repoName)
     }
+// Надо чарт активити привести в изначальное состояние где листы ловили статистику, а не лонг. Затем передавать данные в репозиторий и обрабатывать их
+}
