@@ -51,22 +51,21 @@ class ChartActivity : AppCompatActivity() {
         binding = ActivityChartRepoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        getBarChartData(14)
+        barChartData(14)
 
         val repository = Repository()
-        val viewModelFactory = CharViewFactory(repository)
+        val viewModelFactory = ChartViewFactory(repository)
 
 
         chartView = ViewModelProvider(this, viewModelFactory)[ChartView::class.java]
 
-        val name = intent.getSerializableExtra(KEY_NAME)
-        val repos = intent.getSerializableExtra(KEY_REPOS)
-        chartView.getReposStars(name.toString(), repos.toString(), )
+        val ownerName = intent.getSerializableExtra(KEY_NAME)
+        val reposName = intent.getSerializableExtra(KEY_REPOS)
+        chartView.getReposStars(ownerName.toString(), reposName.toString(), )
         chartView.chartResponseEmitter.observe(this) { dateList ->
-            Log.d("MyLog", "$dateList")
             dateResponseList = dateList as ArrayList<Long>
-            Log.d("MyLog1", "$dateResponseList")
-            RangeSelector()
+            Log.d("ChartDateResponseList", "$dateResponseList")
+            rangeSelector()
         }
 
 
@@ -89,20 +88,20 @@ class ChartActivity : AppCompatActivity() {
 
         binding.sixtyDaysLong.setOnClickListener {
 
-            getBarChartData(60)
+            barChartData(60)
         }
         binding.thirtyDaysLong.setOnClickListener {
 
-            getBarChartData(30)
+            barChartData(30)
         }
         binding.fourteenDaysLong.setOnClickListener {
 
-            getBarChartData(14)
+            barChartData(14)
         }
 
     }
 
-    fun getBarChartData(range: Int) {
+    private fun barChartData(range: Int) {
         barEntriesList = ArrayList()
 
         for (i in 0..range) {
@@ -110,7 +109,7 @@ class ChartActivity : AppCompatActivity() {
         }
     }
 
-    fun RangeSelector() {
+    private fun rangeSelector() {
         val chartSorting = ChartSorting()
         chartSorting.sortingDays(
             5,

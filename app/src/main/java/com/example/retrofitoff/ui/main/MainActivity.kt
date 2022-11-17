@@ -3,14 +3,13 @@ package com.example.retrofitoff.ui.main
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.retrofitoff.ReposAdapter
 import com.example.retrofitoff.databinding.ActivityMainBinding
-import com.example.retrofitoff.mode.RepositoriesUserItem
+import com.example.retrofitoff.mode.UserRepositoriesItem
 import com.example.retrofitoff.data.repository.Repository
 import com.example.retrofitoff.ui.chart.ChartActivity
 
 
-class MainActivity : AppCompatActivity(), ReposAdapter.Listener {
+class MainActivity : AppCompatActivity(), RepositoryAdapter.Listener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainView
@@ -19,7 +18,7 @@ class MainActivity : AppCompatActivity(), ReposAdapter.Listener {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val adapter = ReposAdapter(this)
+        val adapter = RepositoryAdapter(this)
         binding.rcView.adapter = adapter
 
         val repository = Repository()
@@ -28,15 +27,15 @@ class MainActivity : AppCompatActivity(), ReposAdapter.Listener {
 
         binding.findName.setOnClickListener {
             val searchName = binding.addName.text.toString()
-            viewModel.getRepoList(searchName)
-            viewModel.myResponse.observe(this) { responce ->
-                responce.let {
+            viewModel.repoList(searchName)
+            viewModel.myResponse.observe(this) { response ->
+                response.let {
                     adapter.setList(it)
                 }
             }
         }
     }
-    override fun onClick(list: RepositoriesUserItem) {
+    override fun onClick(list: UserRepositoriesItem) {
         val intentChartActivity =  ChartActivity.createIntent(this@MainActivity,list.owner?.login.toString(), list.name.toString())
         startActivity(intentChartActivity)
     }
