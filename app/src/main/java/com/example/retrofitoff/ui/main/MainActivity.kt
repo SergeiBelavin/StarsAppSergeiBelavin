@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitoff.databinding.ActivityMainBinding
-import com.example.retrofitoff.mode.UserRepositoriesItem
+import com.example.retrofitoff.mode.RepositoriesUserItem
 import com.example.retrofitoff.data.repository.Repository
 import com.example.retrofitoff.ui.chart.ChartActivity
 
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), RepositoryAdapter.Listener {
             }
         }
     }
-    override fun onClick(list: UserRepositoriesItem) {
+    override fun onClick(list: RepositoriesUserItem) {
         val intentChartActivity =  ChartActivity.createIntent(this@MainActivity,list.owner?.login.toString(), list.name.toString())
         startActivity(intentChartActivity)
     }

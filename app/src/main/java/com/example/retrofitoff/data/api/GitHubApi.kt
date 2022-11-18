@@ -1,7 +1,7 @@
 package com.example.retrofitoff.data.api
 
 
-import com.example.retrofitoff.mode.UserRepositoriesItem
+import com.example.retrofitoff.mode.RepositoriesUserItem
 import com.example.retrofitoff.mode.StatisticsStarsItem
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -13,7 +13,7 @@ interface GitHubApi {
     suspend fun getRepoList(
         @Path("user") userName: String,
 
-        ): List<UserRepositoriesItem>
+        ): List<RepositoriesUserItem>
 
 
     @Headers("Accept: application/vnd.github.star+json")

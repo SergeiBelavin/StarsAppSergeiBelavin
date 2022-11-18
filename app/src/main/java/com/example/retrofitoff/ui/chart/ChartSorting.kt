@@ -2,13 +2,13 @@ package com.example.retrofitoff.ui.chart
 
 import android.util.Log
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
 
 class ChartSorting {
-    fun sortingDays(range: Int,
-                    dateResponseList: List<Long>
+    fun sortingDays(
+        range: Int,
+        dateResponseList: List<Long>,
     ) {
 
         var daysNumber = 60
@@ -43,53 +43,86 @@ class ChartSorting {
                 val sector9 = ArrayList<List<Long>>()
                 val sector10 = ArrayList<List<Long>>()
 
-                for (i in 0 until 6) {sector1.add(listOf(daysList[i]))}
+                for (i in 0 until 6) {
+                    sector1.add(listOf(daysList[i]))
+                }
                 Log.d("sector1for", "$sector1")
 
-                for (i in 6 until 12) {sector2.add(listOf(daysList[i]))}
+                for (i in 6 until 12) {
+                    sector2.add(listOf(daysList[i]))
+                }
                 Log.d("sector2for", "$sector2")
 
-                for (i in 12 until 18) {sector3.add(listOf(daysList[i]))}
+                for (i in 12 until 18) {
+                    sector3.add(listOf(daysList[i]))
+                }
                 Log.d("sector3for", "$sector3")
 
-                for (i in 18 until 24) {sector4.add(listOf(daysList[i]))}
+                for (i in 18 until 24) {
+                    sector4.add(listOf(daysList[i]))
+                }
                 Log.d("sector4for", "$sector4")
 
-                for (i in 24 until 30) {sector5.add(listOf(daysList[i]))}
+                for (i in 24 until 30) {
+                    sector5.add(listOf(daysList[i]))
+                }
                 Log.d("sector5for", "$sector5")
 
-                for (i in 30 until 36) {sector6.add(listOf(daysList[i]))}
+                for (i in 30 until 36) {
+                    sector6.add(listOf(daysList[i]))
+                }
                 Log.d("sector6for", "$sector6")
 
-                for (i in 36 until 42) {sector7.add(listOf(daysList[i]))}
+                for (i in 36 until 42) {
+                    sector7.add(listOf(daysList[i]))
+                }
                 Log.d("sector7for", "$sector7")
 
-                for (i in 42 until 48) {sector8.add(listOf(daysList[i]))}
+                for (i in 42 until 48) {
+                    sector8.add(listOf(daysList[i]))
+                }
                 Log.d("sector8for", "$sector8")
 
-                for (i in 48 until 54) {sector9.add(listOf(daysList[i]))}
+                for (i in 48 until 54) {
+                    sector9.add(listOf(daysList[i]))
+                }
                 Log.d("sector9for", "$sector9")
 
-                for (i in 54 until 60) {sector10.add(listOf(daysList[i]))}
+                for (i in 54 until 60) {
+                    sector10.add(listOf(daysList[i]))
+                }
                 Log.d("sector10for", "$sector10")
 
                 var s1 = 0
                 var sectorByIndex: String
                 var dateRespByIndex: String
-                var q: String
+                var sectorToIndex: String
+                val str1 = sector1.toString()
+                val decimetre = ","
+                val splitString = str1.split(decimetre)
+                Log.d("split", "$splitString")
+                Log.d("split", "${splitString[1]}")
+                Log.d("split", "wd")
 
 
 
 
+                Log.d("sortTest0", "$sector1")
+                Log.d("sortTest01", "${sector1[0].dropLast(1).drop(1)}")
+                Log.d("sortTest011", "${dateResponseList[1]}")
                 Log.d("sector1", sector1[0].toString().dropLast(4).drop(1))
 
+                sectorToIndex = sector1[0].toString().dropLast(1).drop(1)
+                val parser = SimpleDateFormat("yyyy-MM-dd").format(sectorToIndex)
+                Log.d("sorTest", "$parser")
+                Log.d("sorTest2", "$sectorToIndex")
+
                 for (i in 0 until sector1.size) {
-                    q = sector1[i].toString()
-                    val parser = SimpleDateFormat("yyyy-MM-dd").format(q)
-                    Log.d("sorTest", "$parser")
+
 
                     sectorByIndex = sector1[i].toString().dropLast(4).drop(1)
-                    dateRespByIndex = listOf(dateResponseList[i].toString()).toString().dropLast(4).dropLast(1)
+                    dateRespByIndex =
+                        listOf(dateResponseList[i].toString()).toString().dropLast(4).dropLast(1)
                     if (sectorByIndex == dateRespByIndex) {
                         s1++
                     }
@@ -169,6 +202,9 @@ class ChartSorting {
                 var sector13 = ArrayList<List<Long>>()
                 var sector14 = ArrayList<List<Long>>()
             }
+
+
         }
+
     }
 }

@@ -1,13 +1,13 @@
 package com.example.retrofitoff.data.repository
 
-import com.example.retrofitoff.mode.UserRepositoriesItem
+import com.example.retrofitoff.mode.RepositoriesUserItem
 
 import com.example.retrofitoff.mode.StatisticsStarsItem
 
 
 class Repository() {
 
-    suspend fun listRepository(userName: String): List<UserRepositoriesItem> {
+    suspend fun listRepository(userName: String): List<RepositoriesUserItem> {
         return RetrofitInstance.api.getRepoList(userName)
     }
 

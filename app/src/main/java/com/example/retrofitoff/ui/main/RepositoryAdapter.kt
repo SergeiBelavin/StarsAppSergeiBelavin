@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitoff.R
 import com.example.retrofitoff.databinding.ReposNameListBinding
-import com.example.retrofitoff.mode.UserRepositoriesItem
+import com.example.retrofitoff.mode.RepositoriesUserItem
 
 class RepositoryAdapter(val listener: Listener): RecyclerView.Adapter<RepositoryAdapter.StartViewHolder>() {
 
-    var listStart=emptyList<UserRepositoriesItem>()
+    var listStart=emptyList<RepositoriesUserItem>()
 
     class StartViewHolder(item: View): RecyclerView.ViewHolder(item) {
         val binding = ReposNameListBinding.bind(item)
@@ -35,13 +35,13 @@ class RepositoryAdapter(val listener: Listener): RecyclerView.Adapter<Repository
     override fun getItemCount(): Int {
         return listStart.size
     }
-    fun setList(list: List<UserRepositoriesItem>) {
+    fun setList(list: List<RepositoriesUserItem>) {
         listStart = list
         notifyDataSetChanged()
 
     }
     interface  Listener{
-        fun onClick(list: UserRepositoriesItem) {
+        fun onClick(list: RepositoriesUserItem) {
 
         }
     }

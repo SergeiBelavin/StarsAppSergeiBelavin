@@ -1,6 +1,6 @@
 package com.example.retrofitoff.mode
 
- data class UserRepositoriesItem(
+ data class RepositoriesUserItem(
     val name: String?,
     val owner: Owner?,
 )
