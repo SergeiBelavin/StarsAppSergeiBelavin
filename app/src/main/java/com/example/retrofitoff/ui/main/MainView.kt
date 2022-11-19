@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.retrofitoff.mode.RepositoriesUserItem
+import com.example.retrofitoff.model.RepoUserItem
 
 
 import com.example.retrofitoff.data.repository.Repository
@@ -15,13 +15,14 @@ class MainView(
 ) : ViewModel() {
 
 
-    val myResponse: MutableLiveData<List<RepositoriesUserItem>> = MutableLiveData()
+    val myResponse: MutableLiveData<List<RepoUserItem>> = MutableLiveData()
 
     fun repoList(userName: String) {
         viewModelScope.launch {
             try {
-                val response: List<RepositoriesUserItem> = repository.listRepository(userName)
+                val response: List<RepoUserItem> = repository.getlistRepository(userName)
                 myResponse.value = response
+
             } catch (e: Exception) {
                 Log.d("ErrorGetRepoList", "Expection: " + "${e}")
             }

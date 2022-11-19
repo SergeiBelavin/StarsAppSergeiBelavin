@@ -6,7 +6,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class ChartSorting {
-    fun sortingDays(
+  /*  fun sortingDays(
         range: Int,
         dateResponseList: List<Long>,
     ) {
@@ -207,4 +207,6 @@ class ChartSorting {
         }
 
     }
+
+   */
 }

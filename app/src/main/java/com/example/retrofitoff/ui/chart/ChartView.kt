@@ -5,10 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.retrofitoff.data.entity.StarGroup
 import com.example.retrofitoff.data.repository.Repository
-import com.example.retrofitoff.mode.StatisticsStarsItem
+import com.example.retrofitoff.model.StarGroupItem
 
 import kotlinx.coroutines.launch
+import java.io.Serializable
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -21,39 +23,17 @@ class ChartView(
 
     //val chartResponse: MutableLiveData<List<StatisticStarsItem>> = MutableLiveData()
 
-    private val chartResponse = MutableLiveData<List<Long>>()
-    val chartResponseEmitter: LiveData<List<Long>> = chartResponse
-
+    val chartResponse = MutableLiveData<Serializable>()
 
     fun getReposStars(userName: String, repoName: String,) {
 
         viewModelScope.launch {
             try {
-                val response: List<StatisticsStarsItem> =
-                    repository.statisticsRepository(userName, repoName,)
+                val response: Serializable =
+                    repository.getStarRepo(userName, repoName,)
+                chartResponse.value = response
 
-                 Log.d("ResponseCV", "$response")
-
-                val dateLong = ArrayList<Long>()
-
-                val calendar = Calendar.getInstance()
-                calendar.add(Calendar.DAY_OF_YEAR, -1)
-                val daysAgoUnix = calendar.timeInMillis
-                Log.d("DaysAgoCV", "$daysAgoUnix")
-
-
-                response.forEach {
-                    val dateUnix = it.starred_at.time
-                    Log.d("dateUnixCV", "$dateUnix")
-                    if (dateUnix < daysAgoUnix) {
-                        dateLong.add(dateUnix)
-                    }
-                }
-
-
-                chartResponse.value = dateLong
-
-
+                Log.d("WOWOWOWOW", "Exception: $response")
 
             } catch (e: Exception) {
                 Log.d("ErrorGetReposStat", "Exception: $e")

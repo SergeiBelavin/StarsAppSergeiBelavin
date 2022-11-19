@@ -9,6 +9,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitoff.ChartView
+import com.example.retrofitoff.data.entity.RepoUser
+import com.example.retrofitoff.data.entity.StarGroup
 import com.example.retrofitoff.ui.main.MainActivity
 import com.example.retrofitoff.databinding.ActivityChartRepoBinding
 import com.example.retrofitoff.data.repository.Repository
@@ -17,7 +19,6 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import kotlin.collections.ArrayList
-
 
 class ChartActivity : AppCompatActivity() {
 
@@ -34,17 +35,14 @@ class ChartActivity : AppCompatActivity() {
 
     }
 
-
     private lateinit var binding: ActivityChartRepoBinding
     private lateinit var chartView: ChartView
-
 
     lateinit var barChart: BarChart
     lateinit var barData: BarData
     lateinit var barDataSet: BarDataSet
     lateinit var barEntriesList: ArrayList<BarEntry>
     lateinit var dateResponseList: ArrayList<Long>
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,18 +54,17 @@ class ChartActivity : AppCompatActivity() {
         val repository = Repository()
         val viewModelFactory = ChartViewFactory(repository)
 
-
         chartView = ViewModelProvider(this, viewModelFactory)[ChartView::class.java]
 
         val ownerName = intent.getSerializableExtra(KEY_NAME)
         val reposName = intent.getSerializableExtra(KEY_REPOS)
-        chartView.getReposStars(ownerName.toString(), reposName.toString(), )
-        chartView.chartResponseEmitter.observe(this) { dateList ->
+
+        chartView.getReposStars(ownerName.toString(), reposName.toString())
+        chartView.chartResponse.observe(this) { dateList ->
             dateResponseList = dateList as ArrayList<Long>
             Log.d("ChartDateResponseList", "$dateResponseList")
             rangeSelector()
         }
-
 
 
         barChart = binding.barChart
@@ -110,10 +107,11 @@ class ChartActivity : AppCompatActivity() {
     }
 
     private fun rangeSelector() {
-        val chartSorting = ChartSorting()
+      /*  val chartSorting = ChartSorting()
         chartSorting.sortingDays(
             5,
              dateResponseList
         )
+        */
     }
 }
