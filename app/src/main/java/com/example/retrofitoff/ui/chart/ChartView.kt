@@ -18,6 +18,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
+
 class ChartView(
     private val repository: Repository,
 
@@ -31,12 +32,12 @@ class ChartView(
         viewModelScope.launch {
             try {
                 val response: Serializable =
-                    repository.getStarRepo(userName, repoName,)
+                    repository.getStarRepo(userName, repoName)
                 chartResponse.value = response
-                Log.d("WOWOWOWOW", "Exception: $response")
+                Log.d("Response ", "Exception: $response")
 
             } catch (e: Exception) {
-                Log.d("ErrorGetReposStat", "Exception: $e")
+                Log.d("Error ", "Exception: $e")
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.example.retrofitoff.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitoff.data.entity.RepoUser
@@ -28,16 +29,19 @@ class MainActivity : AppCompatActivity(), RepositoryAdapter.Listener {
 
         binding.findName.setOnClickListener {
             val searchName = binding.addName.text.toString()
-            viewModel.repoList(searchName)
+
+            viewModel.repoList(searchName,)
             viewModel.myResponse.observe(this) { response ->
+                Log.d("MainViewadapter", "$response")
                 response.let {
-                    adapter.setList(it)
+                    adapter.setList(response!!)
                 }
+
             }
         }
     }
-    override fun onClick(list: RepoUserItem) {
-        val intentChartActivity =  ChartActivity.createIntent(this@MainActivity,list.owner?.login.toString(), list.name.toString())
+    override fun onClick(list: RepoUser) {
+        val intentChartActivity =  ChartActivity.createIntent(this@MainActivity,list?.owner?.login.toString(), list?.name.toString())
         startActivity(intentChartActivity)
     }
 }
