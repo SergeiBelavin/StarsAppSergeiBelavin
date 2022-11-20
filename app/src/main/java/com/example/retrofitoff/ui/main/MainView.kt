@@ -20,7 +20,7 @@ class MainView(
     fun repoList(userName: String) {
         viewModelScope.launch {
             try {
-                val response: List<RepoUserItem> = repository.getlistRepository(userName)
+                val response: List<RepoUserItem> = repository.getListRepository(userName)
                 myResponse.value = response
 
             } catch (e: Exception) {

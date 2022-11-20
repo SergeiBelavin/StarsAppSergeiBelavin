@@ -1,6 +1,7 @@
 package com.example.retrofitoff.data.api
 
 
+import com.example.retrofitoff.data.entity.RepoUser
 import com.example.retrofitoff.data.entity.StarGroup
 import com.example.retrofitoff.model.RepoUserItem
 import com.example.retrofitoff.model.StarGroupItem

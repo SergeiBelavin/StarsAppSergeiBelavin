@@ -3,6 +3,7 @@ package com.example.retrofitoff.ui.main
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.retrofitoff.data.entity.RepoUser
 import com.example.retrofitoff.databinding.ActivityMainBinding
 import com.example.retrofitoff.model.RepoUserItem
 import com.example.retrofitoff.data.repository.Repository
@@ -36,8 +37,7 @@ class MainActivity : AppCompatActivity(), RepositoryAdapter.Listener {
         }
     }
     override fun onClick(list: RepoUserItem) {
-        val intentChartActivity =  ChartActivity.createIntent(this@MainActivity,
-            list.owner?.login.toString(), list.name.toString())
+        val intentChartActivity =  ChartActivity.createIntent(this@MainActivity,list.owner?.login.toString(), list.name.toString())
         startActivity(intentChartActivity)
     }
 }

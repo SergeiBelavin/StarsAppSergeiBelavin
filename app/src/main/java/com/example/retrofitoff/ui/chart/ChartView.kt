@@ -5,8 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.retrofitoff.data.api.GitHubApi
+import com.example.retrofitoff.data.api.PageSource
 import com.example.retrofitoff.data.entity.StarGroup
 import com.example.retrofitoff.data.repository.Repository
+import com.example.retrofitoff.model.RepoUserItem
 import com.example.retrofitoff.model.StarGroupItem
 
 import kotlinx.coroutines.launch
@@ -20,19 +23,16 @@ class ChartView(
 
     ) : ViewModel() {
 
-
     //val chartResponse: MutableLiveData<List<StatisticStarsItem>> = MutableLiveData()
 
     val chartResponse = MutableLiveData<Serializable>()
 
-    fun getReposStars(userName: String, repoName: String,) {
-
+    fun getReposStars(userName: String, repoName: String) {
         viewModelScope.launch {
             try {
                 val response: Serializable =
                     repository.getStarRepo(userName, repoName,)
                 chartResponse.value = response
-
                 Log.d("WOWOWOWOW", "Exception: $response")
 
             } catch (e: Exception) {
