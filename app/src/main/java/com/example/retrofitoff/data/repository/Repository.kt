@@ -28,6 +28,7 @@ open class Repository() {
 
     suspend fun getStarRepo(userName: String, repoName: String): List<StarGroup> {
         val dateLong = ArrayList<Long>()
+        val dateUnixSize = ArrayList<Long>()
         val starsList = mutableListOf<StarGroup>()
         var pageNumber = 1
         val maxPageSize = 30
@@ -46,7 +47,9 @@ open class Repository() {
 
                 response.forEach {
                     val dateUnix = it.starredAt.time
-                    Log.d("DaysRepo", "$dateUnix")
+                    dateUnixSize.add(dateUnix)
+                    Log.d("DaysRepo", "${dateUnixSize.size}")
+                    Log.d("DaysUnixSuze", "")
                     if (dateUnix < daysAgoUnix) {
                         // dateLong.add(dateUnix)
                         Log.d("repositoryDO", it.starredAt.toString())
@@ -61,7 +64,7 @@ open class Repository() {
                 Log.d("pageList1", "$pageNumber")
                 Log.d("pageList2", "${response.size}")
                 pageNumber++
-            } while (response.size == maxPageSize)
+            } while (dateUnixSize.size == maxPageSize)
             Log.d("pageStarList", "MaxPage: ${starsList.size}")
             starsList
 
