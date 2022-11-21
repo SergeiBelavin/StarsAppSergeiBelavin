@@ -16,25 +16,21 @@ import kotlin.collections.ArrayList
 
 
 open class Repository() {
-    val dateLong = ArrayList<Serializable>()
 
 
-    val dateLong2 = mutableListOf<StarGroup>()
-
-    suspend fun getListRepository(userName: String): List<RepoUser>? {
-        val response: List<RepoUserItem> =
-            RetrofitInstance.api.getRepoList(userName)
-        return response
+    suspend fun getListRepository(userName: String): List<RepoUser> {
+        return RetrofitInstance.api.getRepoList(userName)
 
     }
 
     private val chartResponse = MutableLiveData<List<StarGroup>>()
     val chartResponseEmitter: LiveData<List<StarGroup>> = chartResponse
 
-    suspend fun getStarRepo(userName: String, repoName: String): Serializable {
-
+    suspend fun getStarRepo(userName: String, repoName: String): List<StarGroup> {
+        val dateLong = ArrayList<Long>()
+        val starsList = mutableListOf<StarGroup>()
         var pageNumber = 1
-        val maxPageSize = 34
+        val maxPageSize = 30
         return try {
             do {
                 val response: List<StarGroupItem> =
@@ -43,7 +39,7 @@ open class Repository() {
                 Log.d("Rep", "$response")
 
                 val calendar = Calendar.getInstance()
-                calendar.add(Calendar.DAY_OF_YEAR, -1)
+                calendar.add(Calendar.DAY_OF_YEAR, -14)
                 val daysAgoUnix = calendar.timeInMillis
 
                 Log.d("DaysTimeCalendar", "$daysAgoUnix")
@@ -54,23 +50,24 @@ open class Repository() {
                     if (dateUnix < daysAgoUnix) {
                         // dateLong.add(dateUnix)
                         Log.d("repositoryDO", it.starredAt.toString())
-                        dateLong.add(dateUnix.toString())
+                        dateLong.add(dateUnix)
                         Log.d("dateLong", dateLong.toString())
                     }
+
                     Log.d("repositoryPosle", it.starredAt.toString())
                 }
-
+                starsList.addAll(response)
+                Log.d("repositoryPosle", starsList.size.toString())
+                Log.d("pageList1", "$pageNumber")
+                Log.d("pageList2", "${response.size}")
                 pageNumber++
-                val repSize = response.size
-                Log.d("responseSize", "$repSize")
-            } while (response.size < maxPageSize)
-
-            Log.d("pageStarList", "MaxPage: $maxPageSize")
-            dateLong
+            } while (response.size == maxPageSize)
+            Log.d("pageStarList", "MaxPage: ${starsList.size}")
+            starsList
 
         } catch (e: Exception) {
             Log.d("sizeErrorInPage", "$e")
-            return dateLong
+            return starsList
         }
     }
 }

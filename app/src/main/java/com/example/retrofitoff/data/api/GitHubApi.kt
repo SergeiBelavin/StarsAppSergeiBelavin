@@ -15,7 +15,6 @@ interface GitHubApi {
     @GET("/users/{user}/repos?per_page=100")
     suspend fun getRepoList(
         @Path("user") userName: String,
-
         ): List<RepoUserItem>
 
 
@@ -24,9 +23,8 @@ interface GitHubApi {
     suspend fun getRepoStat(
         @Path("user") userName: String,
         @Path("repo") repoName: String,
-        @Query("page") page: Int
+        @Query("page") page: Int,
     ): List<StarGroupItem>
-
 }
 
 

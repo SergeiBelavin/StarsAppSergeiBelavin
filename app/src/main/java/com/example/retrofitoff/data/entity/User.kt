@@ -1,10 +1,10 @@
 package com.example.retrofitoff.data.entity
 
+import android.media.Image
 import java.io.Serializable
 
 interface User: Serializable {
-    val avatarUrl: String
-    val id: Int
+    val id: Long
     val name: String
-    val login: String
+  //  val avatar: Image?
 }

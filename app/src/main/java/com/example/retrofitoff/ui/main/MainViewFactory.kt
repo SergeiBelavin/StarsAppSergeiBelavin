@@ -10,7 +10,7 @@ import com.example.retrofitoff.data.repository.Repository
 class MainViewFactory(private val repository: Repository
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-      return MainView(repository) as T
+      return MainViewModel(repository) as T
     }
     }
 

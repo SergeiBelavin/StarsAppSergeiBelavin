@@ -5,23 +5,22 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.retrofitoff.data.entity.RepoUser
-import com.example.retrofitoff.model.RepoUserItem
 
 
 import com.example.retrofitoff.data.repository.Repository
 import kotlinx.coroutines.launch
 
-class MainView(
+class MainViewModel(
     private val repository: Repository,
 ) : ViewModel() {
 
 
-    val myResponse: MutableLiveData<List<RepoUser>?> = MutableLiveData()
+    val myResponse: MutableLiveData<List<RepoUser>> = MutableLiveData()
 
     fun repoList(userName: String,) {
         viewModelScope.launch {
             try {
-                val response: List<RepoUser>? = repository.getListRepository(userName,)
+                val response: List<RepoUser> = repository.getListRepository(userName,)
                 myResponse.value = response
 
             } catch (e: Exception) {
