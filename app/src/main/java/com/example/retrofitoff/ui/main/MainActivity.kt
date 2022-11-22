@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity(), RepositoryAdapter.Listener {
         binding.rcView.adapter = adapter
 
         val repository = Repository()
+
         val viewModelFactory = MainViewFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
 

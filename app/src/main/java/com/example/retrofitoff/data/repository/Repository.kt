@@ -1,6 +1,9 @@
 package com.example.retrofitoff.data.repository
 
 import android.util.Log
+import com.example.retrofitoff.data.api.providers.RepoProvider
+import com.example.retrofitoff.data.api.providers.StarProvider
+import com.example.retrofitoff.data.api.providers.StarSearch
 
 import com.example.retrofitoff.data.entity.RepoUser
 
@@ -14,11 +17,13 @@ import kotlin.collections.ArrayList
 
 open class Repository() {
 
-    private val MAX_PAGE_SIZE = 30
+    private val MAX_PAGE_SIZE = 100
     private val MIN_PAGE_SIZE = 0
+    private val starProvider = RepoProvider()
 
     suspend fun getListRepository(userName: String): List<RepoUser> {
         val allName = ArrayList<String>()
+        val responseList = ArrayList<RepoUserItem>()
         var pageNumberUser = 1
         return try {
 
@@ -27,32 +32,34 @@ open class Repository() {
                     RetrofitInstance.api.getRepoList(userName, pageNumberUser)
 
                 response.forEach {
-                    val name = it.name
-                    allName.add(name)
-                    if (allName.size == MAX_PAGE_SIZE) {
-                        allName.clear()
-                    }
+                    allName.add(it.name)
+                    Log.d("NAME_ALL_REPO", "$allName")
+                    if (allName.size == MAX_PAGE_SIZE) allName.clear()
                 }
+                responseList.addAll(response)
                 pageNumberUser++
+                Log.d("PAGE_NUM_REPO", "$pageNumberUser")
+
 
             } while( allName.size == MIN_PAGE_SIZE)
-            RetrofitInstance.api.getRepoList(userName, pageNumberUser)
+            responseList
 
         } catch (e: Exception) {
-            Log.d("sizeErrorInPage", "$e")
-            return RetrofitInstance.api.getRepoList(userName, pageNumberUser)
+            Log.d("SIZE_REPO_ERROR", "$e")
+            return responseList
         }
     }
-    suspend fun getStarRepo(userName: String, repoName: String): List<StarGroup> {
+    suspend fun getStarRepo(userName: String, repoUserEntity: RepoUser, repoName: String): List<StarGroup> {
         val sortDate = ArrayList<Long>()
         val allDate = ArrayList<Long>()
         val starsList = mutableListOf<StarGroup>()
+        val starsListGroup = mutableListOf<StarGroup>()
         var pageNumberStar = 1
 
         return try {
             do {
                 val response: List<StarGroupItem> =
-                    RetrofitInstance.api.getRepoStat(userName, repoName, pageNumberStar)
+                    RetrofitInstance.api.getRepoStars(userName, repoName, pageNumberStar)
 
                 Log.d("RESPONSE", "$response")
 
@@ -64,28 +71,41 @@ open class Repository() {
 
                 response.forEach {
                     val dateUnix = it.starredAt.time
-
-                    allDate.add(it.starredAt.time)
+                    allDate.add(dateUnix)
                     if (allDate.size == MAX_PAGE_SIZE) {
                         Log.d("ALL_DATE_SIZE", allDate.size.toString())
                         allDate.clear()
                     }
+
+                    val groupBy = response.groupBy {
+                        it.user
+                    }
+                    Log.d("GROUP_BE_RESPONSE", groupBy.toString())
+
                     if (dateUnix < daysAgoUnix) {
                         // dateLong.add(dateUnix)
                         Log.d("STARRED_AT_SORT", it.starredAt.toString())
                         sortDate.add(dateUnix)
                         Log.d("SORT_DATE_LIST", sortDate.toString())
                     }
+
                 }
-                starsList.addAll(response)
+                val stars = starProvider.getRepoList(userName, repoUserEntity, pageNumberStar)
+                starsList.addAll(stars)
                 Log.d("PAGE_NUMBER", "$pageNumberStar")
                 pageNumberStar++
 
             } while (allDate.size == MIN_PAGE_SIZE)
+            val starGroup = starsList.groupBy {
+                it.starredAt
+            }
+
+            Log.d("STAR_LIST_GROUP", "$starGroup")
+            Log.d("STAR_LIST_PROVIDER", "$starsList")
             starsList
 
         } catch (e: Exception) {
-            Log.d("SIZE_REPO_ERROR", "$e")
+            Log.d("SIZE_STAR_ERROR", "$e")
             return starsList
         }
     }

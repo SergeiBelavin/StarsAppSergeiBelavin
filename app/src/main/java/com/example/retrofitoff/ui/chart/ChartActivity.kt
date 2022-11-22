@@ -9,6 +9,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitoff.ChartViewModel
+import com.example.retrofitoff.data.entity.RepoUser
+
 import com.example.retrofitoff.ui.main.MainActivity
 import com.example.retrofitoff.databinding.ActivityChartRepoBinding
 import com.example.retrofitoff.data.repository.Repository
@@ -35,6 +37,7 @@ class ChartActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChartRepoBinding
     private lateinit var chartView: ChartViewModel
+    private lateinit var repoUser: RepoUser
 
     lateinit var barChart: BarChart
     lateinit var barData: BarData
@@ -50,13 +53,13 @@ class ChartActivity : AppCompatActivity() {
         barChartData(14)
 
         val repository = Repository()
-        val viewModelFactory = ChartViewFactory(repository)
+        val viewModelFactory = ChartViewFactory(repository, repoUser)
 
         chartView = ViewModelProvider(this, viewModelFactory)[ChartViewModel::class.java]
 
         val ownerName = intent.getSerializableExtra(KEY_NAME)
         val reposName = intent.getSerializableExtra(KEY_REPOS)
-
+        val repoUserList = ArrayList<RepoUser>()
         chartView.getReposStars(ownerName.toString(), reposName.toString())
         chartView.chartResponse.observe(this) { dateList ->
             dateResponseList = dateList as ArrayList<Long>

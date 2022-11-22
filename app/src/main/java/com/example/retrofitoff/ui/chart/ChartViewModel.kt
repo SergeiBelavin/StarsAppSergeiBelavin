@@ -4,16 +4,19 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.retrofitoff.data.entity.RepoUser
 import com.example.retrofitoff.data.entity.StarGroup
 import com.example.retrofitoff.data.repository.Repository
 import com.example.retrofitoff.model.StarGroupItem
 
 import kotlinx.coroutines.launch
+import okhttp3.internal.userAgent
 import java.io.Serializable
 
 
 class ChartViewModel(
     private val repository: Repository,
+    val repoUser: RepoUser
 
     ) : ViewModel() {
 
@@ -25,7 +28,7 @@ class ChartViewModel(
         viewModelScope.launch {
             try {
                 val response: List<StarGroup> =
-                    repository.getStarRepo(userName, repoName)
+                    repository.getStarRepo(userName, repoUser, repoName)
                 chartResponse.value = response
                 Log.d("Response ", "Exception: $response")
 

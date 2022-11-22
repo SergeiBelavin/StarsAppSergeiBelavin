@@ -1,8 +1,6 @@
 package com.example.retrofitoff.data.api
 
 
-import com.example.retrofitoff.data.entity.RepoUser
-import com.example.retrofitoff.data.entity.StarGroup
 import com.example.retrofitoff.model.RepoUserItem
 import com.example.retrofitoff.model.StarGroupItem
 import retrofit2.http.GET
@@ -20,8 +18,8 @@ interface GitHubApi {
 
 
     @Headers("Accept: application/vnd.github.star+json")
-    @GET("/repos/{user}/{repo}/stargazers")
-    suspend fun getRepoStat(
+    @GET("/repos/{user}/{repo}/stargazers?per_page=100")
+    suspend fun getRepoStars(
         @Path("user") userName: String,
         @Path("repo") repoName: String,
         @Query("page") page: Int,
