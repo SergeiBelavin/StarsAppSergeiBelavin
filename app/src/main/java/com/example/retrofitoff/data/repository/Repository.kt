@@ -1,8 +1,6 @@
 package com.example.retrofitoff.data.repository
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 
 import com.example.retrofitoff.data.entity.RepoUser
 
@@ -10,66 +8,84 @@ import com.example.retrofitoff.data.entity.RepoUser
 import com.example.retrofitoff.data.entity.StarGroup
 import com.example.retrofitoff.model.RepoUserItem
 import com.example.retrofitoff.model.StarGroupItem
-import java.io.Serializable
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 open class Repository() {
 
+    private val MAX_PAGE_SIZE = 30
+    private val MIN_PAGE_SIZE = 0
 
     suspend fun getListRepository(userName: String): List<RepoUser> {
-        return RetrofitInstance.api.getRepoList(userName)
+        val allName = ArrayList<String>()
+        var pageNumberUser = 1
+        return try {
 
+            do {
+                val response: List<RepoUserItem> =
+                    RetrofitInstance.api.getRepoList(userName, pageNumberUser)
+
+                response.forEach {
+                    val name = it.name
+                    allName.add(name)
+                    if (allName.size == MAX_PAGE_SIZE) {
+                        allName.clear()
+                    }
+                }
+                pageNumberUser++
+
+            } while( allName.size == MIN_PAGE_SIZE)
+            RetrofitInstance.api.getRepoList(userName, pageNumberUser)
+
+        } catch (e: Exception) {
+            Log.d("sizeErrorInPage", "$e")
+            return RetrofitInstance.api.getRepoList(userName, pageNumberUser)
+        }
     }
-
-    private val chartResponse = MutableLiveData<List<StarGroup>>()
-    val chartResponseEmitter: LiveData<List<StarGroup>> = chartResponse
-
     suspend fun getStarRepo(userName: String, repoName: String): List<StarGroup> {
-        val dateLong = ArrayList<Long>()
-        val dateUnixSize = ArrayList<Long>()
+        val sortDate = ArrayList<Long>()
+        val allDate = ArrayList<Long>()
         val starsList = mutableListOf<StarGroup>()
-        var pageNumber = 1
-        val maxPageSize = 30
+        var pageNumberStar = 1
+
         return try {
             do {
                 val response: List<StarGroupItem> =
-                    RetrofitInstance.api.getRepoStat(userName, repoName, pageNumber)
+                    RetrofitInstance.api.getRepoStat(userName, repoName, pageNumberStar)
 
-                Log.d("Rep", "$response")
+                Log.d("RESPONSE", "$response")
 
                 val calendar = Calendar.getInstance()
                 calendar.add(Calendar.DAY_OF_YEAR, -14)
                 val daysAgoUnix = calendar.timeInMillis
 
-                Log.d("DaysTimeCalendar", "$daysAgoUnix")
+                Log.d("DAYS_CALENDAR", "$daysAgoUnix")
 
                 response.forEach {
                     val dateUnix = it.starredAt.time
-                    dateUnixSize.add(dateUnix)
-                    Log.d("DaysRepo", "${dateUnixSize.size}")
-                    Log.d("DaysUnixSuze", "")
+
+                    allDate.add(it.starredAt.time)
+                    if (allDate.size == MAX_PAGE_SIZE) {
+                        Log.d("ALL_DATE_SIZE", allDate.size.toString())
+                        allDate.clear()
+                    }
                     if (dateUnix < daysAgoUnix) {
                         // dateLong.add(dateUnix)
-                        Log.d("repositoryDO", it.starredAt.toString())
-                        dateLong.add(dateUnix)
-                        Log.d("dateLong", dateLong.toString())
+                        Log.d("STARRED_AT_SORT", it.starredAt.toString())
+                        sortDate.add(dateUnix)
+                        Log.d("SORT_DATE_LIST", sortDate.toString())
                     }
-
-                    Log.d("repositoryPosle", it.starredAt.toString())
                 }
                 starsList.addAll(response)
-                Log.d("repositoryPosle", starsList.size.toString())
-                Log.d("pageList1", "$pageNumber")
-                Log.d("pageList2", "${response.size}")
-                pageNumber++
-            } while (dateUnixSize.size == maxPageSize)
-            Log.d("pageStarList", "MaxPage: ${starsList.size}")
+                Log.d("PAGE_NUMBER", "$pageNumberStar")
+                pageNumberStar++
+
+            } while (allDate.size == MIN_PAGE_SIZE)
             starsList
 
         } catch (e: Exception) {
-            Log.d("sizeErrorInPage", "$e")
+            Log.d("SIZE_REPO_ERROR", "$e")
             return starsList
         }
     }
