@@ -37,7 +37,7 @@ class ChartActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChartRepoBinding
     private lateinit var chartView: ChartViewModel
-    private lateinit var repoUser: RepoUser
+
 
     lateinit var barChart: BarChart
     lateinit var barData: BarData
@@ -53,7 +53,7 @@ class ChartActivity : AppCompatActivity() {
         barChartData(14)
 
         val repository = Repository()
-        val viewModelFactory = ChartViewFactory(repository, repoUser)
+        val viewModelFactory = ChartViewFactory(repository,)
 
         chartView = ViewModelProvider(this, viewModelFactory)[ChartViewModel::class.java]
 

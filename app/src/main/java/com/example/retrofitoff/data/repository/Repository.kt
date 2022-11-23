@@ -1,16 +1,12 @@
 package com.example.retrofitoff.data.repository
 
 import android.util.Log
-import com.example.retrofitoff.data.api.providers.RepoProvider
-import com.example.retrofitoff.data.api.providers.StarProvider
-import com.example.retrofitoff.data.api.providers.StarSearch
 
 import com.example.retrofitoff.data.entity.RepoUser
 
 
 import com.example.retrofitoff.data.entity.StarGroup
-import com.example.retrofitoff.model.RepoUserItem
-import com.example.retrofitoff.model.StarGroupItem
+import com.example.retrofitoff.data.entity.constructor.ConstructorRepo
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -19,16 +15,17 @@ open class Repository() {
 
     private val MAX_PAGE_SIZE = 100
     private val MIN_PAGE_SIZE = 0
-    private val starProvider = RepoProvider()
+
 
     suspend fun getListRepository(userName: String): List<RepoUser> {
         val allName = ArrayList<String>()
-        val responseList = ArrayList<RepoUserItem>()
+        val responseList = ArrayList<RepoUser>()
         var pageNumberUser = 1
+        val constructorRepoList = ArrayList<ConstructorRepo>()
         return try {
 
             do {
-                val response: List<RepoUserItem> =
+                val response: List<RepoUser> =
                     RetrofitInstance.api.getRepoList(userName, pageNumberUser)
 
                 response.forEach {
@@ -36,12 +33,18 @@ open class Repository() {
                     Log.d("NAME_ALL_REPO", "$allName")
                     if (allName.size == MAX_PAGE_SIZE) allName.clear()
                 }
+                val group = response.groupBy {
+                    it.name
+                }
+
+                Log.d("GROUPBY", "$group")
+
                 responseList.addAll(response)
                 pageNumberUser++
                 Log.d("PAGE_NUM_REPO", "$pageNumberUser")
 
 
-            } while( allName.size == MIN_PAGE_SIZE)
+            } while (allName.size == MIN_PAGE_SIZE)
             responseList
 
         } catch (e: Exception) {
@@ -49,16 +52,17 @@ open class Repository() {
             return responseList
         }
     }
-    suspend fun getStarRepo(userName: String, repoUserEntity: RepoUser, repoName: String): List<StarGroup> {
-        val sortDate = ArrayList<Long>()
+
+    suspend fun getStarRepo(userName: String, repoName: String): List<StarGroup> {
         val allDate = ArrayList<Long>()
+        val pageList = ArrayList<Map.Entry<Date, List<StarGroup>>>()
+        val allDateSort = ArrayList<Map.Entry<Date, List<StarGroup>>>()
         val starsList = mutableListOf<StarGroup>()
-        val starsListGroup = mutableListOf<StarGroup>()
         var pageNumberStar = 1
 
         return try {
             do {
-                val response: List<StarGroupItem> =
+                val response: List<StarGroup> =
                     RetrofitInstance.api.getRepoStars(userName, repoName, pageNumberStar)
 
                 Log.d("RESPONSE", "$response")
@@ -69,39 +73,24 @@ open class Repository() {
 
                 Log.d("DAYS_CALENDAR", "$daysAgoUnix")
 
-                response.forEach {
-                    val dateUnix = it.starredAt.time
-                    allDate.add(dateUnix)
-                    if (allDate.size == MAX_PAGE_SIZE) {
-                        Log.d("ALL_DATE_SIZE", allDate.size.toString())
-                        allDate.clear()
-                    }
-
-                    val groupBy = response.groupBy {
-                        it.user
-                    }
-                    Log.d("GROUP_BE_RESPONSE", groupBy.toString())
-
-                    if (dateUnix < daysAgoUnix) {
-                        // dateLong.add(dateUnix)
-                        Log.d("STARRED_AT_SORT", it.starredAt.toString())
-                        sortDate.add(dateUnix)
-                        Log.d("SORT_DATE_LIST", sortDate.toString())
-                    }
-
+                val groupBy = response.groupBy {
+                    it.starredAt
                 }
-                val stars = starProvider.getRepoList(userName, repoUserEntity, pageNumberStar)
-                starsList.addAll(stars)
+                groupBy.forEach {
+                    val dateGrop = it.key.time
+                    Log.d("GROUP_DAY_RESPONSE", "$dateGrop")
+                    if (it.key.time > daysAgoUnix) pageList.add(it)
+                    Log.d("GROUP_DAY_RESPONSE_IT", "$it")
+                }
+                Log.d("PAGE_LIST_SIZE", "${pageList.size}")
+                if (pageList.size == MAX_PAGE_SIZE) {
+                    pageList.clear()
+                }
+                starsList.addAll(response)
                 Log.d("PAGE_NUMBER", "$pageNumberStar")
                 pageNumberStar++
 
-            } while (allDate.size == MIN_PAGE_SIZE)
-            val starGroup = starsList.groupBy {
-                it.starredAt
-            }
-
-            Log.d("STAR_LIST_GROUP", "$starGroup")
-            Log.d("STAR_LIST_PROVIDER", "$starsList")
+            } while (pageList.size == MIN_PAGE_SIZE)
             starsList
 
         } catch (e: Exception) {

@@ -16,7 +16,7 @@ import java.io.Serializable
 
 class ChartViewModel(
     private val repository: Repository,
-    val repoUser: RepoUser
+
 
     ) : ViewModel() {
 
@@ -28,7 +28,7 @@ class ChartViewModel(
         viewModelScope.launch {
             try {
                 val response: List<StarGroup> =
-                    repository.getStarRepo(userName, repoUser, repoName)
+                    repository.getStarRepo(userName, repoName)
                 chartResponse.value = response
                 Log.d("Response ", "Exception: $response")
 
