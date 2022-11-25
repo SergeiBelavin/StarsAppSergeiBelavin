@@ -59,6 +59,7 @@ open class Repository() {
         val starsList = ArrayList<StarGroup>()
         val starsListResponse = ArrayList<StarGroup>()
         val starsListGroup = ArrayList<StarGroup>()
+        val starsListSorting = ArrayList<ConstructorStar>()
         var pageNumberStar = 1
 
         return try {
@@ -72,22 +73,48 @@ open class Repository() {
                 val daysAgo = ArrayList<Long>()
                 val daysAgo2 = ArrayList<Date>()
                 val daysResponse = ArrayList<Date>()
-                val daysResponseLong = ArrayList<Int>()
+                val daysResponseLong = ArrayList<Long>()
                 val daysResponseLong2 = ArrayList<Int>()
-                val calendar2 = Calendar.getInstance()
+
+                calendar.add(Calendar.DAY_OF_YEAR, -14)
+                val daysAgoUnix = calendar.timeInMillis
 
                 var uniqueDatAgoI = 0
 
+                Log.d("DAYS_CALENDAR", "$daysAgoUnix")
+                val calendar2 = Calendar.getInstance()
+
                 for (i in 0..13) {
+
                     calendar2.add(Calendar.DAY_OF_YEAR, -i)
                     val dayAgo = calendar.time
                     Log.d("DAYSIT????", "$dayAgo")
-                    val uniqueDatAgoI = dayAgo.date+31*dayAgo.month/100
-                    daysResponseLong.add(uniqueDatAgoI)
+                    uniqueDatAgoI = dayAgo.date+31*dayAgo.month/100
+                    daysResponseLong.add(uniqueDatAgoI.toLong())
                     Log.d("DAYS????", "$uniqueDatAgoI")
+                    Log.d("DAYSLIST????", "$daysResponseLong")
+                    calendar2.clear()
                 }
 
                 var uniqueDaysResponse = 0
+                var num = 0
+                response.forEach {
+                    if (it.starredAt.time == daysResponseLong[num]) {
+                        val grItem = response.groupBy {
+                            it.user.name
+                        }
+                        starsListSorting.add()
+                    }
+                        num++
+                }
+                num = 0
+
+                val groupBy = response.groupBy {
+                     it.user.name
+                    }
+
+
+
                 response.forEach {
                     val date = Date(it.starredAt.time)
                     Log.d("DAYSDATE!!!!", "$date")
@@ -98,28 +125,10 @@ open class Repository() {
 
 
                 Log.d("DAYS_AGO", "")
-
-                calendar.add(Calendar.DAY_OF_YEAR, -14)
-                val daysAgoUnix = calendar.timeInMillis
-
-                Log.d("DAYS_CALENDAR", "$daysAgoUnix")
-
-                val groupBy = response.groupBy {
-                    it.user.name
-                    if (it.starredAt.time < daysAgoUnix) {
-                        groupPageList.add(it)
-                    }
-                }
-
-
-
-
                 Log.d("GROUP_BY1", "$groupBy")
                 Log.d("GROUP_BY1", "$groupBy")
-
                 Log.d("GROUP1", "$starsListGroup")
                 Log.d("GROUP2", "$starsListResponse")
-
 
                 Log.d("PAGE_LIST_SIZE", "${pageList.size}")
                 if (pageList.size == MAX_PAGE_SIZE) {
