@@ -6,6 +6,7 @@ import com.example.retrofitoff.data.entity.RepoUser
 
 
 import com.example.retrofitoff.data.entity.StarGroup
+import com.example.retrofitoff.data.entity.constructor.ConstrGroup
 import com.example.retrofitoff.data.entity.constructor.ConstructorRepo
 import com.example.retrofitoff.data.entity.constructor.ConstructorStar
 import com.example.retrofitoff.data.entity.constructor.ConstructorUser
@@ -35,7 +36,10 @@ open class Repository() {
                 response.forEach {
                     allName.add(it.name)
                     Log.d("NAME_ALL_REPO", "$allName")
-                    val constructorRepo = ConstructorRepo(it.id, it.name, it.allStarsCount, ConstructorUser(it.id, it.name))
+                    val constructorRepo = ConstructorRepo(it.id,
+                        it.name,
+                        it.allStarsCount,
+                        ConstructorUser(it.id, it.name))
                     responseListConv.add(constructorRepo)
                     Log.d("RESPONSE_CONV", "$responseListConv")
                 }
@@ -55,11 +59,9 @@ open class Repository() {
 
     suspend fun getStarRepo(userName: String, repoName: String): List<StarGroup> {
         val pageList = ArrayList<ConstructorStar>()
-        val groupPageList = ArrayList<StarGroup>()
         val starsList = ArrayList<StarGroup>()
         val starsListResponse = ArrayList<StarGroup>()
         val starsListGroup = ArrayList<StarGroup>()
-        val starsListSorting = ArrayList<ConstructorStar>()
         var pageNumberStar = 1
 
         return try {
@@ -74,59 +76,77 @@ open class Repository() {
                 val daysAgo2 = ArrayList<Date>()
                 val daysResponse = ArrayList<Date>()
                 val daysResponseLong = ArrayList<Long>()
-                val daysResponseLong2 = ArrayList<Int>()
+                val daysResponseLong2 = ArrayList<Long>()
 
                 calendar.add(Calendar.DAY_OF_YEAR, -14)
                 val daysAgoUnix = calendar.timeInMillis
 
-                var uniqueDatAgoI = 0
+
 
                 Log.d("DAYS_CALENDAR", "$daysAgoUnix")
-                val calendar2 = Calendar.getInstance()
 
+                var uniqueDatAgoI = 0
                 for (i in 0..13) {
-
+                    val calendar2 = Calendar.getInstance()
                     calendar2.add(Calendar.DAY_OF_YEAR, -i)
-                    val dayAgo = calendar.time
+                    val dayAgo = calendar2.time
                     Log.d("DAYSIT????", "$dayAgo")
-                    uniqueDatAgoI = dayAgo.date+31*dayAgo.month/100
+                    uniqueDatAgoI = dayAgo.date + 31 * dayAgo.month * dayAgo.year / 100
                     daysResponseLong.add(uniqueDatAgoI.toLong())
                     Log.d("DAYS????", "$uniqueDatAgoI")
-                    Log.d("DAYSLIST????", "$daysResponseLong")
+                    Log.d("CALENDAR", "$daysResponseLong")
                     calendar2.clear()
                 }
 
                 var uniqueDaysResponse = 0
+
+                val lll = ArrayList<ConstrGroup>()
                 var num = 0
-                response.forEach {
-                    if (it.starredAt.time == daysResponseLong[num]) {
-                        val grItem = response.groupBy {
-                            it.user.name
-                        }
-                        starsListSorting.add()
-                    }
-                        num++
-                }
-                num = 0
+                var calendarLost = listOf(
+                    ArrayList<ConstructorRepo>(),
+                    ArrayList<ConstructorRepo>(),
+                    ArrayList<ConstructorRepo>(),
+                    ArrayList<ConstructorRepo>(),
+                    ArrayList<ConstructorRepo>(),
+                    ArrayList<ConstructorRepo>(),
+                    ArrayList<ConstructorRepo>(),
+                    ArrayList<ConstructorRepo>(),
+                    ArrayList<ConstructorRepo>(),
+                    ArrayList<ConstructorRepo>(),
 
-                val groupBy = response.groupBy {
-                     it.user.name
-                    }
+                )
 
-
-
-                response.forEach {
+                response.forEach { it ->
                     val date = Date(it.starredAt.time)
                     Log.d("DAYSDATE!!!!", "$date")
-                    uniqueDaysResponse = date.date+31*date.month/100
-                    daysResponseLong2.add(uniqueDaysResponse)
+                    uniqueDaysResponse = date.date + 31 * date.month * date.year / 100
+                    uniqueDaysResponse.toLong()
                     Log.d("DAYS!!!!", "$uniqueDaysResponse")
+
+                    response.forEach {
+                        if (num < 13) {
+                            if (uniqueDaysResponse.toLong() == daysResponseLong[num]) {
+                                daysResponseLong2.add(uniqueDaysResponse.toLong())
+                                val group = response.groupBy {
+                                    it.user.name
+                                }
+                                calendarLost[num].add(group as ConstructorRepo)
+                            }
+                            Log.d("DAYS13___", "$uniqueDaysResponse")
+                            num++
+                        }
+                    }
+                    num = 0
+
                 }
+
+
+
+
+
 
 
                 Log.d("DAYS_AGO", "")
-                Log.d("GROUP_BY1", "$groupBy")
-                Log.d("GROUP_BY1", "$groupBy")
                 Log.d("GROUP1", "$starsListGroup")
                 Log.d("GROUP2", "$starsListResponse")
 
