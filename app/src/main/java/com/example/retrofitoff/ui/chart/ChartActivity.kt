@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitoff.ChartViewModel
 import com.example.retrofitoff.data.entity.RepoUser
+import com.example.retrofitoff.data.entity.StarGroup
 
 import com.example.retrofitoff.ui.main.MainActivity
 import com.example.retrofitoff.databinding.ActivityChartRepoBinding
@@ -43,76 +44,58 @@ class ChartActivity : AppCompatActivity() {
     lateinit var barData: BarData
     lateinit var barDataSet: BarDataSet
     lateinit var barEntriesList: ArrayList<BarEntry>
-    lateinit var dateResponseList: ArrayList<Long>
+    lateinit var dateResponseList: ArrayList<List<StarGroup>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChartRepoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        barChartData(14)
-
         val repository = Repository()
-        val viewModelFactory = ChartViewFactory(repository,)
+        val viewModelFactory = ChartViewFactory(repository)
 
         chartView = ViewModelProvider(this, viewModelFactory)[ChartViewModel::class.java]
 
         val ownerName = intent.getSerializableExtra(KEY_NAME)
         val reposName = intent.getSerializableExtra(KEY_REPOS)
-        val repoUserList = ArrayList<RepoUser>()
+
+        dateResponseList = ArrayList()
         chartView.getReposStars(ownerName.toString(), reposName.toString())
         chartView.chartResponse.observe(this) { dateList ->
-            dateResponseList = dateList as ArrayList<Long>
+            dateResponseList.add(dateList)
             Log.d("ChartDateResponseList", "$dateResponseList")
-            rangeSelector()
+
+            barChartData()
+
+            barChart = binding.barChart
+            barDataSet = BarDataSet(barEntriesList, "Количество звезд по датам")
+            barData = BarData(barDataSet)
+            barChart.data = barData
+            barDataSet.valueTextColor = Color.RED
+            barDataSet.color = R.color.holo_purple
+            barDataSet.valueTextSize = 0f
+            barChart.description.isEnabled = true
         }
 
 
-        barChart = binding.barChart
-
-        barDataSet = BarDataSet(barEntriesList, "Количество звезд по датам")
-        barData = BarData(barDataSet)
-        barChart.data = barData
-        barDataSet.valueTextColor = Color.RED
-        barDataSet.color = R.color.holo_purple
-        barDataSet.valueTextSize = 0f
-        barChart.description.isEnabled = true
-
-
-        barChart.setOnClickListener {
-            val i = Intent(this@ChartActivity, MainActivity::class.java)
-            startActivity(i)
-        }
-
-        binding.sixtyDaysLong.setOnClickListener {
-
-            barChartData(60)
-        }
-        binding.thirtyDaysLong.setOnClickListener {
-
-            barChartData(30)
-        }
-        binding.fourteenDaysLong.setOnClickListener {
-
-            barChartData(14)
-        }
-
+        //barChart.setOnClickListener {
+        //    val i = Intent(this@ChartActivity, MainActivity::class.java)
+        //    startActivity(i)
+        //}
     }
 
-    private fun barChartData(range: Int) {
+    private fun barChartData() {
+        val respList = Repository()
+        val responseList = respList.calendarLost
+        val test = responseList[1].size.toFloat()
         barEntriesList = ArrayList()
-
-        for (i in 0..range) {
-            barEntriesList.add(BarEntry(i.toFloat(), 2f))
+        for (i in 0 until 14) {
+            barEntriesList.add(BarEntry(1f, responseList[i].size.toFloat()))
         }
+
+        //gulihua10010
+
     }
 
-    private fun rangeSelector() {
-      /*  val chartSorting = ChartSorting()
-        chartSorting.sortingDays(
-            5,
-             dateResponseList
-        )
-        */
-    }
+
 }
