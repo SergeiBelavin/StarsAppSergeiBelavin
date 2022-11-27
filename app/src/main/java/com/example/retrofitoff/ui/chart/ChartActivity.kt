@@ -58,14 +58,10 @@ class ChartActivity : AppCompatActivity() {
 
         val ownerName = intent.getSerializableExtra(KEY_NAME)
         val reposName = intent.getSerializableExtra(KEY_REPOS)
-        dateResponseList = ArrayList<List<List<StarGroup>>>()
+        dateResponseList = ArrayList()
         chartView.getReposStars(ownerName.toString(), reposName.toString())
         chartView.chartResponse.observe(this) { dateList ->
             dateResponseList.add(dateList)
-
-            Log.d("!ChartDateResponseList", "${dateResponseList.size}")
-            Log.d("!ChartDateResponseList", "${dateResponseList}")
-            Log.d("!ChartDateResponseList", "${dateResponseList[0][1].size}")
 
             barEntriesList = ArrayList()
 
@@ -82,24 +78,20 @@ class ChartActivity : AppCompatActivity() {
         }
 
 
-        //barChart.setOnClickListener {
-        //    val i = Intent(this@ChartActivity, MainActivity::class.java)
-        //    startActivity(i)
-        //}
     }
 
     private fun barChartData() {
 
-        for (i in 0 until 14) {
-            var sizeResponse = dateResponseList[0][i].size.toFloat()
+        for (i in 0..13) {
+            val sizeResponse = dateResponseList[0][i].size.toFloat()
             val oneNum = 1
-            if (sizeResponse.toInt() == 0) {sizeResponse == oneNum.toFloat()}
+            val n = 0
+            if (sizeResponse == n.toFloat()) {sizeResponse == oneNum.toFloat()}
             Log.d("SIZE_RESPONSE_LIST", "$sizeResponse")
             Log.d("RESPONSE_LIST_CHAR", "$dateResponseList")
-            Log.d("!ChartDateResponseList", "${dateResponseList[0][1].size}")
+            Log.d("DATE_RESP_LIST_0_1.SIZE", "${dateResponseList[0][1].size}")
             barEntriesList.add(BarEntry(i.toFloat(), sizeResponse))
         }
-
         // gulihua10010
     }
 }

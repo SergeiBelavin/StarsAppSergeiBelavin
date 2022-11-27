@@ -112,11 +112,7 @@ open class Repository() {
 
                 var uniqueDaysResponse = 0
 
-                val lll = ArrayList<ConstrGroup>()
                 var num = 0
-
-
-                val dateGroupLost = ArrayList<Map<Date, List<StarGroup>>>()
 
                 response.forEach { it ->
 
