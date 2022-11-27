@@ -74,7 +74,7 @@ open class Repository() {
         }
     }
 
-    suspend fun getStarRepo(userName: String, repoName: String): List<StarGroup> {
+    suspend fun getStarRepo(userName: String, repoName: String): List<List<StarGroup>> {
         val pageList = ArrayList<ConstructorStar>()
         val starsList = ArrayList<StarGroup>()
         var pageNumberStar = 1
@@ -117,7 +117,8 @@ open class Repository() {
 
 
                 val dateGroupLost = ArrayList<Map<Date, List<StarGroup>>>()
-                response.forEach {
+
+                response.forEach { it ->
 
                     val date = Date(it.starredAt.time)
                     Log.d("RESPONSE_STAREDAT_TIME", "$date")
@@ -134,12 +135,10 @@ open class Repository() {
                             }
                             Log.d("RESPONSE_LIST_SORTED", "$calendarLost")
                             num++
-                        } else {
+                        } else
                             num = 0
-                        }
                     }
                 }
-                num = 0
 
                 //for (i in 0..13) {
                 //     calendarLost.groupBy {
@@ -159,11 +158,10 @@ open class Repository() {
                 pageNumberStar++
 
             } while (starsList.size == MIN_PAGE_SIZE)
-            starsList
-
+            calendarLost
         } catch (e: Exception) {
             Log.d("SIZE_STAR_ERROR", "$e")
-            return starsList
+            return calendarLost
         }
     }
 }

@@ -20,12 +20,12 @@ class ChartViewModel(
 
     ) : ViewModel() {
 
-    val chartResponse = MutableLiveData<List<StarGroup>>()
+    val chartResponse = MutableLiveData<List<List<StarGroup>>>()
 
     fun getReposStars(userName: String, repoName: String) {
         viewModelScope.launch {
             try {
-                val response: List<StarGroup> =
+                val response: List<List<StarGroup>> =
                     repository.getStarRepo(userName, repoName)
                 chartResponse.value = response
 

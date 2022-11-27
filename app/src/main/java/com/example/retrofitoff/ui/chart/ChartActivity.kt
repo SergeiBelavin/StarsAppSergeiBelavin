@@ -44,7 +44,7 @@ class ChartActivity : AppCompatActivity() {
     lateinit var barData: BarData
     lateinit var barDataSet: BarDataSet
     lateinit var barEntriesList: ArrayList<BarEntry>
-    lateinit var dateResponseList: ArrayList<List<StarGroup>>
+    lateinit var dateResponseList: ArrayList<List<List<StarGroup>>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,12 +58,16 @@ class ChartActivity : AppCompatActivity() {
 
         val ownerName = intent.getSerializableExtra(KEY_NAME)
         val reposName = intent.getSerializableExtra(KEY_REPOS)
-
-        dateResponseList = ArrayList()
+        dateResponseList = ArrayList<List<List<StarGroup>>>()
         chartView.getReposStars(ownerName.toString(), reposName.toString())
         chartView.chartResponse.observe(this) { dateList ->
             dateResponseList.add(dateList)
-            Log.d("ChartDateResponseList", "$dateResponseList")
+
+            Log.d("!ChartDateResponseList", "${dateResponseList.size}")
+            Log.d("!ChartDateResponseList", "${dateResponseList}")
+            Log.d("!ChartDateResponseList", "${dateResponseList[0][1].size}")
+
+            barEntriesList = ArrayList()
 
             barChartData()
 
@@ -85,17 +89,17 @@ class ChartActivity : AppCompatActivity() {
     }
 
     private fun barChartData() {
-        val respList = Repository()
-        val responseList = respList.calendarLost
-        val test = responseList[1].size.toFloat()
-        barEntriesList = ArrayList()
+
         for (i in 0 until 14) {
-            barEntriesList.add(BarEntry(1f, responseList[i].size.toFloat()))
+            var sizeResponse = dateResponseList[0][i].size.toFloat()
+            val oneNum = 1
+            if (sizeResponse.toInt() == 0) {sizeResponse == oneNum.toFloat()}
+            Log.d("SIZE_RESPONSE_LIST", "$sizeResponse")
+            Log.d("RESPONSE_LIST_CHAR", "$dateResponseList")
+            Log.d("!ChartDateResponseList", "${dateResponseList[0][1].size}")
+            barEntriesList.add(BarEntry(i.toFloat(), sizeResponse))
         }
 
-        //gulihua10010
-
+        // gulihua10010
     }
-
-
 }
