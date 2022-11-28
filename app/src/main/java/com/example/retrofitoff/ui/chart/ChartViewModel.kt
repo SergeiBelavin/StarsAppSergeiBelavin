@@ -22,11 +22,11 @@ class ChartViewModel(
 
     val chartResponse = MutableLiveData<List<List<StarGroup>>>()
 
-    fun getReposStars(userName: String, repoName: String) {
+    fun getReposStars(userName: String, repoName: String, groupType: Repository.GroupType) {
         viewModelScope.launch {
             try {
                 val response: List<List<StarGroup>> =
-                    repository.getStarRepo(userName, repoName)
+                    repository.getStarRepo(userName, repoName, groupType)
                 chartResponse.value = response
 
                 Log.d("Response ", "Exception: $response")

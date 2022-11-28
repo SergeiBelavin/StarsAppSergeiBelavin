@@ -7,7 +7,6 @@ import com.example.retrofitoff.data.entity.RepoUser
 
 
 import com.example.retrofitoff.data.entity.StarGroup
-import com.example.retrofitoff.data.entity.constructor.ConstrGroup
 import com.example.retrofitoff.data.entity.constructor.ConstructorRepo
 import com.example.retrofitoff.data.entity.constructor.ConstructorStar
 import com.example.retrofitoff.data.entity.constructor.ConstructorUser
@@ -20,7 +19,6 @@ open class Repository() {
     private val MAX_PAGE_SIZE = 100
     private val MIN_PAGE_SIZE = 0
 
-    var calendarLostMut = MutableLiveData<List<StarGroup>>()
     var calendarLost = listOf(
         ArrayList<StarGroup>(),
         ArrayList<StarGroup>(),
@@ -74,7 +72,7 @@ open class Repository() {
         }
     }
 
-    suspend fun getStarRepo(userName: String, repoName: String): List<List<StarGroup>> {
+    suspend fun getStarRepo(userName: String, repoName: String, groupType: GroupType): List<List<StarGroup>> {
         val pageList = ArrayList<ConstructorStar>()
         val starsList = ArrayList<StarGroup>()
         var pageNumberStar = 1
@@ -85,6 +83,7 @@ open class Repository() {
                     RetrofitInstance.api.getRepoStars(userName, repoName, pageNumberStar)
 
                 Log.d("RESPONSE", "$response")
+                Log.d("GROUP_TYPE", "$groupType")
 
                 val calendar = Calendar.getInstance()
                 val daysResponseLong = ArrayList<Long>()
@@ -136,12 +135,6 @@ open class Repository() {
                     }
                 }
 
-                //for (i in 0..13) {
-                //     calendarLost.groupBy {
-                //         it[i].starredAt
-                //     }
-                //}
-
                 Log.d("GROUPCALENDAR", "$calendarLost")
                 Log.d("PAGE_LIST_SIZE", "${pageList.size}")
 
@@ -159,5 +152,19 @@ open class Repository() {
             Log.d("SIZE_STAR_ERROR", "$e")
             return calendarLost
         }
+    }
+
+    fun sorting(groupType: GroupType): Int{
+        return when (groupType) {
+            GroupType.FOURTEEN_DAYS -> 14
+            GroupType.THIRTY_DAYS -> 30
+            GroupType.SIXTY_DAYS -> 60
+        }
+    }
+
+    enum class GroupType {
+        FOURTEEN_DAYS,
+        THIRTY_DAYS,
+        SIXTY_DAYS,
     }
 }
