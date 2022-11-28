@@ -45,8 +45,7 @@ class ChartActivity : AppCompatActivity() {
     lateinit var barDataSet: BarDataSet
     lateinit var barEntriesList: ArrayList<BarEntry>
     lateinit var dateResponseList: ArrayList<List<List<StarGroup>>>
-    lateinit var groupType: Repository.GroupType
-
+    private var groupType = Repository.GroupType.FOURTEEN_DAYS
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,52 +54,38 @@ class ChartActivity : AppCompatActivity() {
 
         val repository = Repository()
         val viewModelFactory = ChartViewFactory(repository)
-        groupType = Repository.GroupType.FOURTEEN_DAYS
 
         chartView = ViewModelProvider(this, viewModelFactory)[ChartViewModel::class.java]
 
-        val ownerName = intent.getSerializableExtra(KEY_NAME).toString()
-        val reposName = intent.getSerializableExtra(KEY_REPOS).toString()
-
-        binding.sixtyDaysLong.setOnClickListener {
-            groupType = Repository.GroupType.SIXTY_DAYS
-           // getRepStar(ownerName, reposName,)
-            chartView.getReposStars(ownerName, reposName, groupType)
-            barChartData()
-        }
-        binding.fourteenDaysLong.setOnClickListener {
-            groupType = Repository.GroupType.FOURTEEN_DAYS
-           // getRepStar(ownerName, reposName,)
-            chartView.getReposStars(ownerName, reposName, groupType)
-            barChartData()
-        }
-        binding.thirtyDaysLong.setOnClickListener {
-            groupType = Repository.GroupType.THIRTY_DAYS
-           // getRepStar(ownerName, reposName,)
-            chartView.getReposStars(ownerName, reposName, groupType)
-            barChartData()
-        }
-
+        val ownerName = intent.getSerializableExtra(KEY_NAME)
+        val reposName = intent.getSerializableExtra(KEY_REPOS)
         dateResponseList = ArrayList()
+        barEntriesList = ArrayList()
 
-        chartView.chartResponse.observe(this) { dateList ->
-            dateResponseList.add(dateList)
+        //  emtyChar()
 
-            barEntriesList = ArrayList()
-            //clickEnumSelect(ownerName, reposName,)
-            barChartEmpty()
 
-            barChart = binding.barChart
-            barDataSet = BarDataSet(barEntriesList, "Количество звезд по датам")
-            barData = BarData(barDataSet)
-            barChart.data = barData
-            barDataSet.valueTextColor = Color.RED
-            barDataSet.color = R.color.holo_purple
-            barDataSet.valueTextSize = 0f
-            barChart.description.isEnabled = true
+        binding.fourteenDaysLong.setOnClickListener {
+            chartView.getReposStars(ownerName.toString(), reposName.toString(), groupType)
+            chartView.chartResponse.observe(this) { dateList ->
+                dateResponseList.add(dateList)
+
+                barEntriesList = ArrayList()
+
+                barChartData()
+
+                barChart = binding.barChart
+                barDataSet = BarDataSet(barEntriesList, "Количество звезд по датам")
+                Log.d("MyLogEn", "$barEntriesList")
+                barData = BarData(barDataSet)
+                barChart.data = barData
+                barDataSet.valueTextColor = Color.RED
+                barDataSet.color = R.color.holo_purple
+                barDataSet.valueTextSize = 0f
+                barChart.description.isEnabled = true
+
+            }
         }
-
-
     }
 
     private fun barChartData() {
@@ -109,39 +94,21 @@ class ChartActivity : AppCompatActivity() {
             val sizeResponse = dateResponseList[0][i].size.toFloat()
             val oneNum = 1
             val n = 0
+            var num = 1
             if (sizeResponse == n.toFloat()) {
                 sizeResponse == oneNum.toFloat()
             }
             Log.d("SIZE_RESPONSE_LIST", "$sizeResponse")
             Log.d("RESPONSE_LIST_CHAR", "$dateResponseList")
             Log.d("DATE_RESP_LIST_0_1.SIZE", "${dateResponseList[0][1].size}")
-            barEntriesList.add(BarEntry(i.toFloat(), sizeResponse))
+            barEntriesList.add(BarEntry(num.toFloat(), sizeResponse))
+            num++
         }
+
         // gulihua10010
     }
-    private fun barChartEmpty() {
-        barEntriesList.add(BarEntry(1f,1f))
-    }
-    /*private fun clickEnumSelect(ownerName:String, reposName:String) {
-        binding.sixtyDaysLong.setOnClickListener {
-            groupType = Repository.GroupType.SIXTY_DAYS
-            getRepStar(ownerName, reposName,)
-        }
-        binding.fourteenDaysLong.setOnClickListener {
-            groupType = Repository.GroupType.FOURTEEN_DAYS
-            getRepStar(ownerName, reposName,)
-        }
-        binding.thirtyDaysLong.setOnClickListener {
-            groupType = Repository.GroupType.THIRTY_DAYS
-            getRepStar(ownerName, reposName,)
-        }
-    }
 
-
-    private fun getRepStar(ownerName: String, reposName: String,){
-        chartView.getReposStars(ownerName, reposName, groupType)
-        barChartData()
+    private fun emtyChar() {
+        barEntriesList.add(BarEntry(1f, 1f))
     }
-
-     */
 }
