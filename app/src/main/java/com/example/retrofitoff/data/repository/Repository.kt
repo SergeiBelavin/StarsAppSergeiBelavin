@@ -19,23 +19,6 @@ open class Repository() {
     private val MAX_PAGE_SIZE = 100
     private val MIN_PAGE_SIZE = 0
 
-    var calendarLost = listOf(
-        ArrayList<StarGroup>(),
-        ArrayList<StarGroup>(),
-        ArrayList<StarGroup>(),
-        ArrayList<StarGroup>(),
-        ArrayList<StarGroup>(),
-        ArrayList<StarGroup>(),
-        ArrayList<StarGroup>(),
-        ArrayList<StarGroup>(),
-        ArrayList<StarGroup>(),
-        ArrayList<StarGroup>(),
-        ArrayList<StarGroup>(),
-        ArrayList<StarGroup>(),
-        ArrayList<StarGroup>(),
-        ArrayList<StarGroup>(),
-    )
-
 
     suspend fun getListRepository(userName: String): List<RepoUser> {
         val allName = ArrayList<String>()
@@ -72,10 +55,19 @@ open class Repository() {
         }
     }
 
-    suspend fun getStarRepo(userName: String, repoName: String, groupType: GroupType): List<List<StarGroup>> {
+    suspend fun getStarRepo(
+        userName: String,
+        repoName: String,
+        groupType: GroupType,
+    ): List<List<StarGroup>> {
         val pageList = ArrayList<ConstructorStar>()
         val starsList = ArrayList<StarGroup>()
         var pageNumberStar = 1
+        val groupRange = groupsType(groupType)
+        var calendarLost = ArrayList<ArrayList<StarGroup>>()
+        for (i in 0 until groupRange) {
+            calendarLost.add(ArrayList<StarGroup>())
+        }
 
         return try {
             do {
@@ -89,7 +81,7 @@ open class Repository() {
                 val daysResponseLong = ArrayList<Long>()
                 val daysResponseLong2 = ArrayList<Long>()
 
-                calendar.add(Calendar.DAY_OF_YEAR, -14)
+                calendar.add(Calendar.DAY_OF_YEAR, -groupRange)
                 val daysAgoUnix = calendar.timeInMillis
 
 
@@ -97,7 +89,7 @@ open class Repository() {
                 Log.d("DAYS_CALENDAR", "$daysAgoUnix")
 
                 var uniqueDatAgoI = 0
-                for (i in 0..13) {
+                for (i in 0 until groupRange) {
                     val calendar2 = Calendar.getInstance()
                     calendar2.add(Calendar.DAY_OF_YEAR, -i)
                     val dayAgo = calendar2.time
@@ -123,7 +115,7 @@ open class Repository() {
 
                     response.forEach {
 
-                        if (num < 13) {
+                        if (num < groupRange-1) {
                             if (uniqueDaysResponse.toLong() == daysResponseLong[num]) {
                                 daysResponseLong2.add(uniqueDaysResponse.toLong())
                                 calendarLost[num].add(it)
@@ -154,7 +146,7 @@ open class Repository() {
         }
     }
 
-    fun sorting(groupType: GroupType): Int{
+    open fun groupsType(groupType: GroupType): Int {
         return when (groupType) {
             GroupType.FOURTEEN_DAYS -> 14
             GroupType.THIRTY_DAYS -> 30

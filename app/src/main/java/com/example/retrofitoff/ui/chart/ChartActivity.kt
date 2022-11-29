@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitoff.ChartViewModel
@@ -19,6 +20,7 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.utils.ColorTemplate
 import kotlin.collections.ArrayList
 
 class ChartActivity : AppCompatActivity() {
@@ -61,54 +63,79 @@ class ChartActivity : AppCompatActivity() {
         val reposName = intent.getSerializableExtra(KEY_REPOS)
         dateResponseList = ArrayList()
         barEntriesList = ArrayList()
-
-        //  emtyChar()
-
+        val reposStar = chartView.getReposStars(ownerName.toString(),reposName.toString(),groupType)
 
         binding.fourteenDaysLong.setOnClickListener {
-            chartView.getReposStars(ownerName.toString(), reposName.toString(), groupType)
+            groupType = Repository.GroupType.FOURTEEN_DAYS
+            newResponse()
+            reposStar
+        }
+        binding.thirtyDaysLong.setOnClickListener{
+            groupType = Repository.GroupType.THIRTY_DAYS
+            newResponse()
+            reposStar
+        }
+        binding.sixtyDaysLong.setOnClickListener {
+            groupType = Repository.GroupType.SIXTY_DAYS
+            newResponse()
+            reposStar
+        }
             chartView.chartResponse.observe(this) { dateList ->
                 dateResponseList.add(dateList)
+                Log.d("DATE_LIST_SIZE", "${dateList.size}")
 
-                barEntriesList = ArrayList()
+                if(dateList.size == groupsType(groupType)) {
+                    barEntriesList = ArrayList()
+                    barChartData()
+                    barChart = binding.barChart
+                    barDataSet = BarDataSet(barEntriesList, "Количество звезд")
+                    barDataSet.valueTextColor = Color.BLACK
+                    barData = BarData(barDataSet)
+                    barChart.setFitBars(true)
+                    barChart.data = barData
+                    barChart.description.text = "Количество звезд по датам"
 
-                barChartData()
+                    barDataSet.valueTextSize = 16f
 
-                barChart = binding.barChart
-                barDataSet = BarDataSet(barEntriesList, "Количество звезд по датам")
-                Log.d("MyLogEn", "$barEntriesList")
-                barData = BarData(barDataSet)
-                barChart.data = barData
-                barDataSet.valueTextColor = Color.RED
-                barDataSet.color = R.color.holo_purple
-                barDataSet.valueTextSize = 0f
-                barChart.description.isEnabled = true
+                    Log.d("MyLogEn", "$barEntriesList")
+                    barChart.animateY(2000)
 
+                    Log.d("MyLogEn", "$barEntriesList")
+                    barChart.animateY(2000)
+                } else Toast.makeText(this, "Репозиторий создан менее ${groupsType(groupType)} дней назад",
+                Toast.LENGTH_LONG).show()
             }
+
+    }
+
+    private fun groupsType(groupType: Repository.GroupType): Int {
+        return when (groupType) {
+            Repository.GroupType.FOURTEEN_DAYS -> 14
+            Repository.GroupType.THIRTY_DAYS -> 30
+            Repository.GroupType.SIXTY_DAYS -> 60
         }
     }
 
     private fun barChartData() {
-
-        for (i in 0..13) {
+        val getGroupType = groupsType(groupType)
+        val chartList = ArrayList<Float>()
+        for (i in 0 until getGroupType) {
             val sizeResponse = dateResponseList[0][i].size.toFloat()
-            val oneNum = 1
-            val n = 0
-            var num = 1
-            if (sizeResponse == n.toFloat()) {
-                sizeResponse == oneNum.toFloat()
-            }
-            Log.d("SIZE_RESPONSE_LIST", "$sizeResponse")
-            Log.d("RESPONSE_LIST_CHAR", "$dateResponseList")
-            Log.d("DATE_RESP_LIST_0_1.SIZE", "${dateResponseList[0][1].size}")
-            barEntriesList.add(BarEntry(num.toFloat(), sizeResponse))
-            num++
-        }
+            chartList.add(sizeResponse)
 
+            Log.d("DATE_RESP_LIST_TEST", "${chartList}")
+            Log.d("DATE_RESP_FLOAT", "${i.toFloat()}, $sizeResponse")
+            barEntriesList.add(BarEntry(i.toFloat(), 1f))
+        }
+        for (i in 0 until getGroupType) {
+            barEntriesList[i] = BarEntry(i.toFloat()+1f, chartList[i])
+        }
         // gulihua10010
     }
 
-    private fun emtyChar() {
-        barEntriesList.add(BarEntry(1f, 1f))
+    fun newResponse() {
+        dateResponseList = ArrayList()
+        barEntriesList = ArrayList()
     }
+
 }
