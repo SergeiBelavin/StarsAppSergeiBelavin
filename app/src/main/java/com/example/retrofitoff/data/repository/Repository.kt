@@ -1,7 +1,6 @@
 package com.example.retrofitoff.data.repository
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 
 import com.example.retrofitoff.data.entity.RepoUser
 
@@ -93,13 +92,38 @@ open class Repository() {
                     val calendar2 = Calendar.getInstance()
                     calendar2.add(Calendar.DAY_OF_YEAR, -i)
                     val dayAgo = calendar2.time
-                    Log.d("DAYSIT????", "$dayAgo")
-                    uniqueDatAgoI = dayAgo.date + 31 * dayAgo.month * dayAgo.year * 1000
+                    Log.d("DAYS_AGO", "$dayAgo")
+                    uniqueDatAgoI = getUniqueDate(dayAgo)
                     daysResponseLong.add(uniqueDatAgoI.toLong())
-                    Log.d("DAYS????", "$uniqueDatAgoI")
-                    Log.d("CALENDAR", "$daysResponseLong")
+                    Log.d("UNIQUE_DATE_CALENDAR", "$uniqueDatAgoI")
+                    Log.d("CALENDAR_LIST", "$daysResponseLong")
                     calendar2.clear()
                 }
+
+                val listMap = mutableListOf<MutableMap<Int, StarGroup>>()
+
+                response.forEach {
+                    val dateToInt = getUniqueDate(it.starredAt)
+                    val mapResponse: MutableMap<Int, StarGroup> =
+                        mutableMapOf(dateToInt to it)
+                    listMap.add(mapResponse)
+                    Log.d("MAP_FOR_IT_STARRED_AT", "${it.starredAt}")
+                    Log.d("MAP_GET_UNIQ_INT", "${dateToInt}")
+                    Log.d("MAP_2GET_UNIQ_INT", "${mapResponse}")
+                    Log.d("MAP_2GET_UNIQ_INT", "${listMap}")
+                }
+                var g1 = listMap.groupBy {
+                    it.keys.first()
+                }
+
+                Log.d("UNIQ_G1", "$g1")
+                var g2 = listMap.groupBy {
+                    it.keys
+                }
+
+                Log.d("UNIQ_G2", "$g2")
+
+
 
                 var uniqueDaysResponse = 0
 
@@ -109,13 +133,13 @@ open class Repository() {
 
                     val date = Date(it.starredAt.time)
                     Log.d("RESPONSE_STAREDAT_TIME", "$date")
-                    uniqueDaysResponse = date.date + 31 * date.month * date.year * 1000
+                    uniqueDaysResponse = getUniqueDate(date)
                     uniqueDaysResponse.toLong()
                     Log.d("RESPONSE_UNIQUE_DAYS", "$uniqueDaysResponse")
 
                     response.forEach {
 
-                        if (num < groupRange-1) {
+                        if (num < groupRange - 1) {
                             if (uniqueDaysResponse.toLong() == daysResponseLong[num]) {
                                 daysResponseLong2.add(uniqueDaysResponse.toLong())
                                 calendarLost[num].add(it)
@@ -158,5 +182,9 @@ open class Repository() {
         FOURTEEN_DAYS,
         THIRTY_DAYS,
         SIXTY_DAYS,
+    }
+
+    fun getUniqueDate(date: Date): Int {
+        return date.date + 31 * date.month * date.year * 1000
     }
 }

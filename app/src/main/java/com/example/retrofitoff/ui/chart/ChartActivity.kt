@@ -56,35 +56,36 @@ class ChartActivity : AppCompatActivity() {
 
         val repository = Repository()
         val viewModelFactory = ChartViewFactory(repository)
-
-        chartView = ViewModelProvider(this, viewModelFactory)[ChartViewModel::class.java]
-
         val ownerName = intent.getSerializableExtra(KEY_NAME)
         val reposName = intent.getSerializableExtra(KEY_REPOS)
+        chartView = ViewModelProvider(this, viewModelFactory)[ChartViewModel::class.java]
+
+
         dateResponseList = ArrayList()
         barEntriesList = ArrayList()
-        val reposStar = chartView.getReposStars(ownerName.toString(),reposName.toString(),groupType)
 
         binding.fourteenDaysLong.setOnClickListener {
             groupType = Repository.GroupType.FOURTEEN_DAYS
             newResponse()
-            reposStar
+            getReposStar(ownerName.toString(), reposName.toString())
         }
         binding.thirtyDaysLong.setOnClickListener{
             groupType = Repository.GroupType.THIRTY_DAYS
             newResponse()
-            reposStar
+            getReposStar(ownerName.toString(), reposName.toString())
         }
         binding.sixtyDaysLong.setOnClickListener {
             groupType = Repository.GroupType.SIXTY_DAYS
             newResponse()
-            reposStar
+            getReposStar(ownerName.toString(), reposName.toString())
         }
             chartView.chartResponse.observe(this) { dateList ->
                 dateResponseList.add(dateList)
                 Log.d("DATE_LIST_SIZE", "${dateList.size}")
+                Log.d("DATE_LIST", "${dateList}")
 
                 if(dateList.size == groupsType(groupType)) {
+
                     barEntriesList = ArrayList()
                     barChartData()
                     barChart = binding.barChart
@@ -94,14 +95,9 @@ class ChartActivity : AppCompatActivity() {
                     barChart.setFitBars(true)
                     barChart.data = barData
                     barChart.description.text = "Количество звезд по датам"
-
                     barDataSet.valueTextSize = 16f
-
-                    Log.d("MyLogEn", "$barEntriesList")
                     barChart.animateY(2000)
 
-                    Log.d("MyLogEn", "$barEntriesList")
-                    barChart.animateY(2000)
                 } else Toast.makeText(this, "Репозиторий создан менее ${groupsType(groupType)} дней назад",
                 Toast.LENGTH_LONG).show()
             }
@@ -124,8 +120,10 @@ class ChartActivity : AppCompatActivity() {
             chartList.add(sizeResponse)
 
             Log.d("DATE_RESP_LIST_TEST", "${chartList}")
+
             Log.d("DATE_RESP_FLOAT", "${i.toFloat()}, $sizeResponse")
             barEntriesList.add(BarEntry(i.toFloat(), 1f))
+            barEntriesList[i] = BarEntry(i.toFloat(), 2f)
         }
         for (i in 0 until getGroupType) {
             barEntriesList[i] = BarEntry(i.toFloat()+1f, chartList[i])
@@ -136,6 +134,9 @@ class ChartActivity : AppCompatActivity() {
     fun newResponse() {
         dateResponseList = ArrayList()
         barEntriesList = ArrayList()
+    }
+    fun getReposStar(ownerName: String, reposName:String){
+        return chartView.getReposStars(ownerName,reposName,groupType)
     }
 
 }

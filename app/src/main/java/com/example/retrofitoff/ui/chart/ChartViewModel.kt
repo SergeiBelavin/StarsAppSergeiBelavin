@@ -29,7 +29,7 @@ class ChartViewModel(
                     repository.getStarRepo(userName, repoName, groupType)
                 chartResponse.value = response
 
-                Log.d("Response ", "Exception: $response")
+                Log.d("Response ", "Exception: ${response[4]}")
 
             } catch (e: Exception) {
                 Log.d("Error ", "Exception: $e")
