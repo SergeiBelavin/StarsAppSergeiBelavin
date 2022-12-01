@@ -35,7 +35,7 @@ open class Repository() {
                     Log.d("NAME_ALL_REPO", "$allName")
                     val constructorRepo = ConstructorRepo(it.id,
                         it.name,
-                        it.allStarsCount,
+                        it.neededForChart,
                         ConstructorUser(it.id, it.name))
                     responseListConv.add(constructorRepo)
                     Log.d("RESPONSE_CONV", "$responseListConv")
@@ -54,16 +54,14 @@ open class Repository() {
         }
     }
 
-    suspend fun getStarRepo(
-        userName: String,
-        repoName: String,
-        groupType: GroupType,
-    ): List<List<StarGroup>> {
+    suspend fun getStarRepo(userName: String, repoName: String, groupType: GroupType,):
+            List<List<StarGroup>> {
+
         val pageList = ArrayList<ConstructorStar>()
         val starsList = ArrayList<StarGroup>()
         var pageNumberStar = 1
         val groupRange = groupsType(groupType)
-        var calendarLost = ArrayList<ArrayList<StarGroup>>()
+        val calendarLost = ArrayList<ArrayList<StarGroup>>()
         for (i in 0 until groupRange) {
             calendarLost.add(ArrayList<StarGroup>())
         }
@@ -112,18 +110,6 @@ open class Repository() {
                     Log.d("MAP_2GET_UNIQ_INT", "${mapResponse}")
                     Log.d("MAP_2GET_UNIQ_INT", "${listMap}")
                 }
-                var g1 = listMap.groupBy {
-                    it.keys.first()
-                }
-
-                Log.d("UNIQ_G1", "$g1")
-                var g2 = listMap.groupBy {
-                    it.keys
-                }
-
-                Log.d("UNIQ_G2", "$g2")
-
-
 
                 var uniqueDaysResponse = 0
 
@@ -138,7 +124,6 @@ open class Repository() {
                     Log.d("RESPONSE_UNIQUE_DAYS", "$uniqueDaysResponse")
 
                     response.forEach {
-
                         if (num < groupRange - 1) {
                             if (uniqueDaysResponse.toLong() == daysResponseLong[num]) {
                                 daysResponseLong2.add(uniqueDaysResponse.toLong())
@@ -169,22 +154,23 @@ open class Repository() {
             return calendarLost
         }
     }
-
     open fun groupsType(groupType: GroupType): Int {
-        return when (groupType) {
-            GroupType.FOURTEEN_DAYS -> 14
-            GroupType.THIRTY_DAYS -> 30
-            GroupType.SIXTY_DAYS -> 60
-        }
+        return groupType.numInt
+    }
+    enum class GroupType(val numInt: Int) {
+        FOURTEEN_DAYS(14),
+        THIRTY_DAYS(30),
+        SIXTY_DAYS(60),
     }
 
-    enum class GroupType {
-        FOURTEEN_DAYS,
-        THIRTY_DAYS,
-        SIXTY_DAYS,
-    }
-
-    fun getUniqueDate(date: Date): Int {
+    private fun getUniqueDate(date: Date): Int {
         return date.date + 31 * date.month * date.year * 1000
+    }
+    open fun groupDateChart(groupTypeDate: GroupTypeDate): Boolean {
+        return groupTypeDate.needOrNot
+    }
+    enum class GroupTypeDate(val needOrNot: Boolean) {
+        NEEDED_FOR_CHART(true),
+        NOT_NEEDED_FOR_CHART(false)
     }
 }

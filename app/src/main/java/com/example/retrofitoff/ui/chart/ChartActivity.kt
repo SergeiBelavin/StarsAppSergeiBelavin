@@ -119,7 +119,7 @@ class ChartActivity : AppCompatActivity() {
             val sizeResponse = dateResponseList[0][i].size.toFloat()
             chartList.add(sizeResponse)
 
-            Log.d("DATE_RESP_LIST_TEST", "${chartList}")
+            Log.d("DATE_RESP_LIST_TEST", "$chartList")
 
             Log.d("DATE_RESP_FLOAT", "${i.toFloat()}, $sizeResponse")
             barEntriesList.add(BarEntry(i.toFloat(), 1f))

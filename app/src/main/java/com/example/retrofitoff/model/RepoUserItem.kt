@@ -13,7 +13,7 @@ data class RepoUserItem(
     override val name: String,
 
     @Json(name = "stargazers_count")
-    override val allStarsCount: Int?,
+    override val neededForChart: Int?,
 
     @Json(name = "owner")
     override val user: UserItem
