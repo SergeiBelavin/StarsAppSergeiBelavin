@@ -55,8 +55,8 @@ open class Repository() {
     }
 
     suspend fun getStarRepo(userName: String, repoName: String, groupType: GroupType,):
-            List<List<StarGroup>> {
-
+            List<Map<Int, ConstructorStar>> {
+//
         val pageList = ArrayList<ConstructorStar>()
         val starsList = ArrayList<StarGroup>()
         var pageNumberStar = 1
@@ -65,93 +65,80 @@ open class Repository() {
         for (i in 0 until groupRange) {
             calendarLost.add(ArrayList<StarGroup>())
         }
+        val listMap = ArrayList<Map<Int, ConstructorStar>>()
 
         return try {
             do {
                 val response: List<StarGroup> =
                     RetrofitInstance.api.getRepoStars(userName, repoName, pageNumberStar)
-
+                starsList.addAll(response)
                 Log.d("RESPONSE", "$response")
                 Log.d("GROUP_TYPE", "$groupType")
 
-                val calendar = Calendar.getInstance()
                 val daysResponseLong = ArrayList<Long>()
-                val daysResponseLong2 = ArrayList<Long>()
-
-                calendar.add(Calendar.DAY_OF_YEAR, -groupRange)
-                val daysAgoUnix = calendar.timeInMillis
-
-
-
-                Log.d("DAYS_CALENDAR", "$daysAgoUnix")
 
                 var uniqueDatAgoI = 0
                 for (i in 0 until groupRange) {
-                    val calendar2 = Calendar.getInstance()
-                    calendar2.add(Calendar.DAY_OF_YEAR, -i)
-                    val dayAgo = calendar2.time
+                    val calendar = Calendar.getInstance()
+                    calendar.add(Calendar.DAY_OF_YEAR, -i)
+                    val dayAgo = calendar.time
                     Log.d("DAYS_AGO", "$dayAgo")
                     uniqueDatAgoI = getUniqueDate(dayAgo)
                     daysResponseLong.add(uniqueDatAgoI.toLong())
                     Log.d("UNIQUE_DATE_CALENDAR", "$uniqueDatAgoI")
                     Log.d("CALENDAR_LIST", "$daysResponseLong")
-                    calendar2.clear()
+                    calendar.clear()
                 }
-
-                val listMap = mutableListOf<MutableMap<Int, StarGroup>>()
 
                 response.forEach {
                     val dateToInt = getUniqueDate(it.starredAt)
-                    val mapResponse: MutableMap<Int, StarGroup> =
-                        mutableMapOf(dateToInt to it)
+
+                    val constRepo = ConstructorStar(
+                        it.starredAt,
+                        ConstructorUser(
+                            it.user.id,
+                            it.user.name),
+                        ConstructorRepo(
+                            it.user.id,
+                            it.user.name,
+                            0,
+                            ConstructorUser(
+                                it.user.id,
+                                it.user.name
+                            )
+                        )
+                    )
+
+                    for (i in 0 until groupRange) {
+                        if (dateToInt == daysResponseLong[i].toInt()) {
+                            constRepo.repo.neededForChart = 1
+                        }
+                    }
+
+                    val mapResponse: Map<Int, ConstructorStar> =
+                        mutableMapOf(dateToInt to constRepo)
                     listMap.add(mapResponse)
+
                     Log.d("MAP_FOR_IT_STARRED_AT", "${it.starredAt}")
                     Log.d("MAP_GET_UNIQ_INT", "${dateToInt}")
                     Log.d("MAP_2GET_UNIQ_INT", "${mapResponse}")
-                    Log.d("MAP_2GET_UNIQ_INT", "${listMap}")
+                    Log.d("M", "${listMap.size}")
+                    Log.d("LIST_MAP", "$listMap")
                 }
 
-                var uniqueDaysResponse = 0
-
-                var num = 0
-
-                response.forEach { it ->
-
-                    val date = Date(it.starredAt.time)
-                    Log.d("RESPONSE_STAREDAT_TIME", "$date")
-                    uniqueDaysResponse = getUniqueDate(date)
-                    uniqueDaysResponse.toLong()
-                    Log.d("RESPONSE_UNIQUE_DAYS", "$uniqueDaysResponse")
-
-                    response.forEach {
-                        if (num < groupRange - 1) {
-                            if (uniqueDaysResponse.toLong() == daysResponseLong[num]) {
-                                daysResponseLong2.add(uniqueDaysResponse.toLong())
-                                calendarLost[num].add(it)
-                            }
-                            Log.d("RESPONSE_LIST_SORTED", "$calendarLost")
-                            num++
-                        } else
-                            num = 0
-                    }
-                }
-
-                Log.d("GROUPCALENDAR", "$calendarLost")
-                Log.d("PAGE_LIST_SIZE", "${pageList.size}")
-
-                if (pageList.size == MAX_PAGE_SIZE) {
-                    pageList.clear()
-                }
-                starsList.addAll(response)
-                Log.d("PAGE_NUMBER", "$pageNumberStar")
-                Log.d("STARS_LIST_SIZE", "$starsList")
                 pageNumberStar++
+                Log.d("STARS_LIST", "${starsList.size}")
+                Log.d("PAGE", "$pageNumberStar")
 
-            } while (starsList.size == MIN_PAGE_SIZE)
-            calendarLost
+
+            } while (starsList.size == MAX_PAGE_SIZE)
+            Log.d("PAGE", "$pageNumberStar")
+            Log.d("STARS_LIST", "${starsList.size}")
+            listMap
+
         } catch (e: Exception) {
             Log.d("SIZE_STAR_ERROR", "$e")
-            return calendarLost
+            return listMap
         }
     }
     open fun groupsType(groupType: GroupType): Int {

@@ -7,7 +7,7 @@ data class ConstructorRepo(
 
     override val name: String,
 
-    override val neededForChart: Int?,
+    override var neededForChart: Int?,
 
     override val user: ConstructorUser
 ): RepoUser {
