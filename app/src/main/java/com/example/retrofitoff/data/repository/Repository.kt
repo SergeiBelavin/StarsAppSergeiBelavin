@@ -95,6 +95,7 @@ open class Repository() {
                             it.user.name,
                             it.user.avatar
                             ),
+                        dateToInt,
                         ConstructorRepo(
                             it.user.id,
                             it.user.name,
@@ -102,9 +103,10 @@ open class Repository() {
                             ConstructorUser(
                                 it.user.id,
                                 it.user.name,
-                                it.user.avatar
+                                it.user.avatar,
                             )
                         )
+
                     )
 
                     for (i in 0 until groupRange) {

@@ -44,14 +44,10 @@ class ChartActivity : AppCompatActivity() {
 
     private var groupType = Repository.GroupType.FOURTEEN_DAYS
     private var dateResponseList = ArrayList<Map<Int, ConstructorStar>>()
-    val listForChart = ArrayList<Map<Int, ConstructorStar>>()
-    val dayRangeCalendar = ArrayList<Int>()
-    val getDayRangeCalendar = ArrayList<ArrayList<Int>>()
+    private var listForChart = ArrayList<Map<Int, ConstructorStar>>()
+    private var dayRangeCalendar = ArrayList<Int>()
+    private var getDayRangeCalendar = ArrayList<ArrayList<Int>>()
 
-    val avatarUsers = ArrayList<String>()
-    val nameUsers = ArrayList<String>()
-
-    val getGroupType = groupsType(groupType)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ChartActivityBinding.inflate(layoutInflater)
@@ -68,25 +64,22 @@ class ChartActivity : AppCompatActivity() {
         barEntriesList = ArrayList()
 
         binding.fourteenDaysLong.setOnClickListener {
+            clearData()
             groupType = Repository.GroupType.FOURTEEN_DAYS
-            newResponse()
             getReposStar(ownerName.toString(), reposName.toString())
         }
         binding.thirtyDaysLong.setOnClickListener {
-            groupType = Repository.GroupType.THIRTY_DAYS
-            newResponse()
+            clearData()
             getReposStar(ownerName.toString(), reposName.toString())
+            groupType = Repository.GroupType.THIRTY_DAYS
         }
         binding.sixtyDaysLong.setOnClickListener {
+            clearData()
             groupType = Repository.GroupType.SIXTY_DAYS
-            newResponse()
             getReposStar(ownerName.toString(), reposName.toString())
         }
         chartView.chartResponse.observe(this) { dateList ->
             dateResponseList.addAll(dateList)
-            Log.d("DATE_LIST_SIZE", "${dateList.size}")
-            Log.d("DATE_LIST", "${dateList}")
-
             barEntriesList = ArrayList()
             barChartData()
             barChart = binding.barChart
@@ -117,7 +110,7 @@ class ChartActivity : AppCompatActivity() {
 
 
     private fun barChartData() {
-
+        val getGroupType = groupsType(groupType)
         for (i in 0 until getGroupType) {
             val calendar = Calendar.getInstance()
             calendar.add(Calendar.DAY_OF_YEAR, -i)
@@ -130,23 +123,13 @@ class ChartActivity : AppCompatActivity() {
 
         for (i in 0 until getGroupType) {
             getDayRangeCalendar.add(ArrayList(0))
-            Log.d("GET_DAY", "${getDayRangeCalendar}")
         }
-
 
         for (i in 0 until dateResponseList.size) {
             if (dateResponseList[i].values.first().repo.neededForChart == 1) {
                 listForChart.add(dateResponseList[i])
-
-
-                avatarUsers.add(dateResponseList[i].values.first().user.avatar.toString())
-                nameUsers.add(dateResponseList[i].values.first().user.name)
-                Log.d("BLYAAA1", "$avatarUsers")
-                Log.d("BLYAAA2", "$nameUsers")
-
             }
         }
-        Log.d("FOR_CHART_LIST", "${listForChart.size}")
 
         dateResponseList.forEach {
 
@@ -155,7 +138,6 @@ class ChartActivity : AppCompatActivity() {
                     getDayRangeCalendar[i].add(1)
                 }
             }
-
         }
 
         for (i in 0 until getDayRangeCalendar.size) {
@@ -164,9 +146,12 @@ class ChartActivity : AppCompatActivity() {
         }
     }
 
-    fun newResponse() {
-        dateResponseList = ArrayList()
-        barEntriesList = ArrayList()
+    fun clearData() {
+        dateResponseList.clear()
+        barEntriesList.clear()
+        listForChart.clear()
+        dayRangeCalendar.clear()
+        getDayRangeCalendar.clear()
     }
 
     fun getReposStar(ownerName: String, reposName: String) {
