@@ -16,7 +16,6 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import java.io.Serializable
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -48,6 +47,9 @@ class ChartActivity : AppCompatActivity() {
     val listForChart = ArrayList<Map<Int, ConstructorStar>>()
     val dayRangeCalendar = ArrayList<Int>()
     val getDayRangeCalendar = ArrayList<ArrayList<Int>>()
+
+    val avatarUsers = ArrayList<String>()
+    val nameUsers = ArrayList<String>()
 
     val getGroupType = groupsType(groupType)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,7 +102,7 @@ class ChartActivity : AppCompatActivity() {
         }
 
         binding.barChart.setOnClickListener {
-            avatarAndName(listForChart)
+            startSubActivity()
         }
 
     }
@@ -135,6 +137,13 @@ class ChartActivity : AppCompatActivity() {
         for (i in 0 until dateResponseList.size) {
             if (dateResponseList[i].values.first().repo.neededForChart == 1) {
                 listForChart.add(dateResponseList[i])
+
+
+                avatarUsers.add(dateResponseList[i].values.first().user.avatar.toString())
+                nameUsers.add(dateResponseList[i].values.first().user.name)
+                Log.d("BLYAAA1", "$avatarUsers")
+                Log.d("BLYAAA2", "$nameUsers")
+
             }
         }
         Log.d("FOR_CHART_LIST", "${listForChart.size}")
@@ -164,21 +173,9 @@ class ChartActivity : AppCompatActivity() {
         return chartView.getReposStars(ownerName, reposName, groupType)
     }
 //gulihua10010
-    fun avatarAndName(list: List<Map<Int, ConstructorStar>>) {
 
-    val avatarUsers = ArrayList<String>()
-    val nameUser = ArrayList<String>()
-
-    for (i in 0 until list.size) {
-        avatarUsers.add(i.toString())
-        Log.d("BLYAAA", "$avatarUsers")
-        nameUser.add(list.first()[i]?.user?.name.toString())
-    }
-    startSubActivity(avatarUsers, nameUser)
-    }
-
-    fun startSubActivity(avatarUsers: List<String>, nameUsers: List<String> ) {
-        val chartIntent = SubscribersActivity.createSubscribeIntent(this@ChartActivity, avatarUsers, nameUsers)
+    fun startSubActivity() {
+        val chartIntent = SubscribersActivity.createSubscribeIntent(this@ChartActivity, listForChart)
         startActivity(chartIntent)
     }
 

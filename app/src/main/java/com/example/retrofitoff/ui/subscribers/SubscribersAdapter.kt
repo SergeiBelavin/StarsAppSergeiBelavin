@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitoff.R
 import com.example.retrofitoff.data.entity.constructor.ConstructorStar
 import com.example.retrofitoff.databinding.SubscribersAdapterBinding
+import com.squareup.moshi.kotlinx.metadata.internal.metadata.deserialization.Flags.FlagField.first
 import com.squareup.picasso.Picasso
 
 class SubscribersAdapter(): RecyclerView.Adapter<SubscribersAdapter.UserAvatar>() {
@@ -23,9 +24,9 @@ class SubscribersAdapter(): RecyclerView.Adapter<SubscribersAdapter.UserAvatar>(
     }
 
     override fun onBindViewHolder(holder: UserAvatar, position: Int) {
-        holder.binding.nameUser.text = userList.first()[position]?.user?.name
+        holder.binding.nameUser.text = userList[position].values.first().user.name
         Picasso.get()
-            .load(userList.first()[position]?.user?.avatar)
+            .load(userList[position].values.first().user.avatar)
             .error(R.drawable.shrek)
             .into(holder.binding.avatarUser)
     }

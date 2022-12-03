@@ -20,10 +20,9 @@ class SubscribersActivity : AppCompatActivity() {
         private val KEY_NAME = "KeyNAME"
         private val KEY_AVATAR = "KeyAVATAR"
 
-        fun createSubscribeIntent(context: Context, avatarUsers: List<String>, nameUsers: List<String>,): Intent {
+        fun createSubscribeIntent(context: Context, list: List<Map<Int, ConstructorStar>>,): Intent {
             return Intent(context,SubscribersActivity::class.java)
-                .putExtra(KEY_NAME, avatarUsers as Serializable)
-                .putExtra(KEY_AVATAR, nameUsers as Serializable)
+                .putExtra(KEY_NAME, list as Serializable)
         }
     }
 
@@ -37,10 +36,10 @@ class SubscribersActivity : AppCompatActivity() {
         val adapter = SubscribersAdapter()
         binding.subList.adapter = adapter
 
-        var avatarList = intent.getSerializableExtra(KEY_AVATAR)
+        var avatarList = intent.getSerializableExtra(KEY_NAME) as ArrayList<Map<Int, ConstructorStar>>
         Log.d("$LOG_ACTIVITY + AVATAR", "${avatarList.toString()}")
-        var nameList = intent.getSerializableExtra(KEY_NAME)
-        Log.d("$LOG_ACTIVITY + NAME", "${nameList.toString()}")
+
+        adapter.setList(avatarList)
 
     }
 
