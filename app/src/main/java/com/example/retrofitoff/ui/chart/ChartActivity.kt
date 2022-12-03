@@ -170,10 +170,11 @@ class ChartActivity : AppCompatActivity() {
     val nameUser = ArrayList<String>()
 
     for (i in 0 until list.size) {
-        avatarUsers.add(list.first()[i]?.user?.avatar.toString())
+        avatarUsers.add(i.toString())
+        Log.d("BLYAAA", "$avatarUsers")
         nameUser.add(list.first()[i]?.user?.name.toString())
-        startSubActivity(avatarUsers, nameUser)
     }
+    startSubActivity(avatarUsers, nameUser)
     }
 
     fun startSubActivity(avatarUsers: List<String>, nameUsers: List<String> ) {
