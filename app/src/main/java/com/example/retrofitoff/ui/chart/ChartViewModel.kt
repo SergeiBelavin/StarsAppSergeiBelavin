@@ -1,4 +1,4 @@
-package com.example.retrofitoff
+package com.example.retrofitoff.ui.chart
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData

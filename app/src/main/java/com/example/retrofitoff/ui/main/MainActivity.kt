@@ -43,8 +43,6 @@ class MainActivity : AppCompatActivity(), RepositoryAdapter.Listener {
 
     override fun onClick(list: RepoUser) {
         val chartIntent = ChartActivity.createIntent(this@MainActivity, list.user.name, list.name)
-
-
         startActivity(chartIntent)
     }
 }

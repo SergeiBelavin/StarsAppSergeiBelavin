@@ -36,7 +36,7 @@ open class Repository() {
                     val constructorRepo = ConstructorRepo(it.id,
                         it.name,
                         it.neededForChart,
-                        ConstructorUser(it.id, it.name))
+                        ConstructorUser(it.id, it.name, it.user.avatar))
                     responseListConv.add(constructorRepo)
                     Log.d("RESPONSE_CONV", "$responseListConv")
                 }
@@ -56,15 +56,11 @@ open class Repository() {
 
     suspend fun getStarRepo(userName: String, repoName: String, groupType: GroupType,):
             List<Map<Int, ConstructorStar>> {
-//
-        val pageList = ArrayList<ConstructorStar>()
+
         val starsList = ArrayList<StarGroup>()
         var pageNumberStar = 1
         val groupRange = groupsType(groupType)
-        val calendarLost = ArrayList<ArrayList<StarGroup>>()
-        for (i in 0 until groupRange) {
-            calendarLost.add(ArrayList<StarGroup>())
-        }
+
         val listMap = ArrayList<Map<Int, ConstructorStar>>()
 
         return try {
@@ -93,18 +89,20 @@ open class Repository() {
                 response.forEach {
                     val dateToInt = getUniqueDate(it.starredAt)
 
-                    val constRepo = ConstructorStar(
-                        it.starredAt,
+                    val constRepo = ConstructorStar(it.starredAt,
                         ConstructorUser(
                             it.user.id,
-                            it.user.name),
+                            it.user.name,
+                            it.user.avatar
+                            ),
                         ConstructorRepo(
                             it.user.id,
                             it.user.name,
                             0,
                             ConstructorUser(
                                 it.user.id,
-                                it.user.name
+                                it.user.name,
+                                it.user.avatar
                             )
                         )
                     )
@@ -125,13 +123,13 @@ open class Repository() {
                     Log.d("M", "${listMap.size}")
                     Log.d("LIST_MAP", "$listMap")
                 }
-
+                if(starsList.size == MAX_PAGE_SIZE) starsList.clear()
                 pageNumberStar++
                 Log.d("STARS_LIST", "${starsList.size}")
                 Log.d("PAGE", "$pageNumberStar")
 
 
-            } while (starsList.size == MAX_PAGE_SIZE)
+            } while (starsList.size == MIN_PAGE_SIZE)
             Log.d("PAGE", "$pageNumberStar")
             Log.d("STARS_LIST", "${starsList.size}")
             listMap

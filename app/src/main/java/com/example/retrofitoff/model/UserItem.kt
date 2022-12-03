@@ -13,6 +13,6 @@ data class UserItem(
     @Json(name = "login")
     override val name: String,
 
-  //  @Json(name = "avatar_url")
-   // override val avatar: Image?,
+    @Json(name = "avatar_url")
+    override val avatar: String?
 ): User

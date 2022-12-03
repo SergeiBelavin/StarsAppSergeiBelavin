@@ -1,32 +1,24 @@
 package com.example.retrofitoff.ui.chart
 
-import android.R
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.os.Build.VERSION_CODES.P
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.retrofitoff.ChartViewModel
-import com.example.retrofitoff.data.entity.RepoUser
-import com.example.retrofitoff.data.entity.StarGroup
-import com.example.retrofitoff.data.entity.constructor.ConstructorRepo
 import com.example.retrofitoff.data.entity.constructor.ConstructorStar
 
-import com.example.retrofitoff.ui.main.MainActivity
-import com.example.retrofitoff.databinding.ActivityChartRepoBinding
 import com.example.retrofitoff.data.repository.Repository
+import com.example.retrofitoff.databinding.ChartActivityBinding
+import com.example.retrofitoff.ui.subscribers.SubscribersActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.utils.ColorTemplate
+import java.io.Serializable
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.List
 
 class ChartActivity : AppCompatActivity() {
 
@@ -43,9 +35,8 @@ class ChartActivity : AppCompatActivity() {
 
     }
 
-    private lateinit var binding: ActivityChartRepoBinding
+    private lateinit var binding: ChartActivityBinding
     private lateinit var chartView: ChartViewModel
-
 
     lateinit var barChart: BarChart
     lateinit var barData: BarData
@@ -54,9 +45,14 @@ class ChartActivity : AppCompatActivity() {
 
     private var groupType = Repository.GroupType.FOURTEEN_DAYS
     private var dateResponseList = ArrayList<Map<Int, ConstructorStar>>()
+    val listForChart = ArrayList<Map<Int, ConstructorStar>>()
+    val dayRangeCalendar = ArrayList<Int>()
+    val getDayRangeCalendar = ArrayList<ArrayList<Int>>()
+
+    val getGroupType = groupsType(groupType)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityChartRepoBinding.inflate(layoutInflater)
+        binding = ChartActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val repository = Repository()
@@ -103,6 +99,10 @@ class ChartActivity : AppCompatActivity() {
 
         }
 
+        binding.barChart.setOnClickListener {
+            avatarAndName(listForChart)
+        }
+
     }
 
     private fun groupsType(groupType: Repository.GroupType): Int {
@@ -115,12 +115,6 @@ class ChartActivity : AppCompatActivity() {
 
 
     private fun barChartData() {
-
-        var listForChart = ArrayList<Map<Int, ConstructorStar>>()
-        var dayRangeCalendar = ArrayList<Int>()
-        var getDayRangeCalendar = ArrayList<ArrayList<Int>>()
-
-        val getGroupType = groupsType(groupType)
 
         for (i in 0 until getGroupType) {
             val calendar = Calendar.getInstance()
@@ -170,5 +164,21 @@ class ChartActivity : AppCompatActivity() {
         return chartView.getReposStars(ownerName, reposName, groupType)
     }
 //gulihua10010
+    fun avatarAndName(list: List<Map<Int, ConstructorStar>>) {
+
+    val avatarUsers = ArrayList<String>()
+    val nameUser = ArrayList<String>()
+
+    for (i in 0 until list.size) {
+        avatarUsers.add(list.first()[i]?.user?.avatar.toString())
+        nameUser.add(list.first()[i]?.user?.name.toString())
+        startSubActivity(avatarUsers, nameUser)
+    }
+    }
+
+    fun startSubActivity(avatarUsers: List<String>, nameUsers: List<String> ) {
+        val chartIntent = SubscribersActivity.createSubscribeIntent(this@ChartActivity, avatarUsers, nameUsers)
+        startActivity(chartIntent)
+    }
 
 }
