@@ -14,11 +14,12 @@ import com.example.retrofitoff.data.entity.constructor.ConstructorStar
 import com.example.retrofitoff.data.entity.constructor.ConstructorUser
 import com.example.retrofitoff.data.repository.DateConverter
 
-@TypeConverters(DateConverter::class)
+
 @Database(
     entities = [ConstructorUser::class, ConstructorRepo::class, ConstructorStar::class],
     version = 1
 )
+@TypeConverters(DateConverter::class)
 
 abstract class StarsRoomDatabase: RoomDatabase() {
     abstract fun userDao(): UserDao
@@ -30,7 +31,8 @@ abstract class StarsRoomDatabase: RoomDatabase() {
             return Room.databaseBuilder(
                 context.applicationContext,
                 StarsRoomDatabase::class.java,
-                "database").build()
+                "data_base"
+            ).build()
         }
     }
 

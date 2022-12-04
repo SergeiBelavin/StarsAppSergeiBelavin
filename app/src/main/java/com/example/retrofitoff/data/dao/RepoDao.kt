@@ -9,11 +9,8 @@ import com.example.retrofitoff.data.entity.constructor.ConstructorRepo
 
 @Dao
 interface RepoDao {
-    @Query("SELECT * FROM Repo")
-    suspend fun getAll(): List<ConstructorRepo>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(vararg entityRepo: ConstructorRepo)
+    @Query("SELECT * FROM repo")
+     fun getAll(): List<ConstructorRepo>
 
     @Delete
     suspend fun delete(entityRepo: ConstructorRepo)

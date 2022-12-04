@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.retrofitoff.data.database.StarsRoomDatabase
 import com.example.retrofitoff.data.entity.constructor.ConstructorStar
 
 import com.example.retrofitoff.data.repository.Repository
@@ -48,7 +49,6 @@ class ChartActivity : AppCompatActivity() {
     private var listForChart = ArrayList<Map<Int, ConstructorStar>>()
     private var dayRangeCalendar = ArrayList<Int>()
     private var getDayRangeCalendar = ArrayList<ArrayList<Int>>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ChartActivityBinding.inflate(layoutInflater)
@@ -58,6 +58,7 @@ class ChartActivity : AppCompatActivity() {
         val viewModelFactory = ChartViewFactory(repository)
         val ownerName = intent.getSerializableExtra(KEY_NAME)
         val reposName = intent.getSerializableExtra(KEY_REPOS)
+
         chartView = ViewModelProvider(this, viewModelFactory)[ChartViewModel::class.java]
 
         barEntriesList = ArrayList()
@@ -96,6 +97,8 @@ class ChartActivity : AppCompatActivity() {
         binding.barChart.setOnClickListener {
             startSubActivity()
         }
+
+
 
     }
 

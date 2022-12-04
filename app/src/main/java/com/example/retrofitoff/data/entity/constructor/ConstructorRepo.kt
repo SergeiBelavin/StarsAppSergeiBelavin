@@ -6,9 +6,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.retrofitoff.data.entity.RepoUser
 
-@Entity(tableName = "Repo")
+@Entity(tableName = "repo")
 data class ConstructorRepo(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     override val id: Long,
 
     @ColumnInfo(name = "name")

@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.retrofitoff.data.database.StarsRoomDatabase
 import com.example.retrofitoff.data.entity.RepoUser
+import com.example.retrofitoff.data.entity.constructor.ConstructorRepo
 import com.example.retrofitoff.databinding.ActivityMainBinding
 import com.example.retrofitoff.data.repository.Repository
 import com.example.retrofitoff.ui.chart.ChartActivity
@@ -21,15 +23,15 @@ class MainActivity : AppCompatActivity(), RepositoryAdapter.Listener {
         setContentView(binding.root)
         val adapter = RepositoryAdapter(this)
         binding.rcView.adapter = adapter
-
         val repository = Repository()
-
+        val responseList = ArrayList<ConstructorRepo>()
         val viewModelFactory = MainViewFactory(repository)
+
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
 
         binding.findName.setOnClickListener {
             val searchName = binding.addName.text.toString()
-
+            val database = StarsRoomDatabase.getDb(this)
             viewModel.repoList(searchName)
             viewModel.myResponse.observe(this) { response ->
                 Log.d("MainViewAdapter", "$response")
@@ -37,6 +39,12 @@ class MainActivity : AppCompatActivity(), RepositoryAdapter.Listener {
                 response.let {
                     adapter.setList(response!!)
                 }
+                responseList.add(response as ConstructorRepo)
+                Thread {
+                    database.repoDao().getAll()
+                }.start()
+
+
             }
         }
     }

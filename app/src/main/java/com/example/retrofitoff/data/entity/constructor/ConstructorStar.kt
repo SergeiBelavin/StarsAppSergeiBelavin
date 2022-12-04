@@ -7,17 +7,18 @@ import androidx.room.PrimaryKey
 import com.example.retrofitoff.data.entity.RepoUser
 import com.example.retrofitoff.data.entity.StarGroup
 import java.util.*
-@Entity(tableName = "Stars")
+@Entity(tableName = "stars")
 data class ConstructorStar (
     @PrimaryKey
     @ColumnInfo(name = "starred_at")
     override val starredAt: Date,
 
-    @Embedded(prefix = "user_")
+
+    @ColumnInfo(name = "user")
     override val user: ConstructorUser,
 
     @ColumnInfo(name = "uniqueDate")
-    val uniqueDate: Int?,
+    val uniqueDate: Int,
 
     @ColumnInfo(name = "repo")
     val repo: ConstructorRepo
