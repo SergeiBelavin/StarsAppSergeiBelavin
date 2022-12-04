@@ -1,16 +1,23 @@
 package com.example.retrofitoff.data.dao
 
-import androidx.room.Dao
-import androidx.room.Query
-import com.example.retrofitoff.data.entity.EntityStar
+import androidx.room.*
+
+import com.example.retrofitoff.data.entity.constructor.ConstructorStar
+
 @Dao
 interface StarDao {
-    @Query("SELECT * FROM stars")
-    suspend fun getAll(): List<EntityStar>
+    @Query("SELECT * FROM Stars")
+    suspend fun getAll(): List<ConstructorStar>
 
-    @Query("SELECT * FROM stars WHERE starred_at LIKE :starredAt")
-    suspend fun starredAt(starredAt: Long): EntityStar
+    @Query("SELECT * FROM Stars WHERE starred_at LIKE :starredAt")
+    suspend fun starredAt(starredAt: Long): ConstructorStar
 
-    @Query("SELECT * FROM stars WHERE user_name LIKE :userName")
-    suspend fun userName(userName: String): List<EntityStar>
+    @Query("SELECT * FROM Stars WHERE user_name LIKE :userName")
+    suspend fun userName(userName: String): List<ConstructorStar>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(vararg tableStarLocal: ConstructorStar)
+
+    @Delete
+    suspend fun delete(tableStarLocal: ConstructorStar)
 }

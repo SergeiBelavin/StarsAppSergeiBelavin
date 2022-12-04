@@ -5,22 +5,16 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.retrofitoff.data.entity.EntityRepo
+import com.example.retrofitoff.data.entity.constructor.ConstructorRepo
 
 @Dao
 interface RepoDao {
     @Query("SELECT * FROM Repo")
-    suspend fun getAll(): List<EntityRepo>
-
-    @Query("SELECT * FROM Repo WHERE id IN (:repoId)")
-    suspend fun repoId(repoId: Long): EntityRepo
-
-    @Query("SELECT * FROM Repo WHERE user IN (:user_id)")
-    suspend fun userId(user_id: Long): List<EntityRepo>
+    suspend fun getAll(): List<ConstructorRepo>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(vararg entityRepo: EntityRepo)
+    suspend fun insert(vararg entityRepo: ConstructorRepo)
 
     @Delete
-    suspend fun delete(entityRepo: EntityRepo)
+    suspend fun delete(entityRepo: ConstructorRepo)
 }
