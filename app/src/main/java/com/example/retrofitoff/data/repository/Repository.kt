@@ -9,18 +9,18 @@ import com.example.retrofitoff.data.entity.StarGroup
 import com.example.retrofitoff.data.entity.constructor.ConstructorRepo
 import com.example.retrofitoff.data.entity.constructor.ConstructorStar
 import com.example.retrofitoff.data.entity.constructor.ConstructorUser
-import java.util.*
+import com.example.retrofitoff.ui.chart.EnumRange
 import kotlin.collections.ArrayList
 
 
 open class Repository() {
 
     private val MAX_PAGE_SIZE = 100
-    private val MIN_PAGE_SIZE = 0
+     val MIN_PAGE_SIZE = 0
 
 
     suspend fun getListRepository(userName: String): List<RepoUser> {
-        val allName = ArrayList<String>()
+        val nameOnTheSheet = ArrayList<String>()
         val responseList = ArrayList<RepoUser>()
         val responseListConv = ArrayList<ConstructorRepo>()
         var pageNumberUser = 1
@@ -31,21 +31,14 @@ open class Repository() {
                 val response: List<RepoUser> =
                     RetrofitInstance.api.getRepoList(userName, pageNumberUser)
                 response.forEach {
-                    allName.add(it.name)
-                    Log.d("NAME_ALL_REPO", "$allName")
-                    val constructorRepo = ConstructorRepo(it.id,
-                        it.name,
-                        it.neededForChart,
-                        ConstructorUser(it.id, it.name, it.user.avatar))
-                    responseListConv.add(constructorRepo)
-                    Log.d("RESPONSE_CONV", "$responseListConv")
+                    nameOnTheSheet.add(it.name)
                 }
-                if (responseListConv.size == MAX_PAGE_SIZE) allName.clear()
+                if (responseListConv.size == MAX_PAGE_SIZE) nameOnTheSheet.clear()
                 responseList.addAll(response)
                 pageNumberUser++
                 Log.d("PAGE_NUM_REPO", "$pageNumberUser")
 
-            } while (allName.size == MIN_PAGE_SIZE)
+            } while (nameOnTheSheet.size == MIN_PAGE_SIZE)
             responseList
 
         } catch (e: Exception) {
@@ -54,63 +47,34 @@ open class Repository() {
         }
     }
 
-    suspend fun getStarRepo(userName: String, repoName: String, groupType: GroupType,):
-            List<Map<Int, ConstructorStar>> {
+    suspend fun getStarRepo(userName: String, repoName: String, groupType: EnumRange.Companion.GroupType,): List<Map<Int, ConstructorStar>> {
 
         val starsList = ArrayList<StarGroup>()
         var pageNumberStar = 1
-        val groupRange = groupsType(groupType)
+        val groupRange = EnumRange.groupsType(groupType)
 
         val listMap = ArrayList<Map<Int, ConstructorStar>>()
+        val daysResponseInt = uniqueDate.getUniqueArrayList(EnumRange.groupsType(groupType))
+
+        Log.d("DAYSCALENDAR1", "$daysResponseInt")
 
         return try {
             do {
                 val response: List<StarGroup> =
                     RetrofitInstance.api.getRepoStars(userName, repoName, pageNumberStar)
                 starsList.addAll(response)
-                Log.d("RESPONSE", "$response")
-                Log.d("GROUP_TYPE", "$groupType")
-
-                val daysResponseLong = ArrayList<Long>()
-
-                var uniqueDatAgoI = 0
-                for (i in 0 until groupRange) {
-                    val calendar = Calendar.getInstance()
-                    calendar.add(Calendar.DAY_OF_YEAR, -i)
-                    val dayAgo = calendar.time
-                    Log.d("DAYS_AGO", "$dayAgo")
-                    uniqueDatAgoI = getUniqueDate(dayAgo)
-                    daysResponseLong.add(uniqueDatAgoI.toLong())
-                    Log.d("UNIQUE_DATE_CALENDAR", "$uniqueDatAgoI")
-                    Log.d("CALENDAR_LIST", "$daysResponseLong")
-                    calendar.clear()
-                }
 
                 response.forEach {
-                    val dateToInt = getUniqueDate(it.starredAt)
+                    val dateToInt = uniqueDate.getUniqueDate(it.starredAt)
 
                     val constRepo = ConstructorStar(it.starredAt,
-                        ConstructorUser(
-                            it.user.id,
-                            it.user.name,
-                            it.user.avatar
-                            ),
+                        ConstructorUser(it.user.id, it.user.name, it.user.avatar),
                         dateToInt,
-                        ConstructorRepo(
-                            it.user.id,
-                            it.user.name,
-                            0,
-                            ConstructorUser(
-                                it.user.id,
-                                it.user.name,
-                                it.user.avatar,
-                            )
-                        )
-
-                    )
+                        ConstructorRepo(it.user.id, it.user.name, 0,
+                            ConstructorUser(it.user.id, it.user.name, it.user.avatar,)))
 
                     for (i in 0 until groupRange) {
-                        if (dateToInt == daysResponseLong[i].toInt()) {
+                        if (dateToInt == daysResponseInt[i]) {
                             constRepo.repo.neededForChart = 1
                         }
                     }
@@ -118,41 +82,19 @@ open class Repository() {
                     val mapResponse: Map<Int, ConstructorStar> =
                         mutableMapOf(dateToInt to constRepo)
                     listMap.add(mapResponse)
-
-                    Log.d("MAP_FOR_IT_STARRED_AT", "${it.starredAt}")
-                    Log.d("MAP_GET_UNIQ_INT", "${dateToInt}")
-                    Log.d("MAP_2GET_UNIQ_INT", "${mapResponse}")
-                    Log.d("M", "${listMap.size}")
-                    Log.d("LIST_MAP", "$listMap")
                 }
                 if(starsList.size == MAX_PAGE_SIZE) starsList.clear()
                 pageNumberStar++
-                Log.d("STARS_LIST", "${starsList.size}")
-                Log.d("PAGE", "$pageNumberStar")
 
 
             } while (starsList.size == MIN_PAGE_SIZE)
-            Log.d("PAGE", "$pageNumberStar")
-            Log.d("STARS_LIST", "${starsList.size}")
             listMap
 
         } catch (e: Exception) {
-            Log.d("SIZE_STAR_ERROR", "$e")
             return listMap
         }
     }
-    open fun groupsType(groupType: GroupType): Int {
-        return groupType.numInt
-    }
-    enum class GroupType(val numInt: Int) {
-        FOURTEEN_DAYS(14),
-        THIRTY_DAYS(30),
-        SIXTY_DAYS(60),
-    }
 
-    private fun getUniqueDate(date: Date): Int {
-        return date.date + 31 * date.month * date.year * 1000
-    }
     open fun groupDateChart(groupTypeDate: GroupTypeDate): Boolean {
         return groupTypeDate.needOrNot
     }

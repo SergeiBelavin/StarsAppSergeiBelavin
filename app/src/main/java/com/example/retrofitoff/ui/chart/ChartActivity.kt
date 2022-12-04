@@ -10,13 +10,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitoff.data.entity.constructor.ConstructorStar
 
 import com.example.retrofitoff.data.repository.Repository
+import com.example.retrofitoff.data.repository.uniqueDate
 import com.example.retrofitoff.databinding.ChartActivityBinding
+import com.example.retrofitoff.ui.chart.EnumRange.Companion.groupsType
 import com.example.retrofitoff.ui.subscribers.SubscribersActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import java.util.*
 import kotlin.collections.ArrayList
 
 class ChartActivity : AppCompatActivity() {
@@ -42,7 +43,7 @@ class ChartActivity : AppCompatActivity() {
     lateinit var barDataSet: BarDataSet
     lateinit var barEntriesList: ArrayList<BarEntry>
 
-    private var groupType = Repository.GroupType.FOURTEEN_DAYS
+    private var groupType = EnumRange.Companion.GroupType.FOURTEEN_DAYS
     private var dateResponseList = ArrayList<Map<Int, ConstructorStar>>()
     private var listForChart = ArrayList<Map<Int, ConstructorStar>>()
     private var dayRangeCalendar = ArrayList<Int>()
@@ -59,24 +60,22 @@ class ChartActivity : AppCompatActivity() {
         val reposName = intent.getSerializableExtra(KEY_REPOS)
         chartView = ViewModelProvider(this, viewModelFactory)[ChartViewModel::class.java]
 
-
-
         barEntriesList = ArrayList()
 
         binding.fourteenDaysLong.setOnClickListener {
             clearData()
-            groupType = Repository.GroupType.FOURTEEN_DAYS
-            getReposStar(ownerName.toString(), reposName.toString())
+            groupType = EnumRange.Companion.GroupType.FOURTEEN_DAYS
+            getReposStar(ownerName.toString(), reposName.toString(), groupType)
         }
         binding.thirtyDaysLong.setOnClickListener {
             clearData()
-            getReposStar(ownerName.toString(), reposName.toString())
-            groupType = Repository.GroupType.THIRTY_DAYS
+            groupType = EnumRange.Companion.GroupType.THIRTY_DAYS
+            getReposStar(ownerName.toString(), reposName.toString(), groupType)
         }
         binding.sixtyDaysLong.setOnClickListener {
             clearData()
-            groupType = Repository.GroupType.SIXTY_DAYS
-            getReposStar(ownerName.toString(), reposName.toString())
+            groupType = EnumRange.Companion.GroupType.SIXTY_DAYS
+            getReposStar(ownerName.toString(), reposName.toString(), groupType)
         }
         chartView.chartResponse.observe(this) { dateList ->
             dateResponseList.addAll(dateList)
@@ -100,33 +99,17 @@ class ChartActivity : AppCompatActivity() {
 
     }
 
-    private fun groupsType(groupType: Repository.GroupType): Int {
-        return when (groupType) {
-            Repository.GroupType.FOURTEEN_DAYS -> 14
-            Repository.GroupType.THIRTY_DAYS -> 30
-            Repository.GroupType.SIXTY_DAYS -> 60
-        }
-    }
-
-
     private fun barChartData() {
         val getGroupType = groupsType(groupType)
-        for (i in 0 until getGroupType) {
-            val calendar = Calendar.getInstance()
-            calendar.add(Calendar.DAY_OF_YEAR, -i)
-            val dayAgo = calendar.time
-            val uniqDatAgo = dayAgo.date + 31 * dayAgo.month * dayAgo.year * 1000
-            dayRangeCalendar.add(uniqDatAgo)
-            calendar.clear()
-        }
+        dayRangeCalendar = uniqueDate.getUniqueArrayList(getGroupType)
         Log.d("DATE_LIST", "${dayRangeCalendar}")
 
         for (i in 0 until getGroupType) {
-            getDayRangeCalendar.add(ArrayList(0))
+            getDayRangeCalendar.add(ArrayList())
         }
 
         for (i in 0 until dateResponseList.size) {
-            if (dateResponseList[i].values.first().repo.neededForChart == 1) {
+            if (dateResponseList[i].values.first().repo.neededForChart!! > 0) {
                 listForChart.add(dateResponseList[i])
             }
         }
@@ -154,13 +137,18 @@ class ChartActivity : AppCompatActivity() {
         getDayRangeCalendar.clear()
     }
 
-    fun getReposStar(ownerName: String, reposName: String) {
+    fun getReposStar(
+        ownerName: String,
+        reposName: String,
+        groupType: EnumRange.Companion.GroupType,
+    ) {
         return chartView.getReposStars(ownerName, reposName, groupType)
     }
 //gulihua10010
 
     fun startSubActivity() {
-        val chartIntent = SubscribersActivity.createSubscribeIntent(this@ChartActivity, listForChart)
+        val chartIntent =
+            SubscribersActivity.createSubscribeIntent(this@ChartActivity, listForChart)
         startActivity(chartIntent)
     }
 
