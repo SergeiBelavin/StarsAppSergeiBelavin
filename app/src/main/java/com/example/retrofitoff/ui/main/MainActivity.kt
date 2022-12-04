@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity(), RepositoryAdapter.Listener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
-
+   // private var database = StarsRoomDatabase.getDb(this)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity(), RepositoryAdapter.Listener {
 
         binding.findName.setOnClickListener {
             val searchName = binding.addName.text.toString()
-            val database = StarsRoomDatabase.getDb(this)
+
             viewModel.repoList(searchName)
             viewModel.myResponse.observe(this) { response ->
                 Log.d("MainViewAdapter", "$response")
@@ -40,9 +40,6 @@ class MainActivity : AppCompatActivity(), RepositoryAdapter.Listener {
                     adapter.setList(response!!)
                 }
                 responseList.add(response as ConstructorRepo)
-                Thread {
-                    database.repoDao().getAll()
-                }.start()
 
 
             }

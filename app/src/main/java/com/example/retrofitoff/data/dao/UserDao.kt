@@ -12,8 +12,6 @@ import com.example.retrofitoff.data.entity.constructor.ConstructorUser
 @Dao
 interface UserDao {
 
-
-
     @Query("SELECT * FROM users")
     fun getAll(): List<ConstructorUser>
 
