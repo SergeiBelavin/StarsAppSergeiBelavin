@@ -38,39 +38,28 @@
         android:gravity="center"
         android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/addName"
-        android:layout_width="354dp"
-        android:layout_height="63dp"
-        android:ems="10"
-        android:gravity="center"
-        android:hint="Name"
-        android:inputType="textPersonName"
-        tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck"
-        tools:layout_editor_absoluteX="29dp"
-        tools:layout_editor_absoluteY="176dp" />
+        <EditText
+            android:id="@+id/addName"
+            android:layout_width="354dp"
+            android:layout_height="63dp"
+            android:ems="10"
+            android:gravity="center"
+            android:hint="Find a user"
+            android:inputType="textPersonName"
+            tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck"
+            tools:layout_editor_absoluteX="29dp"
+            tools:layout_editor_absoluteY="176dp" />
 
-    <Button
-        android:id="@+id/findName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="OK"
-        tools:layout_editor_absoluteX="162dp"
-        tools:layout_editor_absoluteY="239dp" />
+        <Button
+            android:id="@+id/findName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Show user repositories"
+            tools:layout_editor_absoluteX="162dp"
+            tools:layout_editor_absoluteY="239dp" />
 
     </LinearLayout>
     </androidx.cardview.widget.CardView>
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

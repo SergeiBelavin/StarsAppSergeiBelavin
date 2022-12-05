@@ -1,6 +1,5 @@
 package com.example.retrofitoff.model
 
-import android.media.Image
 import com.example.retrofitoff.data.entity.User
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

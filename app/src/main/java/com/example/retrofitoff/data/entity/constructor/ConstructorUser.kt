@@ -1,10 +1,10 @@
 package com.example.retrofitoff.data.entity.constructor
 
-import android.media.Image
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.retrofitoff.data.entity.User
+
 @Entity(tableName = "users")
 data class ConstructorUser(
     @PrimaryKey

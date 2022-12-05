@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import com.example.retrofitoff.data.entity.constructor.ConstructorStar
 import com.example.retrofitoff.databinding.SubscribersActivityBinding
 import java.io.Serializable
@@ -30,6 +31,7 @@ class SubscribersActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         super.onCreate(savedInstanceState)
         binding = SubscribersActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)

@@ -1,6 +1,5 @@
 package com.example.retrofitoff.data.api
 
-
 import com.example.retrofitoff.model.RepoUserItem
 import com.example.retrofitoff.model.StarGroupItem
 import retrofit2.http.GET

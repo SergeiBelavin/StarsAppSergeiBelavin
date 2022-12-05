@@ -1,15 +1,15 @@
 package com.example.retrofitoff.data.repository
 
 import android.util.Log
-import com.example.retrofitoff.data.database.StarsRoomDatabase
+import com.example.retrofitoff.data.entity.constructor.ConstructorRepo
+import com.example.retrofitoff.data.entity.constructor.ConstructorStar
+import com.example.retrofitoff.data.entity.constructor.ConstructorUser
 
 import com.example.retrofitoff.data.entity.RepoUser
 
 
 import com.example.retrofitoff.data.entity.StarGroup
-import com.example.retrofitoff.data.entity.constructor.ConstructorRepo
-import com.example.retrofitoff.data.entity.constructor.ConstructorStar
-import com.example.retrofitoff.data.entity.constructor.ConstructorUser
+
 import com.example.retrofitoff.ui.chart.EnumRange
 import kotlin.collections.ArrayList
 
@@ -18,6 +18,7 @@ open class Repository() {
 
     private val MAX_PAGE_SIZE = 100
      val MIN_PAGE_SIZE = 0
+
 
 
     suspend fun getListRepository(userName: String): List<RepoUser> {
@@ -55,7 +56,8 @@ open class Repository() {
         val groupRange = EnumRange.groupsType(groupType)
 
         val listMap = ArrayList<Map<Int, ConstructorStar>>()
-        val daysResponseInt = uniqueDate.getUniqueArrayList(EnumRange.groupsType(groupType))
+
+        val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType))
 
         Log.d("DAYSCALENDAR1", "$daysResponseInt")
 
@@ -66,7 +68,7 @@ open class Repository() {
                 starsList.addAll(response)
 
                 response.forEach {
-                    val dateToInt = uniqueDate.getUniqueDate(it.starredAt)
+                    val dateToInt = UniqueDate().getUniqueDate(it.starredAt)
 
                     val constRepo = ConstructorStar(it.starredAt,
                         ConstructorUser(it.user.id, it.user.name, it.user.avatar),
@@ -94,13 +96,5 @@ open class Repository() {
         } catch (e: Exception) {
             return listMap
         }
-    }
-
-    open fun groupDateChart(groupTypeDate: GroupTypeDate): Boolean {
-        return groupTypeDate.needOrNot
-    }
-    enum class GroupTypeDate(val needOrNot: Boolean) {
-        NEEDED_FOR_CHART(true),
-        NOT_NEEDED_FOR_CHART(false)
     }
 }

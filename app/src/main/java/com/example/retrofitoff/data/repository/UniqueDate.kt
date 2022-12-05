@@ -1,12 +1,11 @@
 package com.example.retrofitoff.data.repository
 
 import java.util.*
+import kotlin.collections.ArrayList
 
-class uniqueDate() {
+class UniqueDate() {
 
-    companion object {
-
-        fun getUniqueArrayList(range: Int): ArrayList<Int> {
+    fun getUniqueArrayList(range: Int): ArrayList<Int> {
             val uniqDaysList = ArrayList<Int>()
 
             for (i in 0 until range) {
@@ -18,12 +17,10 @@ class uniqueDate() {
             }
 
             return uniqDaysList
-        }
 
-        fun getUniqueDate(date: Date): Int {
-            return date.date + 31 * date.month * date.year * 1000
-        }
-
+    }
+     fun getUniqueDate(date: Date): Int {
+        return date.date + 31 * date.month * date.year * 1000
     }
 
 }

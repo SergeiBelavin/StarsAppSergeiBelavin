@@ -18,7 +18,7 @@ data class ConstructorStar (
     override val user: ConstructorUser,
 
     @ColumnInfo(name = "uniqueDate")
-    val uniqueDate: Int,
+    override val uniqueDate: Int,
 
     @Embedded(prefix = "repository_")
     val repo: ConstructorRepo

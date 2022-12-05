@@ -5,13 +5,13 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.retrofitoff.data.database.StarsRoomDatabase
 import com.example.retrofitoff.data.entity.constructor.ConstructorStar
 
 import com.example.retrofitoff.data.repository.Repository
-import com.example.retrofitoff.data.repository.uniqueDate
+import com.example.retrofitoff.data.repository.UniqueDate
 import com.example.retrofitoff.databinding.ChartActivityBinding
 import com.example.retrofitoff.ui.chart.EnumRange.Companion.groupsType
 import com.example.retrofitoff.ui.subscribers.SubscribersActivity
@@ -50,6 +50,7 @@ class ChartActivity : AppCompatActivity() {
     private var dayRangeCalendar = ArrayList<Int>()
     private var getDayRangeCalendar = ArrayList<ArrayList<Int>>()
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         super.onCreate(savedInstanceState)
         binding = ChartActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -104,7 +105,7 @@ class ChartActivity : AppCompatActivity() {
 
     private fun barChartData() {
         val getGroupType = groupsType(groupType)
-        dayRangeCalendar = uniqueDate.getUniqueArrayList(getGroupType)
+        dayRangeCalendar = UniqueDate().getUniqueArrayList(getGroupType)
         Log.d("DATE_LIST", "${dayRangeCalendar}")
 
         for (i in 0 until getGroupType) {

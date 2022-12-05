@@ -1,15 +1,12 @@
 package com.example.retrofitoff.ui.subscribers
 
-import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitoff.R
 import com.example.retrofitoff.data.entity.constructor.ConstructorStar
 import com.example.retrofitoff.databinding.SubscribersAdapterBinding
-import com.squareup.moshi.kotlinx.metadata.internal.metadata.deserialization.Flags.FlagField.first
 import com.squareup.picasso.Picasso
 
 class SubscribersAdapter(): RecyclerView.Adapter<SubscribersAdapter.UserAvatar>() {
