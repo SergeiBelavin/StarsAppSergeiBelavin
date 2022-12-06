@@ -12,10 +12,10 @@ data class ConstructorStar (
     override val user: ConstructorUser,
 
     //@ColumnInfo(name = "uniqueDate")
-    override val uniqueDate: Int,
+    override val uniqueDate: Int?,
 
     //@Embedded(prefix = "user_")
-    val repo: ConstructorRepo
+
 
 
     ): StarGroup {
@@ -23,6 +23,5 @@ data class ConstructorStar (
         starredAt = star.starredAt,
         user = ConstructorUser(star.user),
         uniqueDate = 0,
-        repo = ConstructorRepo(repo)
     )
     }

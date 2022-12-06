@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitoff.data.entity.StarGroup
@@ -50,6 +51,8 @@ class ChartActivity : AppCompatActivity() {
     private var getDayRangeCalendar = ArrayList<ArrayList<Int>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN)
         super.onCreate(savedInstanceState)
         binding = ChartActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)

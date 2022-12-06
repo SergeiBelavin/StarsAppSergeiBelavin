@@ -55,20 +55,20 @@ open class Repository() {
         repoName: String,
         groupType: EnumRange.Companion.GroupType,
     ): List<StarGroup> {
-
-        var pageNumberStar = 1
         val listResponse = ArrayList<StarGroup>()
-        val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType))
-        val lastData = daysResponseInt.lastIndex
-
-        var stopPaging = 0
-        Log.d("DAYSCALENDAR1", "$daysResponseInt")
-
+        var pageNumberStar = 1
         return try {
             do {
                 val response: List<StarGroup> =
                     RetrofitInstance.api.getRepoStars(userName, repoName, pageNumberStar)
                 starsList.addAll(response)
+
+
+
+                val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType))
+                val lastData = daysResponseInt.lastIndex
+
+                var stopPaging = 0
 
                 response.forEach {
                     val dateToInt = UniqueDate().getUniqueDate(it.starredAt)
@@ -78,7 +78,7 @@ open class Repository() {
                                 get() = it.starredAt
                             override val user: User
                                 get() = it.user
-                            override val uniqueDate: Int
+                            override val uniqueDate: Int?
                                 get() = dateToInt
                         }
                             listResponse.add(starGroup)
@@ -88,13 +88,14 @@ open class Repository() {
                 pageNumberStar++
 
             } while (starsList.size == MIN_PAGE_SIZE || stopPaging == 1)
+            starsList.clear()
+            Log.d("LIST_RESPONSE_111", "${listResponse.size}")
             return listResponse
 
         } catch (e: Exception) {
             return listResponse
         }
         listResponse.clear()
-        stopPaging = 0
         starsList.clear()
     }
 

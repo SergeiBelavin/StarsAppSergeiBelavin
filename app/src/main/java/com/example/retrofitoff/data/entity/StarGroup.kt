@@ -1,11 +1,11 @@
 package com.example.retrofitoff.data.entity
 
-import com.example.retrofitoff.data.repository.UniqueDate
+import com.example.retrofitoff.model.StarGroupItem
 import java.io.Serializable
 import java.util.Date
 
 interface StarGroup: Serializable {
     val starredAt: Date
     val user: User
-    val uniqueDate: Int
+    val uniqueDate: Int?
 }

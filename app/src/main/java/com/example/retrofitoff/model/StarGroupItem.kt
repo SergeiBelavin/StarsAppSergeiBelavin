@@ -1,5 +1,6 @@
 package com.example.retrofitoff.model
 
+import com.example.retrofitoff.data.entity.RepoUser
 import com.example.retrofitoff.data.entity.StarGroup
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -13,5 +14,6 @@ data class StarGroupItem(
     @Json(name = "user")
     override val user: UserItem,
 
-    override val uniqueDate: Int,
-): StarGroup
+    override val uniqueDate: Int?,
+
+    ): StarGroup

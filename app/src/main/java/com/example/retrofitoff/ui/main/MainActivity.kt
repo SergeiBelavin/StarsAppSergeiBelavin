@@ -51,7 +51,6 @@ class MainActivity : AppCompatActivity(), RepositoryAdapter.Listener {
             } else {
                 binding.addName.error = "Enter a name"
                 binding.addName.hint = "Enter a name"
-                adapter.setList(emptyList<RepoUser>())
             }
         }
     }
