@@ -1,6 +1,4 @@
 package com.example.retrofitoff.data.repository
-
-import androidx.room.TypeConverter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -9,13 +7,13 @@ object DateConverter {
         SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH)
 
     @JvmStatic
-    @TypeConverter
+    //@TypeConverter
     fun convertDateToTimestamp(date: Date?): String? {
         return date?.toString()
     }
 
     @JvmStatic
-    @TypeConverter
+    //@TypeConverter
     fun convertTimestampToDate(date: String?): Date? {
         return date?.let { simpleDateFormat.parse(it) }
     }

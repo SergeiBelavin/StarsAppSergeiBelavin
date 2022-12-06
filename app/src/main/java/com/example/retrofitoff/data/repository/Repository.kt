@@ -1,25 +1,26 @@
 package com.example.retrofitoff.data.repository
 
 import android.util.Log
-import com.example.retrofitoff.data.entity.constructor.ConstructorRepo
-import com.example.retrofitoff.data.entity.constructor.ConstructorStar
-import com.example.retrofitoff.data.entity.constructor.ConstructorUser
+
 
 import com.example.retrofitoff.data.entity.RepoUser
 
 
 import com.example.retrofitoff.data.entity.StarGroup
-
+import com.example.retrofitoff.data.entity.User
+import com.example.retrofitoff.data.entity.constructor.ConstructorRepo
+import com.example.retrofitoff.data.entity.constructor.ConstructorStar
+import com.example.retrofitoff.data.entity.constructor.ConstructorUser
 import com.example.retrofitoff.ui.chart.EnumRange
+import java.util.*
 import kotlin.collections.ArrayList
 
 
 open class Repository() {
 
     private val MAX_PAGE_SIZE = 100
-     val MIN_PAGE_SIZE = 0
-
-
+    private val MIN_PAGE_SIZE = 0
+    private val starsList = ArrayList<StarGroup>()
 
     suspend fun getListRepository(userName: String): List<RepoUser> {
         val nameOnTheSheet = ArrayList<String>()
@@ -49,16 +50,18 @@ open class Repository() {
         }
     }
 
-    suspend fun getStarRepo(userName: String, repoName: String, groupType: EnumRange.Companion.GroupType,): List<Map<Int, ConstructorStar>> {
+    suspend fun getStarRepo(
+        userName: String,
+        repoName: String,
+        groupType: EnumRange.Companion.GroupType,
+    ): List<StarGroup> {
 
-        val starsList = ArrayList<StarGroup>()
         var pageNumberStar = 1
-        val groupRange = EnumRange.groupsType(groupType)
-
-        val listMap = ArrayList<Map<Int, ConstructorStar>>()
-
+        val listResponse = ArrayList<StarGroup>()
         val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType))
+        val lastData = daysResponseInt.lastIndex
 
+        var stopPaging = 0
         Log.d("DAYSCALENDAR1", "$daysResponseInt")
 
         return try {
@@ -69,32 +72,33 @@ open class Repository() {
 
                 response.forEach {
                     val dateToInt = UniqueDate().getUniqueDate(it.starredAt)
-
-                    val constRepo = ConstructorStar(it.starredAt,
-                        ConstructorUser(it.user.id, it.user.name, it.user.avatar),
-                        dateToInt,
-                        ConstructorRepo(it.user.id, it.user.name, 0,
-                            ConstructorUser(it.user.id, it.user.name, it.user.avatar,)))
-
-                    for (i in 0 until groupRange) {
-                        if (dateToInt == daysResponseInt[i]) {
-                            constRepo.repo.neededForChart = 1
+                    if (dateToInt >= lastData) {
+                        val starGroup = object : StarGroup {
+                            override val starredAt: Date
+                                get() = it.starredAt
+                            override val user: User
+                                get() = it.user
+                            override val uniqueDate: Int
+                                get() = dateToInt
                         }
-                    }
-
-                    val mapResponse: Map<Int, ConstructorStar> =
-                        mutableMapOf(dateToInt to constRepo)
-                    listMap.add(mapResponse)
+                            listResponse.add(starGroup)
+                    } else {stopPaging = 1}
                 }
-                if(starsList.size == MAX_PAGE_SIZE) starsList.clear()
+                if (starsList.size == MAX_PAGE_SIZE) starsList.clear()
                 pageNumberStar++
 
-
-            } while (starsList.size == MIN_PAGE_SIZE)
-            listMap
+            } while (starsList.size == MIN_PAGE_SIZE || stopPaging == 1)
+            return listResponse
 
         } catch (e: Exception) {
-            return listMap
+            return listResponse
         }
+        listResponse.clear()
+        stopPaging = 0
+        starsList.clear()
+    }
+
+    private fun stoppingPagination() {
+        if (starsList.size == MAX_PAGE_SIZE) starsList.clear()
     }
 }

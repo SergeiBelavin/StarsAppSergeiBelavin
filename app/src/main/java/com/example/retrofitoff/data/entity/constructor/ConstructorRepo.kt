@@ -1,23 +1,19 @@
 package com.example.retrofitoff.data.entity.constructor
 
-import androidx.room.ColumnInfo
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.example.retrofitoff.data.entity.RepoUser
 
-@Entity(tableName = "repo")
+//@Entity(tableName = "repo")
 data class ConstructorRepo(
-    @PrimaryKey
+    //@PrimaryKey
     override val id: Long,
 
-    @ColumnInfo(name = "name")
+    //@ColumnInfo(name = "name")
     override val name: String,
 
-    @ColumnInfo(name = "neededForChart")
+    //@ColumnInfo(name = "neededForChart")
     override var neededForChart: Int?,
 
-    @Embedded(prefix = "user_")
+    //@Embedded(prefix = "user_")
     override val user: ConstructorUser
 ): RepoUser {
     constructor(repo: RepoUser) : this(
