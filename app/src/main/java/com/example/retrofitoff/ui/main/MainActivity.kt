@@ -31,22 +31,20 @@ class MainActivity : AppCompatActivity(), RepositoryAdapter.Listener {
         val adapter = RepositoryAdapter(this)
         binding.rcView.adapter = adapter
         val repository = Repository()
-        val responseList = ArrayList<ConstructorRepo>()
         val viewModelFactory = MainViewFactory(repository)
 
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
-        val searchName = binding.addName.text
+
         binding.findName.setOnClickListener {
 
-            if (searchName.toString().isNotEmpty()) {
-                viewModel.repoList(searchName.toString())
+            if (binding.addName.text.isNotEmpty()) {
+                viewModel.repoList(binding.addName.text.toString())
                 viewModel.myResponse.observe(this) { response ->
                     Log.d("MainViewAdapter", "$response")
 
                     response.let {
                         adapter.setList(response!!)
                     }
-                    responseList.add(response as ConstructorRepo)
                 }
             } else {
                 binding.addName.error = "Enter a name"

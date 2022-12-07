@@ -21,6 +21,8 @@ open class Repository() {
     private val MAX_PAGE_SIZE = 100
     private val MIN_PAGE_SIZE = 0
     private val starsList = ArrayList<StarGroup>()
+    private val listResponse = ArrayList<StarGroup>()
+    private var stopPaging = 0
 
     suspend fun getListRepository(userName: String): List<RepoUser> {
         val nameOnTheSheet = ArrayList<String>()
@@ -41,6 +43,7 @@ open class Repository() {
                 pageNumberUser++
                 Log.d("PAGE_NUM_REPO", "$pageNumberUser")
 
+
             } while (nameOnTheSheet.size == MIN_PAGE_SIZE)
             responseList
 
@@ -55,7 +58,7 @@ open class Repository() {
         repoName: String,
         groupType: EnumRange.Companion.GroupType,
     ): List<StarGroup> {
-        val listResponse = ArrayList<StarGroup>()
+
         var pageNumberStar = 1
 
         return try {
@@ -63,38 +66,16 @@ open class Repository() {
                 val response: List<StarGroup> =
                     RetrofitInstance.api.getRepoStars(userName, repoName, pageNumberStar)
                 starsList.addAll(response)
-
                 if (starsList.size == MIN_PAGE_SIZE) return listResponse
-
                 if (starsList.size == MAX_PAGE_SIZE) starsList.clear()
+
                 pageNumberStar++
 
-                val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType))
-                val lastData = daysResponseInt.lastIndex
-
-                var stopPaging = 0
-
-
-
-                response.forEach {
-                    val dateToInt = UniqueDate().getUniqueDate(it.starredAt)
-                    if (dateToInt >= lastData) {
-                        val starGroup = object : StarGroup {
-                            override val starredAt: Date
-                                get() = it.starredAt
-                            override val user: User
-                                get() = it.user
-                            override val uniqueDate: Int?
-                                get() = dateToInt
-                        }
-                            listResponse.add(starGroup)
-                    } else {stopPaging = 1}
-                }
-
+                processingResponse(response, groupType)
 
             } while (starsList.size == MIN_PAGE_SIZE || stopPaging == 1)
+
             starsList.clear()
-            Log.d("LIST_RESPONSE_111", "${listResponse.size}")
             return listResponse
 
         } catch (e: Exception) {
@@ -104,7 +85,31 @@ open class Repository() {
         starsList.clear()
     }
 
-    private fun stoppingPagination() {
-        if (starsList.size == MAX_PAGE_SIZE) starsList.clear()
+    private fun processingResponse(
+        list: List<StarGroup>,
+        groupType: EnumRange.Companion.GroupType,
+    ) {
+        val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType))
+        val lastData = daysResponseInt.lastIndex
+
+        list.forEach {
+            val dateToInt = UniqueDate().getUniqueDate(it.starredAt)
+            if (dateToInt >= lastData) {
+                val starGroup = object : StarGroup {
+                    override val starredAt: Date
+                        get() = it.starredAt
+                    override val user: User
+                        get() = it.user
+                    override val uniqueDate: Int?
+                        get() = dateToInt
+                }
+                listResponse.add(starGroup)
+            } else {
+                stopPaging = 1
+            }
+        }
+    }
+    private fun getRangeDays() {
+
     }
 }
