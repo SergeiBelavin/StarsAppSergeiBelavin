@@ -35,11 +35,11 @@ class MainActivity : AppCompatActivity(), RepositoryAdapter.Listener {
         val viewModelFactory = MainViewFactory(repository)
 
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
-
+        val searchName = binding.addName.text
         binding.findName.setOnClickListener {
-            val searchName = binding.addName.text.toString()
-            if (searchName.isNotEmpty()) {
-                viewModel.repoList(searchName)
+
+            if (searchName.toString().isNotEmpty()) {
+                viewModel.repoList(searchName.toString())
                 viewModel.myResponse.observe(this) { response ->
                     Log.d("MainViewAdapter", "$response")
 
