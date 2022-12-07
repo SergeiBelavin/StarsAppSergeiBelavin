@@ -64,44 +64,37 @@ open class Repository() {
                     RetrofitInstance.api.getRepoStars(userName, repoName, pageNumberStar)
                 starsList.addAll(response)
 
-                if (starsList.size == MAX_PAGE_SIZE) {
-                    starsList.clear()
-                    pageNumberStar++
-                }
-                Log.d("LIST_RESPONSE_DO", "${listResponse.size}")
-                if (starsList.size == MIN_PAGE_SIZE) {
-                    return listResponse
-                }
+                if (starsList.size == MIN_PAGE_SIZE) return listResponse
 
-                val daysResponseInt =
-                    UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType))
+                if (starsList.size == MAX_PAGE_SIZE) starsList.clear()
+                pageNumberStar++
+
+                val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType))
                 val lastData = daysResponseInt.lastIndex
+
+                var stopPaging = 0
 
 
 
                 response.forEach {
-
                     val dateToInt = UniqueDate().getUniqueDate(it.starredAt)
-
                     if (dateToInt >= lastData) {
                         val starGroup = object : StarGroup {
                             override val starredAt: Date
                                 get() = it.starredAt
                             override val user: User
                                 get() = it.user
-                            override val uniqueDate: Int
+                            override val uniqueDate: Int?
                                 get() = dateToInt
                         }
-                        listResponse.add(starGroup)
-
-                    } else {
-                        return listResponse
-                    }
-
+                            listResponse.add(starGroup)
+                    } else {stopPaging = 1}
                 }
 
-            } while (starsList.size == MIN_PAGE_SIZE)
+
+            } while (starsList.size == MIN_PAGE_SIZE || stopPaging == 1)
             starsList.clear()
+            Log.d("LIST_RESPONSE_111", "${listResponse.size}")
             return listResponse
 
         } catch (e: Exception) {
