@@ -10,6 +10,7 @@ import com.example.retrofitoff.data.exception.Limit
 import com.example.retrofitoff.data.repository.Repository
 
 import kotlinx.coroutines.launch
+import okhttp3.Response
 import java.io.IOException
 
 
@@ -20,6 +21,7 @@ class ChartViewModel(
     ) : ViewModel() {
 
     val chartResponse = MutableLiveData<List<StarGroup>>()
+    val error = MutableLiveData<String>()
 
     fun getReposStars(userName: String, repoName: String, groupType: EnumRange.Companion.GroupType) {
         viewModelScope.launch {
@@ -27,10 +29,10 @@ class ChartViewModel(
                 val response: List<StarGroup> =
                     repository.getStarRepo(userName, repoName, groupType)
                 chartResponse.value = response
-
-            } catch (e: Exception) {
-                Log.d("Error ", "Exception: $e")
+            } catch (e: IOException) {
+                Log.d("EXCEPTION_CHART_VIEW", "Exception: $e")
             }
         }
     }
+
 }

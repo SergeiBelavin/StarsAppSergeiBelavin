@@ -16,5 +16,6 @@ data class RepoUserItem(
     override val neededForChart: Int?,
 
     @Json(name = "owner")
-    override val user: UserItem
+    override val user: UserItem,
+
 ): RepoUser

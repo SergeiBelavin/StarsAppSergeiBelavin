@@ -14,12 +14,14 @@ data class ConstructorRepo(
     override var neededForChart: Int?,
 
     //@Embedded(prefix = "user_")
-    override val user: ConstructorUser
+    override val user: ConstructorUser,
+
 ): RepoUser {
     constructor(repo: RepoUser) : this(
         id = repo.id,
         name = repo.name,
         neededForChart = repo.neededForChart,
-        user = ConstructorUser(repo.user)
+        user = ConstructorUser(repo.user),
+
     )
 }

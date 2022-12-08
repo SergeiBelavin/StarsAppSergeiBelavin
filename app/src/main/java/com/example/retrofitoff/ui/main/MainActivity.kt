@@ -39,6 +39,15 @@ class MainActivity : AppCompatActivity(), RepositoryAdapter.Listener {
 
             if (binding.addName.text.isNotEmpty()) {
                 viewModel.repoList(binding.addName.text.toString())
+                repository.error.observe(this) {
+                    errorInternet ->
+                    Toast.makeText(this, errorInternet, Toast.LENGTH_SHORT).show()
+                }
+
+                viewModel.error.observe(this) {
+                    error ->
+                    Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+                }
                 viewModel.myResponse.observe(this) { response ->
                     Log.d("MainViewAdapter", "$response")
 
