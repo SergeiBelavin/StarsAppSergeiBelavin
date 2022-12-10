@@ -1,7 +1,7 @@
 package com.example.retrofitoff.data.api
 
-import com.example.retrofitoff.model.RepoUserItem
-import com.example.retrofitoff.model.StarGroupItem
+import com.example.retrofitoff.data.entity.RepoUserItem
+import com.example.retrofitoff.data.entity.StarGroupItem
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path

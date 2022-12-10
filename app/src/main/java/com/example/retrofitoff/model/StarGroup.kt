@@ -1,6 +1,5 @@
-package com.example.retrofitoff.data.entity
+package com.example.retrofitoff.model
 
-import com.example.retrofitoff.model.StarGroupItem
 import java.io.Serializable
 import java.util.Date
 

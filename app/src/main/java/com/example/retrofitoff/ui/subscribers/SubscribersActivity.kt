@@ -6,8 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
-import com.example.retrofitoff.data.entity.StarGroup
-import com.example.retrofitoff.data.entity.constructor.ConstructorStar
+import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.databinding.SubscribersActivityBinding
 import java.io.Serializable
 

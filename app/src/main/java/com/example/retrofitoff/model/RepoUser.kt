@@ -1,6 +1,7 @@
-package com.example.retrofitoff.data.entity
+package com.example.retrofitoff.model
 
 
+import com.example.retrofitoff.model.User
 import java.io.Serializable
 
 interface RepoUser: Serializable {

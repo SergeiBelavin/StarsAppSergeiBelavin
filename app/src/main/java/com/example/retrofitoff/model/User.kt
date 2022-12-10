@@ -1,4 +1,4 @@
-package com.example.retrofitoff.data.entity
+package com.example.retrofitoff.model
 
 import android.media.Image
 import java.io.Serializable

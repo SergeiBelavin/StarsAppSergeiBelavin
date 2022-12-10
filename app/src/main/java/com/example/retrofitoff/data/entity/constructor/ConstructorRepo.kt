@@ -1,6 +1,6 @@
 package com.example.retrofitoff.data.entity.constructor
 
-import com.example.retrofitoff.data.entity.RepoUser
+import com.example.retrofitoff.model.RepoUser
 
 //@Entity(tableName = "repo")
 data class ConstructorRepo(

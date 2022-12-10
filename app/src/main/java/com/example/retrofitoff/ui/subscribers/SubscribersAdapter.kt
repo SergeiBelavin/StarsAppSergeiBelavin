@@ -5,8 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitoff.R
-import com.example.retrofitoff.data.entity.StarGroup
-import com.example.retrofitoff.data.entity.constructor.ConstructorStar
+import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.databinding.SubscribersAdapterBinding
 import com.squareup.picasso.Picasso
 

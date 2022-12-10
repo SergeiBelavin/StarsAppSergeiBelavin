@@ -1,6 +1,6 @@
-package com.example.retrofitoff.model
+package com.example.retrofitoff.data.entity
 
-import com.example.retrofitoff.data.entity.User
+import com.example.retrofitoff.model.User
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 

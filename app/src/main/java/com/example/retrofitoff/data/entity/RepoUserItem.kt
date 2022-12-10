@@ -1,6 +1,6 @@
-package com.example.retrofitoff.model
+package com.example.retrofitoff.data.entity
 
-import com.example.retrofitoff.data.entity.RepoUser
+import com.example.retrofitoff.model.RepoUser
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -18,4 +18,4 @@ data class RepoUserItem(
     @Json(name = "owner")
     override val user: UserItem,
 
-): RepoUser
+    ): RepoUser

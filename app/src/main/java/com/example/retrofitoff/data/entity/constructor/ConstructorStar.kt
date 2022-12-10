@@ -1,7 +1,7 @@
 package com.example.retrofitoff.data.entity.constructor
 
-import com.example.retrofitoff.data.entity.RepoUser
-import com.example.retrofitoff.data.entity.StarGroup
+import com.example.retrofitoff.model.RepoUser
+import com.example.retrofitoff.model.StarGroup
 import java.util.*
 
 data class ConstructorStar (

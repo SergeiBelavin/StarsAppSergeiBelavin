@@ -1,7 +1,6 @@
 package com.example.retrofitoff.data.entity.constructor
 
-import android.media.Image
-import com.example.retrofitoff.data.entity.User
+import com.example.retrofitoff.model.User
 //@Entity(tableName = "users")
 data class ConstructorUser(
     //@PrimaryKey

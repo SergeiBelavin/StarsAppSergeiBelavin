@@ -4,16 +4,16 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 
 
-import com.example.retrofitoff.data.entity.RepoUser
+import com.example.retrofitoff.model.RepoUser
 
 
-import com.example.retrofitoff.data.entity.StarGroup
-import com.example.retrofitoff.data.entity.User
+import com.example.retrofitoff.model.StarGroup
+import com.example.retrofitoff.model.User
 import com.example.retrofitoff.data.entity.constructor.ConstructorRepo
-import com.example.retrofitoff.data.entity.constructor.ConstructorStar
-import com.example.retrofitoff.data.entity.constructor.ConstructorUser
 import com.example.retrofitoff.ui.chart.EnumRange
 import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -52,14 +52,27 @@ open class Repository() {
             responseList
 
         } catch (e: IOException) {
-            Log.d("NotInter", "$e")
+            Log.d("NO_INTERNET", "$e")
             error.value = "Отсутствует соединение с интернетом"
             responseList
-        } catch (e: Exception) {
-            Log.d("UserNitFound", "$e")
+        }
+        catch (e: Exception) {
+            Log.d("USER_NOT_FOUND", "$e")
             error.value = "Пользователь не найден"
             responseList
         }
+
+
+    }
+    fun limit(url: String): String {
+        var text = ""
+        with(URL(url).openConnection() as HttpURLConnection) {
+            when(responseCode) {
+                404 -> text ="Пользователь не найден"
+                else -> {"wq"}
+            }
+        }
+        return text
     }
 
     suspend fun getStarRepo(
@@ -68,7 +81,7 @@ open class Repository() {
         groupType: EnumRange.Companion.GroupType,
     ): List<StarGroup> {
         val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType))
-        val lastData = daysResponseInt.lastIndex
+        val lastData = daysResponseInt[daysResponseInt.size-1]
         var pageNumberStar = 1
 
         return try {
@@ -77,17 +90,23 @@ open class Repository() {
                     RetrofitInstance.api.getRepoStars(userName, repoName, pageNumberStar)
                 starsList.addAll(response)
 
-                if (starsList.size == MIN_PAGE_SIZE) return listResponse
-                if (starsList.size == MAX_PAGE_SIZE) starsList.clear()
-                if(UniqueDate().getUniqueDate(response[0].starredAt) < lastData) {
+                if (starsList.size == MIN_PAGE_SIZE){
+                    stopPaging = 1
                     return listResponse
-                } else {
-                    pageNumberStar++
-                    processingResponse(response, groupType)
                 }
 
-            } while (starsList.size == MIN_PAGE_SIZE || stopPaging == 1)
+                if (starsList.size == MAX_PAGE_SIZE) starsList.clear()
 
+                if(UniqueDate().getUniqueDate(response[0].starredAt) < lastData) {
+                    stopPaging = 1
+                    return listResponse
+                }
+
+                    pageNumberStar++
+                    processingResponse(response, groupType)
+
+
+            } while (starsList.size == MIN_PAGE_SIZE || stopPaging == 1 || UniqueDate().getUniqueDate(response[0].starredAt) < lastData)
             starsList.clear()
             listResponse
 
@@ -95,11 +114,12 @@ open class Repository() {
             Log.d("NotInter", "$e")
             error.value = "Отсутствует соединение с интернетом"
             listResponse
-        } catch (e: IOException) {
-            Log.d("NotInter", "$e")
-            error.value = "Отсутствует соединение с интернетом"
-            listResponse
         }
+        //catch (e: IOException) {
+        //    Log.d("NotInter", "$e")
+        //    error.value = "Отсутствует соединение с интернетом"
+        //    listResponse
+        //}
         listResponse.clear()
         starsList.clear()
     }
@@ -110,8 +130,10 @@ open class Repository() {
         val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType))
         val lastData = daysResponseInt.lastIndex
 
-        list.forEach {
+         list.forEach {
+
             val dateToInt = UniqueDate().getUniqueDate(it.starredAt)
+
             if (dateToInt >= lastData) {
                 val starGroup = object : StarGroup {
                     override val starredAt: Date

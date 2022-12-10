@@ -6,10 +6,10 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.retrofitoff.data.entity.StarGroup
-import com.example.retrofitoff.data.entity.constructor.ConstructorStar
+import com.example.retrofitoff.model.StarGroup
 
 import com.example.retrofitoff.data.repository.Repository
 import com.example.retrofitoff.data.repository.UniqueDate
@@ -64,6 +64,8 @@ class ChartActivity : AppCompatActivity() {
 
         chartView = ViewModelProvider(this, viewModelFactory)[ChartViewModel::class.java]
 
+        error(repository)
+
         barEntriesList = ArrayList()
 
         binding.fourteenDaysLong.setOnClickListener {
@@ -81,6 +83,9 @@ class ChartActivity : AppCompatActivity() {
             clearData()
             getReposStar(ownerName.toString(), reposName.toString(), groupType)
         }
+
+
+
         chartView.chartResponse.observe(this) { dateList ->
 
             dateResponseList = dateList
@@ -151,8 +156,16 @@ class ChartActivity : AppCompatActivity() {
 //gulihua10010
 
     fun startSubActivity() {
-        val chartIntent = SubscribersActivity.createSubscribeIntent(this@ChartActivity, dateResponseList)
+        val chartIntent =
+            SubscribersActivity.createSubscribeIntent(this@ChartActivity, dateResponseList)
         startActivity(chartIntent)
     }
 
+    fun error(repository: Repository) {
+
+        repository.error.observe(this) { error ->
+            Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+
+        }
+    }
 }

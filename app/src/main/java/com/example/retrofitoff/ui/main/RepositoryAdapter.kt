@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitoff.R
-import com.example.retrofitoff.data.entity.RepoUser
+import com.example.retrofitoff.model.RepoUser
 import com.example.retrofitoff.databinding.ReposNameListBinding
 
 class RepositoryAdapter(private val listener: Listener): RecyclerView.Adapter<RepositoryAdapter.StartViewHolder>() {
