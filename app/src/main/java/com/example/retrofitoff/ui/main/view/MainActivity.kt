@@ -18,6 +18,8 @@ import com.example.retrofitoff.data.repository.Repository
 import com.example.retrofitoff.ui.chart.ChartActivity
 import com.example.retrofitoff.ui.main.MainViewFactory
 import com.example.retrofitoff.ui.main.RepoAdapter
+import com.example.retrofitoff.ui.main.presenter.IMainPresenter
+import com.example.retrofitoff.ui.main.presenter.MainPresenter
 
 
 class MainActivity : AppCompatActivity(), RepoAdapter.Listener, IMainView {
@@ -26,6 +28,8 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener, IMainView {
     private lateinit var addName: EditText
     private lateinit var rcView: RecyclerView
     private lateinit var progressBar: ProgressBar
+
+    lateinit var iMainPresenter: IMainPresenter
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
@@ -38,8 +42,8 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener, IMainView {
             WindowManager.LayoutParams.FLAG_FULLSCREEN)
         super.onCreate(savedInstanceState)
 
+        initPresenter()
         findView()
-
         setListener()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -75,6 +79,10 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener, IMainView {
         startActivity(chartIntent)
     }
 
+    private fun initPresenter() {
+        iMainPresenter = MainPresenter(iMainView = this)
+    }
+
     override fun errorToast() {
         repository.error.observe(this) { error ->
             Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
@@ -89,11 +97,12 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener, IMainView {
     }
 
     private fun setListener() {
+        var num = 1
         findName.setOnClickListener {
-
+            num++
         }
         rcView.setOnClickListener {
-
+num++
         }
     }
 
