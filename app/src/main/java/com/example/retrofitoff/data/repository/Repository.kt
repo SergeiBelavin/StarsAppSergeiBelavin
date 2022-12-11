@@ -79,9 +79,11 @@ open class Repository() {
             do {
                 val response: List<StarGroup> =
                     RetrofitInstance.api.getRepoStars(userName, repoName, pageNumberStar)
+
                 starsList.addAll(response)
                 Log.d("DATE_LIST_LASTDATE3", "${UniqueDate().getUniqueDate(response[0].starredAt)}")
                 Log.d("DATE_LIST_LASTDATE4", "${response[0].starredAt}")
+                Log.d("DATE_LIST_LASTDATE5", "${starsList}")
 
                 if (starsList.size == MIN_PAGE_SIZE){
                     stopPaging = 1
@@ -90,10 +92,10 @@ open class Repository() {
 
                 if (starsList.size == MAX_PAGE_SIZE) starsList.clear()
 
-                if(UniqueDate().getUniqueDate(response[0].starredAt) < lastData) {
-                    stopPaging = 1
-                    return listResponse
-                }
+                //if(UniqueDate().getUniqueDate(response[0].starredAt) < lastData) {
+                //    stopPaging = 1
+                //    return listResponse
+                //}
 
                     pageNumberStar++
                     processingResponse(response, groupType)
