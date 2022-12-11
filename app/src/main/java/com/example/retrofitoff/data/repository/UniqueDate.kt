@@ -12,16 +12,16 @@ class UniqueDate() {
     fun getUniqueArrayList(range: Int): ArrayList<Int> {
         val uniqDaysList = ArrayList<Int>()
 
-        when(range) {
+        when (range) {
             14 -> {
                 val calendarWeek = Calendar.getInstance()
                 calendarWeek.get(Calendar.DAY_OF_YEAR)
-                val dateTimeNow  = calendarWeek.firstDayOfWeek
+                val dateTimeNow = calendarWeek.firstDayOfWeek
                 val dayNum = dateTimeNow
                 var dayWeek = 0
 
 
-                when(dayNum) {
+                when (dayNum) {
                     1 -> dayWeek = 7
                     2 -> dayWeek = 1
                     3 -> dayWeek = 2
@@ -61,12 +61,10 @@ class UniqueDate() {
                 val calendarMonth = Calendar.getInstance()
                 calendarMonth.get(Calendar.DAY_OF_YEAR)
                 val dateTimeNow = calendarMonth.time
-
                 for (i in 0 until dateTimeNow.month) {
                     val calendar = Calendar.getInstance()
                     calendar.add(Calendar.YEAR, -i)
                     Log.d("DATE_YEAR", "${calendar}")
-
                     val dayAgo = calendar.time
                     uniqDaysList.add(getUniqueDate(dayAgo))
                     calendar.clear()

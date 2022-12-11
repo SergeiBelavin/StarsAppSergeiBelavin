@@ -69,18 +69,18 @@ class ChartActivity : AppCompatActivity() {
         barEntriesList = ArrayList()
 
         binding.fourteenDaysLong.setOnClickListener {
-            groupType = EnumRange.Companion.GroupType.WEEK
             clearData()
+            groupType = EnumRange.Companion.GroupType.WEEK
             getReposStar(ownerName.toString(), reposName.toString(), groupType)
         }
         binding.thirtyDaysLong.setOnClickListener {
-            groupType = EnumRange.Companion.GroupType.MONTH
             clearData()
+            groupType = EnumRange.Companion.GroupType.MONTH
             getReposStar(ownerName.toString(), reposName.toString(), groupType)
         }
         binding.sixtyDaysLong.setOnClickListener {
-            groupType = EnumRange.Companion.GroupType.YEAR
             clearData()
+            groupType = EnumRange.Companion.GroupType.YEAR
             getReposStar(ownerName.toString(), reposName.toString(), groupType)
         }
 
@@ -113,28 +113,52 @@ class ChartActivity : AppCompatActivity() {
     }
 
     private fun barChartData() {
+
         val getGroupType = groupsType(groupType)
         dayRangeCalendar = UniqueDate().getUniqueArrayList(getGroupType)
 
-        Log.d("DATE_LIST", "${dayRangeCalendar}")
-        Log.d("DATE_LIST_RESP", "${dateResponseList}")
+        if (getGroupType == 60) {
 
-        for (i in 0 until dayRangeCalendar.size) {
-            getDayRangeCalendar.add(ArrayList())
-        }
+            for (i in 0 until dayRangeCalendar.size) {
+                getDayRangeCalendar.add(ArrayList())
+            }
 
-        dateResponseList.forEach {
+            dateResponseList.forEach {
 
-            for (i in 0 until getDayRangeCalendar.size) {
-                if (dayRangeCalendar[i] == it.uniqueDate) {
-                    getDayRangeCalendar[i].add(1)
+                for (i in 0 until getDayRangeCalendar.size) {
+                    if (it.uniqueDate!! <= dayRangeCalendar[i] && it.uniqueDate!! >= dayRangeCalendar[i + 1]) {
+                        getDayRangeCalendar[i].add(1)
+                    }
                 }
             }
-        }
 
-        for (i in 0 until getDayRangeCalendar.size) {
+            for (i in 0 until getDayRangeCalendar.size) {
+                barEntriesList.add(BarEntry(i.toFloat() + 1f,
+                    getDayRangeCalendar[i].size.toFloat()))
+            }
+        } else {
 
-            barEntriesList.add(BarEntry(i.toFloat() + 1f, getDayRangeCalendar[i].size.toFloat()))
+            Log.d("DATE_LIST", "${dayRangeCalendar}")
+            Log.d("DATE_LIST_RESP", "${dateResponseList}")
+
+            for (i in 0 until dayRangeCalendar.size) {
+                getDayRangeCalendar.add(ArrayList())
+            }
+
+            dateResponseList.forEach {
+
+                for (i in 0 until getDayRangeCalendar.size) {
+                    if (dayRangeCalendar[i] == it.uniqueDate) {
+                        getDayRangeCalendar[i].add(1)
+                    }
+                }
+            }
+
+            for (i in 0 until getDayRangeCalendar.size) {
+
+                barEntriesList.add(BarEntry(i.toFloat() + 1f,
+                    getDayRangeCalendar[i].size.toFloat()))
+            }
         }
     }
 
@@ -142,7 +166,6 @@ class ChartActivity : AppCompatActivity() {
         dateResponseList = emptyList<StarGroup>()
         barEntriesList = ArrayList()
         dayRangeCalendar = ArrayList<Int>()
-        Log.d("DAY_RANGE_DAY", "${barEntriesList.size}")
         getDayRangeCalendar = ArrayList<ArrayList<Int>>()
     }
 

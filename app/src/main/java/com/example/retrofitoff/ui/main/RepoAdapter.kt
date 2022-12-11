@@ -8,7 +8,7 @@ import com.example.retrofitoff.R
 import com.example.retrofitoff.model.RepoUser
 import com.example.retrofitoff.databinding.ReposNameListBinding
 
-class RepositoryAdapter(private val listener: Listener): RecyclerView.Adapter<RepositoryAdapter.StartViewHolder>() {
+class RepoAdapter(private val listener: Listener): RecyclerView.Adapter<RepoAdapter.StartViewHolder>() {
 
     private var repoList=emptyList<RepoUser>()
 

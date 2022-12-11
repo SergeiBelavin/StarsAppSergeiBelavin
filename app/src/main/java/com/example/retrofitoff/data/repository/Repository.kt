@@ -56,8 +56,7 @@ open class Repository() {
             Log.d("NO_INTERNET", "$e")
             error.value = "Отсутствует соединение с интернетом"
             responseList
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             Log.d("USER_NOT_FOUND", "$e")
             error.value = "Пользователь не найден"
             responseList
@@ -70,7 +69,7 @@ open class Repository() {
         groupType: EnumRange.Companion.GroupType,
     ): List<StarGroup> {
         val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType))
-        val lastData = daysResponseInt[daysResponseInt.size-1]
+        val lastData = daysResponseInt[daysResponseInt.size - 1]
         var pageNumberStar = 1
         Log.d("DATE_LIST_LASTDATE1", "$lastData")
         Log.d("DATE_LIST_LASTDATE2", "$daysResponseInt")
@@ -85,7 +84,7 @@ open class Repository() {
                 Log.d("DATE_LIST_LASTDATE4", "${response[0].starredAt}")
                 Log.d("DATE_LIST_LASTDATE5", "${starsList}")
 
-                if (starsList.size == MIN_PAGE_SIZE){
+                if (starsList.size == MIN_PAGE_SIZE) {
                     stopPaging = 1
                     return listResponse
                 }
@@ -97,13 +96,15 @@ open class Repository() {
                 //    return listResponse
                 //}
 
-                    pageNumberStar++
-                    processingResponse(response, groupType)
+                pageNumberStar++
+                processingResponse(response, groupType)
 
                 Log.d("DATE_LIST_PROCESSING", "$listResponse")
 
 
-            } while (starsList.size == MIN_PAGE_SIZE || stopPaging == 1 || UniqueDate().getUniqueDate(response[0].starredAt) < lastData)
+            } while (starsList.size == MIN_PAGE_SIZE || stopPaging == 1 || UniqueDate().getUniqueDate(
+                    response[0].starredAt) < lastData
+            )
             starsList.clear()
             listResponse
 
@@ -120,14 +121,15 @@ open class Repository() {
         listResponse.clear()
         starsList.clear()
     }
+
     private fun processingResponse(
         list: List<StarGroup>,
         groupType: EnumRange.Companion.GroupType,
     ) {
         val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType))
-        val lastData = daysResponseInt[daysResponseInt.size -1]
+        val lastData = daysResponseInt[daysResponseInt.size - 1]
 
-         list.forEach {
+        list.forEach {
 
             val dateToInt = UniqueDate().getUniqueDate(it.starredAt)
 
