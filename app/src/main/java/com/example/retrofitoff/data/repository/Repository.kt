@@ -16,6 +16,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.log
 
 
 open class Repository() {
@@ -61,18 +62,6 @@ open class Repository() {
             error.value = "Пользователь не найден"
             responseList
         }
-
-
-    }
-    fun limit(url: String): String {
-        var text = ""
-        with(URL(url).openConnection() as HttpURLConnection) {
-            when(responseCode) {
-                404 -> text ="Пользователь не найден"
-                else -> {"wq"}
-            }
-        }
-        return text
     }
 
     suspend fun getStarRepo(
@@ -83,12 +72,16 @@ open class Repository() {
         val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType))
         val lastData = daysResponseInt[daysResponseInt.size-1]
         var pageNumberStar = 1
+        Log.d("DATE_LIST_LASTDATE1", "$lastData")
+        Log.d("DATE_LIST_LASTDATE2", "$daysResponseInt")
 
         return try {
             do {
                 val response: List<StarGroup> =
                     RetrofitInstance.api.getRepoStars(userName, repoName, pageNumberStar)
                 starsList.addAll(response)
+                Log.d("DATE_LIST_LASTDATE3", "${UniqueDate().getUniqueDate(response[0].starredAt)}")
+                Log.d("DATE_LIST_LASTDATE4", "${response[0].starredAt}")
 
                 if (starsList.size == MIN_PAGE_SIZE){
                     stopPaging = 1
@@ -104,6 +97,8 @@ open class Repository() {
 
                     pageNumberStar++
                     processingResponse(response, groupType)
+
+                Log.d("DATE_LIST_PROCESSING", "$listResponse")
 
 
             } while (starsList.size == MIN_PAGE_SIZE || stopPaging == 1 || UniqueDate().getUniqueDate(response[0].starredAt) < lastData)
@@ -128,7 +123,7 @@ open class Repository() {
         groupType: EnumRange.Companion.GroupType,
     ) {
         val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType))
-        val lastData = daysResponseInt.lastIndex
+        val lastData = daysResponseInt[daysResponseInt.size -1]
 
          list.forEach {
 

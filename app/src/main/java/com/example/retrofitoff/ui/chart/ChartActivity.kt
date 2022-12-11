@@ -45,7 +45,7 @@ class ChartActivity : AppCompatActivity() {
     lateinit var barDataSet: BarDataSet
     lateinit var barEntriesList: ArrayList<BarEntry>
 
-    private var groupType = EnumRange.Companion.GroupType.FOURTEEN_DAYS
+    private var groupType = EnumRange.Companion.GroupType.WEEK
     private var dateResponseList = emptyList<StarGroup>()
     private var dayRangeCalendar = ArrayList<Int>()
     private var getDayRangeCalendar = ArrayList<ArrayList<Int>>()
@@ -69,17 +69,17 @@ class ChartActivity : AppCompatActivity() {
         barEntriesList = ArrayList()
 
         binding.fourteenDaysLong.setOnClickListener {
-            groupType = EnumRange.Companion.GroupType.FOURTEEN_DAYS
+            groupType = EnumRange.Companion.GroupType.WEEK
             clearData()
             getReposStar(ownerName.toString(), reposName.toString(), groupType)
         }
         binding.thirtyDaysLong.setOnClickListener {
-            groupType = EnumRange.Companion.GroupType.THIRTY_DAYS
+            groupType = EnumRange.Companion.GroupType.MONTH
             clearData()
             getReposStar(ownerName.toString(), reposName.toString(), groupType)
         }
         binding.sixtyDaysLong.setOnClickListener {
-            groupType = EnumRange.Companion.GroupType.SIXTY_DAYS
+            groupType = EnumRange.Companion.GroupType.YEAR
             clearData()
             getReposStar(ownerName.toString(), reposName.toString(), groupType)
         }
@@ -114,12 +114,12 @@ class ChartActivity : AppCompatActivity() {
 
     private fun barChartData() {
         val getGroupType = groupsType(groupType)
-
         dayRangeCalendar = UniqueDate().getUniqueArrayList(getGroupType)
 
         Log.d("DATE_LIST", "${dayRangeCalendar}")
+        Log.d("DATE_LIST_RESP", "${dateResponseList}")
 
-        for (i in 0 until getGroupType) {
+        for (i in 0 until dayRangeCalendar.size) {
             getDayRangeCalendar.add(ArrayList())
         }
 
