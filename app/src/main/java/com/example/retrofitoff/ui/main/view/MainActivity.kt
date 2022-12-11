@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener, IMainView {
             if (binding.addName.text.isNotEmpty()) {
                 viewModel.repoList(binding.addName.text.toString())
 
-                error()
+                errorToast()
 
                 viewModel.myResponse.observe(this) { response ->
                     Log.d("MainViewAdapter", "$response")
@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener, IMainView {
         startActivity(chartIntent)
     }
 
-    private fun error() {
+    override fun errorToast() {
         repository.error.observe(this) { error ->
             Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
         }
