@@ -26,7 +26,6 @@ open class Repository() {
     private val starsList = ArrayList<StarGroup>()
     private val listResponse = ArrayList<StarGroup>()
     private var stopPaging = 0
-    val error: MutableLiveData<String> = MutableLiveData()
 
     suspend fun getListRepository(userName: String): List<RepoUser> {
         val nameOnTheSheet = ArrayList<String>()
@@ -52,14 +51,8 @@ open class Repository() {
             } while (nameOnTheSheet.size == MIN_PAGE_SIZE)
             responseList
 
-        } catch (e: IOException) {
-            Log.d("NO_INTERNET", "$e")
-            error.value = "Отсутствует соединение с интернетом"
-            responseList
-        } catch (e: Exception) {
-            Log.d("USER_NOT_FOUND", "$e")
-            error.value = "Пользователь не найден"
-            responseList
+        } finally {
+
         }
     }
 
@@ -91,11 +84,6 @@ open class Repository() {
 
                 if (starsList.size == MAX_PAGE_SIZE) starsList.clear()
 
-                //if(UniqueDate().getUniqueDate(response[0].starredAt) < lastData) {
-                //    stopPaging = 1
-                //    return listResponse
-                //}
-
                 pageNumberStar++
                 processingResponse(response, groupType)
 
@@ -108,18 +96,9 @@ open class Repository() {
             starsList.clear()
             listResponse
 
-        } catch (e: Exception) {
-            Log.d("NotInter", "$e")
-            error.value = "Отсутствует соединение с интернетом"
-            listResponse
+        } finally {
+
         }
-        //catch (e: IOException) {
-        //    Log.d("NotInter", "$e")
-        //    error.value = "Отсутствует соединение с интернетом"
-        //    listResponse
-        //}
-        listResponse.clear()
-        starsList.clear()
     }
 
     private fun processingResponse(

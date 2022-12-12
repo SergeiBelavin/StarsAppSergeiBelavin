@@ -8,6 +8,7 @@ import com.example.retrofitoff.model.RepoUser
 
 import com.example.retrofitoff.data.repository.Repository
 import kotlinx.coroutines.launch
+
 import okhttp3.OkHttpClient
 import java.io.IOException
 
@@ -15,24 +16,30 @@ class MainViewModel(
     private val repository: Repository,
 ) : ViewModel() {
 
-
     val myResponse: MutableLiveData<List<RepoUser>> = MutableLiveData()
+    val error: MutableLiveData<String> = MutableLiveData()
 
-    private val client = OkHttpClient()
-
-     fun repoList(userName: String,) {
+    fun repoList(userName: String) {
 
         viewModelScope.launch {
             try {
-                val response: List<RepoUser> = repository.getListRepository(userName,)
+                val response: List<RepoUser> = repository.getListRepository(userName)
                 myResponse.value = response
 
+            } catch (e: IOException) {
+                Log.d("MAIN_V_ERROR_GET_REPO", "Exception: $e")
+                //Log.d("ErrorGetRepoList3", "Exception: ${e.message}")
+                //Log.d("ErrorGetRepoList4", "Exception: ${e.localizedMessage?.hashCode()}")
+                if (e.localizedMessage?.hashCode() == 964672022) {
+                    error.value = "Отсутствует подключение к интернету"
+                }
 
             } catch (e: Exception) {
-                Log.d("ErrorGetRepoList", "Exception: $e")
-            }
-            catch (e: IOException ) {
-                Log.d("ErrorGetRepoList", "Exception: $e")
+                Log.d("MAIN_V_ERROR_GET_REPO", "Exception: $e")
+
+                if (e.localizedMessage?.hashCode() == -1358142848) {
+                    error.value = "Пользователь не найден"
+                }
             }
         }
     }

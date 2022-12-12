@@ -28,8 +28,17 @@ class ChartViewModel(
                 chartResponse.value = response
             } catch (e: IOException) {
                 Log.d("EXCEPTION_CHART_VIEW", "Exception: $e")
+                Log.d("EXCEPTION_CHART_VIEW", "Exception: ${e.message}")
+                Log.d("EXCEPTION_CHART_VIEW", "Exception: ${e.localizedMessage?.hashCode()}")
+
+                if (e.localizedMessage?.hashCode() == 964672022) {
+                    error.value = "Отсутствует подключение к интернету"
+                }
+
             } catch (e: Exception) {
                 Log.d("EXCEPTION_CHART_VIEW", "Exception: $e")
+                Log.d("EXCEPTION_CHART_VIEW", "Exception: ${e.message}")
+                Log.d("EXCEPTION_CHART_VIEW", "Exception: ${e.localizedMessage?.hashCode()}")
             }
         }
     }

@@ -4,32 +4,24 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
-import com.example.retrofitoff.R
 import com.example.retrofitoff.model.RepoUser
 import com.example.retrofitoff.databinding.ActivityMainBinding
 import com.example.retrofitoff.data.repository.Repository
 import com.example.retrofitoff.ui.chart.ChartActivity
 import com.example.retrofitoff.ui.main.MainViewFactory
 import com.example.retrofitoff.ui.main.RepoAdapter
-import com.example.retrofitoff.ui.main.presenter.IMainPresenter
-import com.example.retrofitoff.ui.main.presenter.MainPresenter
 
 
-class MainActivity : AppCompatActivity(), RepoAdapter.Listener, IMainView {
+class MainActivity : AppCompatActivity(), RepoAdapter.Listener {
 
-    private lateinit var findName: Button
-    private lateinit var addName: EditText
-    private lateinit var rcView: RecyclerView
-    private lateinit var progressBar: ProgressBar
+    //private lateinit var findName: Button
+    //private lateinit var addName: EditText
+    //private lateinit var rcView: RecyclerView
+    //private lateinit var progressBar: ProgressBar
 
-    lateinit var iMainPresenter: IMainPresenter
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
@@ -42,9 +34,9 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener, IMainView {
             WindowManager.LayoutParams.FLAG_FULLSCREEN)
         super.onCreate(savedInstanceState)
 
-        initPresenter()
+
         findView()
-        setListener()
+
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -56,9 +48,8 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener, IMainView {
         binding.findName.setOnClickListener {
 
             if (binding.addName.text.isNotEmpty()) {
+                binding.addName.hint = "Find a user"
                 viewModel.repoList(binding.addName.text.toString())
-
-                errorToast()
 
                 viewModel.myResponse.observe(this) { response ->
                     Log.d("MainViewAdapter", "$response")
@@ -72,6 +63,7 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener, IMainView {
                 binding.addName.hint = "Enter a name"
             }
         }
+        errorToast()
     }
 
     override fun onClick(list: RepoUser) {
@@ -79,46 +71,26 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener, IMainView {
         startActivity(chartIntent)
     }
 
-    private fun initPresenter() {
-        iMainPresenter = MainPresenter(iMainView = this)
-    }
 
-    override fun errorToast() {
-        repository.error.observe(this) { error ->
-            Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+    private fun errorToast() {
+        viewModel.error.observe(this) { error ->
+            binding.errorText.text = error
+            if (error != "") {
+                binding.cardViewError.visibility = View.VISIBLE
+            }
+            binding.errorOk.setOnClickListener {
+                binding.cardViewError.visibility = View.GONE
+            }
+            //Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
         }
+        viewModel.error.value = ""
     }
 
     private fun findView() {
-        findName = findViewById(R.id.findName)
-        addName = findViewById(R.id.addName)
-        rcView = findViewById(R.id.rcView)
-        progressBar = findViewById(R.id.progressBar)
-    }
-
-    private fun setListener() {
-        var num = 1
-        findName.setOnClickListener {
-            num++
-        }
-        rcView.setOnClickListener {
-num++
-        }
-    }
-
-    override fun onFiendRepoUser(name: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getStarRepo(name: String, repo: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onShowProgress() {
-        progressBar.visibility = View.VISIBLE
-    }
-
-    override fun onHideProgress() {
-        progressBar.visibility = View.GONE
+        // findName = findViewById(R.id.findName)
+        // addName = findViewById(R.id.addName)
+        // rcView = findViewById(R.id.rcView)
+        // progressBar = findViewById(R.id.progressBar)
     }
 }
+
