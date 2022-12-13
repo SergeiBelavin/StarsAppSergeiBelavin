@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="#EAEAEA"
     android:gravity="center"
+    android:orientation="vertical"
     android:padding="10dp"
     tools:context=".ui.chart.ChartActivity">
 
@@ -17,27 +19,49 @@
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/barChart"
-        android:layout_width="273dp"
-        android:layout_height="456dp">
+        android:layout_width="284dp"
+        android:layout_height="342dp">
 
     </com.github.mikephil.charting.charts.BarChart>
 
-    <Button
-        android:id="@+id/fourteenDaysLong"
-        android:layout_width="243dp"
+    <LinearLayout
+        android:layout_width="351dp"
         android:layout_height="wrap_content"
-        android:text="14 days" />
+        android:background="#FFFFFF"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/weekBack"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="back"
+            app:backgroundTint="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/week"
+            android:layout_width="51dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="week"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/weekNext"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="next"
+            app:backgroundTint="#FFFFFF" />
+    </LinearLayout>
 
     <Button
-        android:id="@+id/thirtyDaysLong"
-        android:layout_width="245dp"
+        android:id="@+id/showGraph"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:text="30 days" />
-
-    <Button
-        android:id="@+id/sixtyDaysLong"
-        android:layout_width="243dp"
-        android:layout_height="wrap_content"
-        android:text="60 days" />
+        android:text="show graph" />
 
 </LinearLayout>

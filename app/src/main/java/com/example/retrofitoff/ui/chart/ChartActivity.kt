@@ -3,12 +3,18 @@ package com.example.retrofitoff.ui.chart
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build.VERSION_CODES.P
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.ViewModelProvider
+import com.example.retrofitoff.R
+import com.example.retrofitoff.data.repository.DateConverter
 import com.example.retrofitoff.model.StarGroup
 
 import com.example.retrofitoff.data.repository.Repository
@@ -20,6 +26,10 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import java.text.SimpleDateFormat
+import java.time.Month
+import java.util.*
+import java.util.Calendar.DAY_OF_YEAR
 import kotlin.collections.ArrayList
 
 class ChartActivity : AppCompatActivity() {
@@ -67,20 +77,49 @@ class ChartActivity : AppCompatActivity() {
         error(repository)
 
         barEntriesList = ArrayList()
+        val weekBack = 7
+        val calendar = Calendar.getInstance()
+        val parser = SimpleDateFormat ("dd/MM/yyyy")
+        var numWeek = 0
+        var numMonth = 0
 
-        binding.fourteenDaysLong.setOnClickListener {
-            clearData()
-            groupType = EnumRange.Companion.GroupType.WEEK
-            getReposStar(ownerName.toString(), reposName.toString(), groupType)
+        binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.grey))
+
+        binding.weekBack.setOnClickListener {
+            if (numWeek <= 0) {
+                binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
+                numWeek--
+                Log.d("DATE_MINUS", "${weekBack}")
+                Log.d("DATE_MINUS", "${calendar}")
+                Log.d("DATE_MINUS", "${numWeek}")
+                calendar.add(Calendar.DATE, -weekBack)
+                binding.week.text = "${parser.format(Date(calendar.timeInMillis))}"
+            }
         }
-        binding.thirtyDaysLong.setOnClickListener {
+
+        binding.weekNext.setOnClickListener {
+            Log.d("DATE_MINUS", "${numWeek}")
+
+
+            if (numWeek <0) {
+                binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
+                numWeek++
+                calendar.add(Calendar.DATE, +weekBack)
+                binding.week.text = "${parser.format(Date(calendar.timeInMillis))}"
+            } else {
+                binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.grey))
+            }
+
+            if (numWeek == 0) {
+                binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.grey))
+                binding.week.text = "current week"
+            }
+
+            }
+
+        binding.showGraph.setOnClickListener {
             clearData()
             groupType = EnumRange.Companion.GroupType.MONTH
-            getReposStar(ownerName.toString(), reposName.toString(), groupType)
-        }
-        binding.sixtyDaysLong.setOnClickListener {
-            clearData()
-            groupType = EnumRange.Companion.GroupType.YEAR
             getReposStar(ownerName.toString(), reposName.toString(), groupType)
         }
 
@@ -189,5 +228,5 @@ class ChartActivity : AppCompatActivity() {
         //repository.error.observe(this) { error ->
         //    Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
 
-        }
     }
+}
