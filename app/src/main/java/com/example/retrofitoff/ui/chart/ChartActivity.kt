@@ -40,8 +40,7 @@ class ChartActivity : AppCompatActivity() {
         private val KEY_REPOS = "RepoName"
 
         fun createIntent(context: Context, name: String, repo: String): Intent {
-            return Intent(context, ChartActivity::class.java)
-                .putExtra(KEY_NAME, name)
+            return Intent(context, ChartActivity::class.java).putExtra(KEY_NAME, name)
                 .putExtra(KEY_REPOS, repo)
         }
 
@@ -79,48 +78,82 @@ class ChartActivity : AppCompatActivity() {
         barEntriesList = ArrayList()
         val weekBack = 7
         val calendar = Calendar.getInstance()
-        val parser = SimpleDateFormat ("dd/MM/yyyy")
+        val parser = SimpleDateFormat("dd/MM/yyyy")
         var numWeek = 0
         var numMonth = 0
 
-        binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.grey))
 
-        binding.weekBack.setOnClickListener {
-            if (numWeek <= 0) {
-                binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
-                numWeek--
-                Log.d("DATE_MINUS", "${weekBack}")
-                Log.d("DATE_MINUS", "${calendar}")
-                Log.d("DATE_MINUS", "${numWeek}")
-                calendar.add(Calendar.DATE, -weekBack)
-                binding.week.text = "${parser.format(Date(calendar.timeInMillis))}"
-            }
-        }
+        var clickOrNotSelectedDate = false
+        val dateList = listOf("week", "month", "year")
+        var numDateList = 0
 
         binding.weekNext.setOnClickListener {
             Log.d("DATE_MINUS", "${numWeek}")
 
+            if (!clickOrNotSelectedDate) {
+                if (numDateList > 2) {
+                    numDateList = 0
+                }
+                if (numDateList < 0) {
+                    numDateList = 2
+                }
+                binding.selectedDate.text = dateList[numDateList]
+                numDateList++
+            }
 
-            if (numWeek <0) {
-                binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
-                numWeek++
-                calendar.add(Calendar.DATE, +weekBack)
-                binding.week.text = "${parser.format(Date(calendar.timeInMillis))}"
-            } else {
+            if (clickOrNotSelectedDate) {
+
                 binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.grey))
+
+                if (numWeek < 0) {
+                    binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
+                    numWeek++
+                    calendar.add(Calendar.DATE, +weekBack)
+                    binding.selectedDate.text = "${parser.format(Date(calendar.timeInMillis))}"
+                } else {
+                    binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.grey))
+                }
+
+                if (numWeek == 0) {
+                    binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.grey))
+                    binding.selectedDate.text = "current week"
+                }
+
+            }
+        }
+        binding.weekBack.setOnClickListener {
+            if (!clickOrNotSelectedDate) {
+
+                if (numDateList < 0) {
+                    numDateList = 2
+                }
+                if (numDateList > 2) {
+                    numDateList = 1
+                }
+                binding.selectedDate.text = dateList[numDateList]
+                numDateList--
+
             }
 
-            if (numWeek == 0) {
-                binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.grey))
-                binding.week.text = "current week"
+            if (clickOrNotSelectedDate) {
+                binding.weekBack.setOnClickListener {
+                    numWeek--
+                    calendar.add(Calendar.DATE, -weekBack)
+                    binding.selectedDate.text = "${parser.format(Date(calendar.timeInMillis))}"
+                }
             }
 
-            }
+        }
 
         binding.showGraph.setOnClickListener {
-            clearData()
-            groupType = EnumRange.Companion.GroupType.MONTH
-            getReposStar(ownerName.toString(), reposName.toString(), groupType)
+            if (!clickOrNotSelectedDate) {
+                clickOrNotSelectedDate = true
+            }
+            if (clickOrNotSelectedDate) {
+                clearData()
+                groupType = EnumRange.Companion.GroupType.MONTH
+                getReposStar(ownerName.toString(), reposName.toString(), groupType)
+            }
         }
 
 
