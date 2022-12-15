@@ -1,7 +1,9 @@
 package com.example.retrofitoff.data.repository
 
 import android.util.Log
+import java.text.SimpleDateFormat
 import java.time.DayOfWeek
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.time.Duration.Companion.days
@@ -9,53 +11,55 @@ import kotlin.time.days
 
 class UniqueDate() {
 
-    fun getUniqueArrayList(range: Int): ArrayList<Int> {
-        val uniqDaysList = ArrayList<Int>()
-
+    fun getUniqueArrayList(range: Int, date: Int): ArrayList<Long> {
+        val uniqDaysList = ArrayList<Long>()
+        var dateFor = date
+        val formatDate = SimpleDateFormat("yyyy-MM-dd")
         when (range) {
+
             14 -> {
-                val calendarWeek = Calendar.getInstance()
-                calendarWeek.get(Calendar.DAY_OF_YEAR)
-                val dateTimeNow = calendarWeek.firstDayOfWeek
-                val dayNum = dateTimeNow
-                var dayWeek = 0
 
-
-                when (dayNum) {
-                    1 -> dayWeek = 7
-                    2 -> dayWeek = 1
-                    3 -> dayWeek = 2
-                    4 -> dayWeek = 3
-                    5 -> dayWeek = 4
-                    6 -> dayWeek = 5
-                    7 -> dayWeek = 6
+                for (i in 0..6) {
+                    val calendarWeek = Calendar.getInstance()
+                    calendarWeek.add(Calendar.DAY_OF_YEAR, - dateFor)
+                    dateFor++
+                    val dateTimeNow = calendarWeek.timeInMillis
+                    uniqDaysList.add(dateTimeNow)
                 }
-                Log.d("DATE_TIME_NOW", "${dayNum}")
 
-                for (i in 0 until dayWeek) {
-                    val calendar = Calendar.getInstance()
-                    calendar.add(Calendar.DAY_OF_YEAR, -i)
-                    val dayAgo = calendar.time
-
-                    uniqDaysList.add(getUniqueDate(dayAgo))
-                    calendar.clear()
-                }
             }
             30 -> {
-                val calendarMonth = Calendar.getInstance()
-                calendarMonth.get(Calendar.DAY_OF_MONTH)
-                val dateTimeNow = calendarMonth.time
-                val dateDay = dateTimeNow.date
-                Log.d("DATE_DAY_MONTH", "${dateDay}")
 
-                for (i in 0 until dateDay) {
-                    val calendar = Calendar.getInstance()
-                    calendar.add(Calendar.DAY_OF_YEAR, -i)
-                    val dayAgo = calendar.time
-                    uniqDaysList.add(getUniqueDate(dayAgo))
-                    calendar.clear()
+                val calendarMonth = Calendar.getInstance()
+                calendarMonth.get(Calendar.MONTH - dateFor)
+                val dateTimeNow = calendarMonth.time
+                val dateTimeNowMonth = dateTimeNow.month
+                var monthDaySize = 0
+
+                if(dateTimeNow.year % 4 == 0) {
+                    monthDaySize = when (dateTimeNowMonth) {
+                        2 -> 29
+                        4 -> 30
+                        6 -> 30
+                        9 -> 30
+                        11 -> 30
+                        else -> 31
+                    }
                 }
-                calendarMonth.clear()
+                if(dateTimeNow.year % 4 != 0) {
+                    monthDaySize = when (dateTimeNowMonth) {
+                        2 -> 28
+                        4 -> 30
+                        6 -> 30
+                        9 -> 30
+                        11 -> 30
+                        else -> 31
+                    }
+                }
+
+                var firstDayMonth = monthDaySize - dateTimeNow.date
+
+
             }
             60 -> {
                 val calendarMonth = Calendar.getInstance()
@@ -66,7 +70,7 @@ class UniqueDate() {
                     calendar.add(Calendar.YEAR, -i)
                     Log.d("DATE_YEAR", "${calendar}")
                     val dayAgo = calendar.time
-                    uniqDaysList.add(getUniqueDate(dayAgo))
+                    //uniqDaysList.add(getUniqueDate(dayAgo))
                     calendar.clear()
                 }
 

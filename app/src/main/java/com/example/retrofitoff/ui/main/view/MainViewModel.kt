@@ -40,6 +40,10 @@ class MainViewModel(
                 if (e.localizedMessage?.hashCode() == -1358142848) {
                     error.value = "Пользователь не найден"
                 }
+
+                if (e.localizedMessage?.hashCode() == -1358142879) {
+                    error.value = "Лимит запросов закончился"
+                }
             }
         }
     }

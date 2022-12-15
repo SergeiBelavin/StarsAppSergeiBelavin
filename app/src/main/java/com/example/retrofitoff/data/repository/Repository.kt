@@ -60,32 +60,35 @@ open class Repository() {
         userName: String,
         repoName: String,
         groupType: EnumRange.Companion.GroupType,
+        dateSelected: Int
     ): List<StarGroup> {
-        val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType))
+        val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType), dateSelected)
         val lastData = daysResponseInt[daysResponseInt.size - 1]
         var pageNumberStar = 1
         Log.d("DATE_LIST_LASTDATE1", "$lastData")
         Log.d("DATE_LIST_LASTDATE2", "$daysResponseInt")
 
         return try {
+
             do {
                 val response: List<StarGroup> =
                     RetrofitInstance.api.getRepoStars(userName, repoName, pageNumberStar)
 
                 starsList.addAll(response)
-                Log.d("DATE_LIST_LASTDATE3", "${UniqueDate().getUniqueDate(response[0].starredAt)}")
-                Log.d("DATE_LIST_LASTDATE4", "${response[0].starredAt}")
+
                 Log.d("DATE_LIST_LASTDATE5", "${starsList}")
 
                 if (starsList.size == MIN_PAGE_SIZE) {
                     stopPaging = 1
+
                     return listResponse
                 }
 
-                if (starsList.size == MAX_PAGE_SIZE) starsList.clear()
-
-                pageNumberStar++
-                processingResponse(response, groupType)
+                if (starsList.size == MAX_PAGE_SIZE) {
+                    starsList.clear()
+                    pageNumberStar++
+                    processingResponse(response, groupType, dateSelected)
+                }
 
                 Log.d("DATE_LIST_PROCESSING", "$listResponse")
 
@@ -104,8 +107,9 @@ open class Repository() {
     private fun processingResponse(
         list: List<StarGroup>,
         groupType: EnumRange.Companion.GroupType,
+        dateSelected: Int
     ) {
-        val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType))
+        val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType),dateSelected)
         val lastData = daysResponseInt[daysResponseInt.size - 1]
 
         list.forEach {

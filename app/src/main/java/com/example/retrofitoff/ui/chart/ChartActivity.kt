@@ -3,18 +3,14 @@ package com.example.retrofitoff.ui.chart
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.os.Build.VERSION_CODES.P
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
-import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitoff.R
-import com.example.retrofitoff.data.repository.DateConverter
 import com.example.retrofitoff.model.StarGroup
 
 import com.example.retrofitoff.data.repository.Repository
@@ -27,11 +23,10 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import java.text.SimpleDateFormat
-import java.time.Month
 import java.util.*
-import java.util.Calendar.DAY_OF_YEAR
 import kotlin.collections.ArrayList
 
+@Suppress("UNREACHABLE_CODE")
 class ChartActivity : AppCompatActivity() {
 
     companion object {
@@ -58,6 +53,16 @@ class ChartActivity : AppCompatActivity() {
     private var dateResponseList = emptyList<StarGroup>()
     private var dayRangeCalendar = ArrayList<Int>()
     private var getDayRangeCalendar = ArrayList<ArrayList<Int>>()
+    private val weekBack = 7
+    private val calendar = Calendar.getInstance()
+    private val parser = SimpleDateFormat("dd/MM/yyyy")
+    private var numWeek = 0
+    private var numMonth = 0
+
+
+    var clickOrNotSelectedDate = false
+    val dateList = listOf("week", "month", "year")
+    var numDateList = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -65,28 +70,143 @@ class ChartActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ChartActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val repository = Repository()
-        val viewModelFactory = ChartViewFactory(repository)
         val ownerName = intent.getSerializableExtra(KEY_NAME)
         val reposName = intent.getSerializableExtra(KEY_REPOS)
+        val repository = Repository()
+        val viewModelFactory = ChartViewFactory(repository)
+        var dateSelected: Long = 0
+
+
 
         chartView = ViewModelProvider(this, viewModelFactory)[ChartViewModel::class.java]
 
-        error(repository)
+        errorLog()
+        selectDateRange ()
 
         barEntriesList = ArrayList()
-        val weekBack = 7
-        val calendar = Calendar.getInstance()
-        val parser = SimpleDateFormat("dd/MM/yyyy")
-        var numWeek = 0
-        var numMonth = 0
+
+        chartView.chartResponse.observe(this) { dateList ->
+
+            dateResponseList = dateList
 
 
-        var clickOrNotSelectedDate = false
-        val dateList = listOf("week", "month", "year")
-        var numDateList = 0
+            barEntriesList = ArrayList()
 
+            barChartData()
+
+            barChart = binding.barChart
+            barDataSet = BarDataSet(barEntriesList, "Количество звезд")
+            barDataSet.valueTextColor = Color.BLACK
+            barData = BarData(barDataSet)
+            barChart.setFitBars(true)
+            barChart.data = barData
+            barChart.description.text = "Количество звезд по датам"
+            barDataSet.valueTextSize = 16f
+            barChart.animateY(2000)
+
+        }
+
+        binding.barChart.setOnClickListener {
+            startSubActivity()
+        }
+        binding.showGraph.setOnClickListener {
+
+            if (clickOrNotSelectedDate) {
+                clearData()
+                getReposStar(ownerName.toString(), reposName.toString(), groupType, numWeek)
+                Log.d("RESPONSE_CHART_VIEW", "$dateResponseList")
+            }
+
+            if (!clickOrNotSelectedDate) {
+                when (binding.selectedDate.text) {
+                    "week" -> groupType = EnumRange.Companion.GroupType.WEEK
+                    "month" -> groupType = EnumRange.Companion.GroupType.MONTH
+                    "year" -> groupType = EnumRange.Companion.GroupType.YEAR
+                }
+                dateSelected = calendar.timeInMillis
+                Log.d("RESPONSE_CHART_VIEW", "$numWeek")
+                clickOrNotSelectedDate = true
+
+            }
+
+        }
+
+    }
+
+    private fun barChartData() {
+
+        val getGroupType = groupsType(groupType)
+        //dayRangeCalendar = UniqueDate().getUniqueArrayList(getGroupType, numWeek, 2)
+
+        if (getGroupType == 60) {
+
+            for (i in 0 until dayRangeCalendar.size) {
+                getDayRangeCalendar.add(ArrayList())
+            }
+
+            dateResponseList.forEach {
+
+                for (i in 0 until getDayRangeCalendar.size) {
+                    if (it.uniqueDate!! <= dayRangeCalendar[i] && it.uniqueDate!! >= dayRangeCalendar[i + 1]) {
+                        getDayRangeCalendar[i].add(1)
+                    }
+                }
+            }
+
+            for (i in 0 until getDayRangeCalendar.size) {
+                barEntriesList.add(BarEntry(i.toFloat() + 1f,
+                    getDayRangeCalendar[i].size.toFloat()))
+            }
+        } else {
+
+            Log.d("DATE_LIST", "${dayRangeCalendar}")
+            Log.d("DATE_LIST_RESP", "${dateResponseList}")
+
+            for (i in 0 until dayRangeCalendar.size) {
+                getDayRangeCalendar.add(ArrayList())
+            }
+
+            dateResponseList.forEach {
+
+                for (i in 0 until getDayRangeCalendar.size) {
+                    if (dayRangeCalendar[i] == it.uniqueDate) {
+                        getDayRangeCalendar[i].add(1)
+                    }
+                }
+            }
+
+            for (i in 0 until getDayRangeCalendar.size) {
+
+                barEntriesList.add(BarEntry(i.toFloat() + 1f,
+                    getDayRangeCalendar[i].size.toFloat()))
+            }
+        }
+    }
+
+    fun clearData() {
+        dateResponseList = emptyList<StarGroup>()
+        barEntriesList = ArrayList()
+        dayRangeCalendar = ArrayList<Int>()
+        getDayRangeCalendar = ArrayList<ArrayList<Int>>()
+    }
+
+    fun getReposStar(
+        ownerName: String,
+        reposName: String,
+        groupType: EnumRange.Companion.GroupType,
+        dateSelected: Int
+    ) {
+        return chartView.getReposStars(ownerName, reposName, groupType, dateSelected)
+    }
+//gulihua10010
+
+    fun startSubActivity() {
+        val chartIntent =
+            SubscribersActivity.createSubscribeIntent(this@ChartActivity, dateResponseList)
+        startActivity(chartIntent)
+    }
+
+    fun selectDateRange () {
         binding.weekNext.setOnClickListener {
             Log.d("DATE_MINUS", "${numWeek}")
 
@@ -145,121 +265,20 @@ class ChartActivity : AppCompatActivity() {
 
         }
 
-        binding.showGraph.setOnClickListener {
-            if (!clickOrNotSelectedDate) {
-                clickOrNotSelectedDate = true
+    }
+
+    private fun errorLog() {
+        chartView.error.observe(this) { error ->
+            binding.error.text = error
+            if (error != "") {
+                binding.cardError.visibility = View.VISIBLE
             }
-            if (clickOrNotSelectedDate) {
-                clearData()
-                groupType = EnumRange.Companion.GroupType.MONTH
-                getReposStar(ownerName.toString(), reposName.toString(), groupType)
+            binding.cardError.setOnClickListener {
+                binding.cardError.visibility = View.GONE
             }
         }
-
-
-
-        chartView.chartResponse.observe(this) { dateList ->
-
-            dateResponseList = dateList
-
-            barEntriesList = ArrayList()
-
-            barChartData()
-
-            barChart = binding.barChart
-            barDataSet = BarDataSet(barEntriesList, "Количество звезд")
-            barDataSet.valueTextColor = Color.BLACK
-            barData = BarData(barDataSet)
-            barChart.setFitBars(true)
-            barChart.data = barData
-            barChart.description.text = "Количество звезд по датам"
-            barDataSet.valueTextSize = 16f
-            barChart.animateY(2000)
-
-        }
-
-        binding.barChart.setOnClickListener {
-            startSubActivity()
-        }
+        chartView.error.value = ""
 
     }
 
-    private fun barChartData() {
-
-        val getGroupType = groupsType(groupType)
-        dayRangeCalendar = UniqueDate().getUniqueArrayList(getGroupType)
-
-        if (getGroupType == 60) {
-
-            for (i in 0 until dayRangeCalendar.size) {
-                getDayRangeCalendar.add(ArrayList())
-            }
-
-            dateResponseList.forEach {
-
-                for (i in 0 until getDayRangeCalendar.size) {
-                    if (it.uniqueDate!! <= dayRangeCalendar[i] && it.uniqueDate!! >= dayRangeCalendar[i + 1]) {
-                        getDayRangeCalendar[i].add(1)
-                    }
-                }
-            }
-
-            for (i in 0 until getDayRangeCalendar.size) {
-                barEntriesList.add(BarEntry(i.toFloat() + 1f,
-                    getDayRangeCalendar[i].size.toFloat()))
-            }
-        } else {
-
-            Log.d("DATE_LIST", "${dayRangeCalendar}")
-            Log.d("DATE_LIST_RESP", "${dateResponseList}")
-
-            for (i in 0 until dayRangeCalendar.size) {
-                getDayRangeCalendar.add(ArrayList())
-            }
-
-            dateResponseList.forEach {
-
-                for (i in 0 until getDayRangeCalendar.size) {
-                    if (dayRangeCalendar[i] == it.uniqueDate) {
-                        getDayRangeCalendar[i].add(1)
-                    }
-                }
-            }
-
-            for (i in 0 until getDayRangeCalendar.size) {
-
-                barEntriesList.add(BarEntry(i.toFloat() + 1f,
-                    getDayRangeCalendar[i].size.toFloat()))
-            }
-        }
-    }
-
-    fun clearData() {
-        dateResponseList = emptyList<StarGroup>()
-        barEntriesList = ArrayList()
-        dayRangeCalendar = ArrayList<Int>()
-        getDayRangeCalendar = ArrayList<ArrayList<Int>>()
-    }
-
-    fun getReposStar(
-        ownerName: String,
-        reposName: String,
-        groupType: EnumRange.Companion.GroupType,
-    ) {
-        return chartView.getReposStars(ownerName, reposName, groupType)
-    }
-//gulihua10010
-
-    fun startSubActivity() {
-        val chartIntent =
-            SubscribersActivity.createSubscribeIntent(this@ChartActivity, dateResponseList)
-        startActivity(chartIntent)
-    }
-
-    fun error(repository: Repository) {
-
-        //repository.error.observe(this) { error ->
-        //    Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
-
-    }
 }

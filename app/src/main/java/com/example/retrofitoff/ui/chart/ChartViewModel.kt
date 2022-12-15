@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.data.repository.Repository
+import com.google.gson.annotations.Until
 
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -20,11 +21,11 @@ class ChartViewModel(
     val chartResponse = MutableLiveData<List<StarGroup>>()
     val error = MutableLiveData<String>()
 
-    fun getReposStars(userName: String, repoName: String, groupType: EnumRange.Companion.GroupType) {
+    fun getReposStars(userName: String, repoName: String, groupType: EnumRange.Companion.GroupType, dateSelected: Int) {
         viewModelScope.launch {
             try {
                 val response: List<StarGroup> =
-                    repository.getStarRepo(userName, repoName, groupType)
+                    repository.getStarRepo(userName, repoName, groupType, dateSelected)
                 chartResponse.value = response
             } catch (e: IOException) {
                 Log.d("EXCEPTION_CHART_VIEW", "Exception: $e")
@@ -39,6 +40,10 @@ class ChartViewModel(
                 Log.d("EXCEPTION_CHART_VIEW", "Exception: $e")
                 Log.d("EXCEPTION_CHART_VIEW", "Exception: ${e.message}")
                 Log.d("EXCEPTION_CHART_VIEW", "Exception: ${e.localizedMessage?.hashCode()}")
+
+                if (e.localizedMessage?.hashCode() == -1358142879) {
+                    error.value = "Лимит запросов закончился"
+                }
             }
         }
     }

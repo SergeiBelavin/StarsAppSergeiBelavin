@@ -1,5 +1,6 @@
 package com.example.retrofitoff.ui.main.view
 
+import android.os.Build.VERSION_CODES.M
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -13,6 +14,8 @@ import com.example.retrofitoff.data.repository.Repository
 import com.example.retrofitoff.ui.chart.ChartActivity
 import com.example.retrofitoff.ui.main.MainViewFactory
 import com.example.retrofitoff.ui.main.RepoAdapter
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(), RepoAdapter.Listener {
@@ -34,7 +37,7 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener {
             WindowManager.LayoutParams.FLAG_FULLSCREEN)
         super.onCreate(savedInstanceState)
 
-
+        testCal()
         findView()
 
 
@@ -91,6 +94,25 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener {
         // addName = findViewById(R.id.addName)
         // rcView = findViewById(R.id.rcView)
         // progressBar = findViewById(R.id.progressBar)
+    }
+    fun testCal() {
+        var minus = 2
+        val currentDate = Calendar.getInstance()
+        //currentDate.add(Calendar.MONTH, -minus)
+        val sdf = SimpleDateFormat("yyyy/M/dd")
+        Log.d("TEST_DATE1", "${currentDate.time.toString()}")
+        currentDate.set(Calendar.DATE, 1)
+
+        Log.d("TEST_DATE2", "${currentDate.time.toString()}")
+
+        val cal = Calendar.getInstance().also {
+            it.set(Calendar.DATE, 1)
+            it.set(Calendar.MONTH, currentDate.time.month - minus)
+            it.set(Calendar.YEAR, currentDate.time.year)
+           // it.set(Calendar.DAY_OF_YEAR,1)
+        }
+        Log.d("TEST_DATE3", "${cal.time.toString()}")
+
     }
 }
 
