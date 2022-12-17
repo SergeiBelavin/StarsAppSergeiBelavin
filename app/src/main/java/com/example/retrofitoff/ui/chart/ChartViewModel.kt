@@ -10,6 +10,7 @@ import com.google.gson.annotations.Until
 
 import kotlinx.coroutines.launch
 import java.io.IOException
+import java.util.Date
 
 
 class ChartViewModel(
@@ -26,6 +27,8 @@ class ChartViewModel(
             try {
                 val response: List<StarGroup> =
                     repository.getStarRepo(userName, repoName, groupType, dateSelected)
+               // Log.d("CHART_VIEW_RESP", "Exception: ${response[0].starredAt}")
+
                 chartResponse.value = response
             } catch (e: IOException) {
                 Log.d("EXCEPTION_CHART_VIEW", "Exception: $e")

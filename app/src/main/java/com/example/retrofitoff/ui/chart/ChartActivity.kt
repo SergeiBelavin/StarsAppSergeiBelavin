@@ -89,8 +89,9 @@ class ChartActivity : AppCompatActivity() {
 
             dateResponseList = dateList
 
-
             barEntriesList = ArrayList()
+
+            Log.d("RESPONSE_CHART_VIEW", "$dateResponseList")
 
             barChartData()
 
@@ -114,7 +115,6 @@ class ChartActivity : AppCompatActivity() {
             if (clickOrNotSelectedDate) {
                 clearData()
                 getReposStar(ownerName.toString(), reposName.toString(), groupType, numWeek)
-                Log.d("RESPONSE_CHART_VIEW", "$dateResponseList")
             }
 
             if (!clickOrNotSelectedDate) {
@@ -134,53 +134,27 @@ class ChartActivity : AppCompatActivity() {
     }
 
     private fun barChartData() {
-
+        val listBarChart = ArrayList<Int>()
         val getGroupType = groupsType(groupType)
-        //dayRangeCalendar = UniqueDate().getUniqueArrayList(getGroupType, numWeek, 2)
+        val getRange = UniqueDate().getUniqueArrayList(getGroupType, numWeek)
 
-        if (getGroupType == 60) {
+        Log.d("BAR_CHART", "${dateResponseList[0]}")
+        Log.d("BAR_CHART", "${numWeek}")
 
-            for (i in 0 until dayRangeCalendar.size) {
-                getDayRangeCalendar.add(ArrayList())
-            }
-
-            dateResponseList.forEach {
-
-                for (i in 0 until getDayRangeCalendar.size) {
-                    if (it.uniqueDate!! <= dayRangeCalendar[i] && it.uniqueDate!! >= dayRangeCalendar[i + 1]) {
-                        getDayRangeCalendar[i].add(1)
-                    }
-                }
-            }
-
-            for (i in 0 until getDayRangeCalendar.size) {
-                barEntriesList.add(BarEntry(i.toFloat() + 1f,
-                    getDayRangeCalendar[i].size.toFloat()))
-            }
-        } else {
-
-            Log.d("DATE_LIST", "${dayRangeCalendar}")
-            Log.d("DATE_LIST_RESP", "${dateResponseList}")
-
-            for (i in 0 until dayRangeCalendar.size) {
-                getDayRangeCalendar.add(ArrayList())
-            }
-
-            dateResponseList.forEach {
-
-                for (i in 0 until getDayRangeCalendar.size) {
-                    if (dayRangeCalendar[i] == it.uniqueDate) {
-                        getDayRangeCalendar[i].add(1)
-                    }
-                }
-            }
-
-            for (i in 0 until getDayRangeCalendar.size) {
-
-                barEntriesList.add(BarEntry(i.toFloat() + 1f,
-                    getDayRangeCalendar[i].size.toFloat()))
-            }
+        var group = dateResponseList.groupBy {
+            it.uniqueDate
         }
+
+        if(getGroupType == 14) {
+           for (i in 0 until getRange.size) {
+
+               for (ind in 0..group.keys.size) {
+                   if (getRange[i] )
+               }
+
+           }
+        }
+
     }
 
     fun clearData() {

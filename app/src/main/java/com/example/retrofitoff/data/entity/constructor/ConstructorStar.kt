@@ -14,6 +14,8 @@ data class ConstructorStar (
     //@ColumnInfo(name = "uniqueDate")
     override val uniqueDate: Int?,
 
+    //var barChartList: Map<Int?, List<StarGroup>>?,
+
     //@Embedded(prefix = "user_")
 
 
@@ -24,5 +26,6 @@ data class ConstructorStar (
         starredAt = star.starredAt,
         user = ConstructorUser(star.user),
         uniqueDate = 0,
+        //barChartList = star.barChartList
     )
     }

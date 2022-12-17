@@ -1,7 +1,6 @@
 package com.example.retrofitoff.data.repository
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 
 
 import com.example.retrofitoff.model.RepoUser
@@ -11,26 +10,23 @@ import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.model.User
 import com.example.retrofitoff.data.entity.constructor.ConstructorRepo
 import com.example.retrofitoff.ui.chart.EnumRange
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.log
 
 
 open class Repository() {
 
     private val MAX_PAGE_SIZE = 100
     private val MIN_PAGE_SIZE = 0
-    private val starsList = ArrayList<StarGroup>()
+
     private val listResponse = ArrayList<StarGroup>()
+    private val listResponseGrouping = ArrayList<StarGroup>()
     private var stopPaging = 0
 
     suspend fun getListRepository(userName: String): List<RepoUser> {
         val nameOnTheSheet = ArrayList<String>()
         val responseList = ArrayList<RepoUser>()
-        val responseListConv = ArrayList<ConstructorRepo>()
+        val responseListSize = ArrayList<ConstructorRepo>()
         var pageNumberUser = 1
 
         return try {
@@ -42,7 +38,8 @@ open class Repository() {
                 response.forEach {
                     nameOnTheSheet.add(it.name)
                 }
-                if (responseListConv.size == MAX_PAGE_SIZE) nameOnTheSheet.clear()
+
+                if (responseListSize.size == MAX_PAGE_SIZE) nameOnTheSheet.clear()
                 responseList.addAll(response)
                 pageNumberUser++
                 Log.d("PAGE_NUM_REPO", "$pageNumberUser")
@@ -62,42 +59,45 @@ open class Repository() {
         groupType: EnumRange.Companion.GroupType,
         dateSelected: Int
     ): List<StarGroup> {
+
         val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType), dateSelected)
+
         val lastData = daysResponseInt[daysResponseInt.size - 1]
+
         var pageNumberStar = 1
+
         Log.d("DATE_LIST_LASTDATE1", "$lastData")
         Log.d("DATE_LIST_LASTDATE2", "$daysResponseInt")
 
         return try {
 
             do {
+                val starsList = ArrayList<StarGroup>()
                 val response: List<StarGroup> =
                     RetrofitInstance.api.getRepoStars(userName, repoName, pageNumberStar)
 
                 starsList.addAll(response)
 
-                Log.d("DATE_LIST_LASTDATE5", "${starsList}")
-
-                if (starsList.size == MIN_PAGE_SIZE) {
-                    stopPaging = 1
-
-                    return listResponse
-                }
+                Log.d("REPO_SIZE", "${starsList}")
+                Log.d("REPO_SIZE_SIZE", "${starsList.size}")
 
                 if (starsList.size == MAX_PAGE_SIZE) {
-                    starsList.clear()
                     pageNumberStar++
                     processingResponse(response, groupType, dateSelected)
+                } else {
+                    stopPaging = 1
+                    processingResponse(response, groupType, dateSelected)
+                    return listResponseGrouping
                 }
 
-                Log.d("DATE_LIST_PROCESSING", "$listResponse")
+                Log.d("REPO_PAGE", "$pageNumberStar")
 
 
             } while (starsList.size == MIN_PAGE_SIZE || stopPaging == 1 || UniqueDate().getUniqueDate(
                     response[0].starredAt) < lastData
             )
-            starsList.clear()
-            listResponse
+
+            listResponseGrouping
 
         } finally {
 
@@ -117,6 +117,7 @@ open class Repository() {
             val dateToInt = UniqueDate().getUniqueDate(it.starredAt)
 
             if (dateToInt >= lastData) {
+
                 val starGroup = object : StarGroup {
                     override val starredAt: Date
                         get() = it.starredAt
@@ -124,11 +125,41 @@ open class Repository() {
                         get() = it.user
                     override val uniqueDate: Int?
                         get() = dateToInt
+                    var barChartList: Map<Int?, List<StarGroup>>? = null
+                        get() = null
                 }
+
                 listResponse.add(starGroup)
+                Log.d("LOGGGG", "${starGroup.starredAt}")
+
+                val barChartList = listResponse.groupBy {
+                    starGroup.uniqueDate
+                }
+
+                val starListGroup = object : StarGroup {
+                    override val starredAt: Date
+                        get() = it.starredAt
+                    override val user: User
+                        get() = it.user
+                    override val uniqueDate: Int?
+                        get() = dateToInt
+                    var barChartList: Map<Int?, List<StarGroup>>? = null
+                        get() = barChartList
+                }
+
+                listResponseGrouping.add(starListGroup)
+
+                Log.d("GROUP_LIST", "${barChartList}")
+                Log.d("GROUP_LIST1", "${starGroup.barChartList}")
+                Log.d("GROUP_LIST2", "${starGroup}")
+                Log.d("GROUP_LIST2_GG", "${starListGroup.barChartList}")
+                Log.d("GROUP_LIST2_GG", "${starListGroup}")
+//gulihua10010
+
             } else {
                 stopPaging = 1
             }
         }
     }
+
 }

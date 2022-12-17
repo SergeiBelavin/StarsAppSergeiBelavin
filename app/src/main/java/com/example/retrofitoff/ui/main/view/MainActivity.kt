@@ -11,11 +11,16 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.retrofitoff.model.RepoUser
 import com.example.retrofitoff.databinding.ActivityMainBinding
 import com.example.retrofitoff.data.repository.Repository
+import com.example.retrofitoff.data.repository.UniqueDate
+import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.ui.chart.ChartActivity
 import com.example.retrofitoff.ui.main.MainViewFactory
 import com.example.retrofitoff.ui.main.RepoAdapter
 import java.text.SimpleDateFormat
+import java.time.YearMonth
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.time.days
 
 
 class MainActivity : AppCompatActivity(), RepoAdapter.Listener {
@@ -38,8 +43,6 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener {
         super.onCreate(savedInstanceState)
 
         testCal()
-        findView()
-
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -74,7 +77,6 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener {
         startActivity(chartIntent)
     }
 
-
     private fun errorToast() {
         viewModel.error.observe(this) { error ->
             binding.errorText.text = error
@@ -89,29 +91,27 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener {
         viewModel.error.value = ""
     }
 
-    private fun findView() {
-        // findName = findViewById(R.id.findName)
-        // addName = findViewById(R.id.addName)
-        // rcView = findViewById(R.id.rcView)
-        // progressBar = findViewById(R.id.progressBar)
-    }
     fun testCal() {
-        var minus = 2
-        val currentDate = Calendar.getInstance()
-        //currentDate.add(Calendar.MONTH, -minus)
-        val sdf = SimpleDateFormat("yyyy/M/dd")
-        Log.d("TEST_DATE1", "${currentDate.time.toString()}")
-        currentDate.set(Calendar.DATE, 1)
+        val listTest = ArrayList<Int>()
+        val calWeek = Calendar.getInstance()
+        var date = 1 * 7
+        calWeek.add(Calendar.DAY_OF_YEAR, -date)
+        Log.d("TEST_WEEK1", "${calWeek.time}")
 
-        Log.d("TEST_DATE2", "${currentDate.time.toString()}")
+        calWeek.add(Calendar.DAY_OF_YEAR, -calWeek.time.day + 1)
+        Log.d("TEST_WEEK2", "${calWeek.time}")
+        var num = 0
 
-        val cal = Calendar.getInstance().also {
-            it.set(Calendar.DATE, 1)
-            it.set(Calendar.MONTH, currentDate.time.month - minus)
-            it.set(Calendar.YEAR, currentDate.time.year)
-           // it.set(Calendar.DAY_OF_YEAR,1)
+        for (i in 0..6) {
+            calWeek.add(Calendar.DAY_OF_YEAR, +1)
+            val dateInt = calWeek.time
+            listTest.add(UniqueDate().getUniqueDate(dateInt))
         }
-        Log.d("TEST_DATE3", "${cal.time.toString()}")
+        Log.d("TEST_WEEK3", "${calWeek.time}")
+    }
+
+    fun paging(list: ArrayList<StarGroup>,  ) {
+
 
     }
 }

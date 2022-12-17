@@ -19,8 +19,8 @@
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/barChart"
-        android:layout_width="284dp"
-        android:layout_height="342dp">
+        android:layout_width="match_parent"
+        android:layout_height="500dp">
 
     </com.github.mikephil.charting.charts.BarChart>
 
