@@ -9,7 +9,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="10dp"
-    tools:context=".ui.chart.ChartActivity">
+    tools:context=".mvp.activity.ChartActivity">
 
     <TextView
         android:id="@+id/test"

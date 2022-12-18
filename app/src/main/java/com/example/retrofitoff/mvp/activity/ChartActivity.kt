@@ -1,4 +1,4 @@
-package com.example.retrofitoff.ui.chart
+package com.example.retrofitoff.mvp.activity
 
 import android.content.Context
 import android.content.Intent
@@ -16,8 +16,10 @@ import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.data.repository.Repository
 import com.example.retrofitoff.data.repository.UniqueDate
 import com.example.retrofitoff.databinding.ChartActivityBinding
-import com.example.retrofitoff.ui.chart.EnumRange.Companion.groupsType
-import com.example.retrofitoff.ui.subscribers.SubscribersActivity
+import com.example.retrofitoff.mvp.EnumRange
+import com.example.retrofitoff.mvp.EnumRange.Companion.groupsType
+import com.example.retrofitoff.mvp.views.ChartViewFactory
+import com.example.retrofitoff.mvp.views.ChartViewModel
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -114,7 +116,10 @@ class ChartActivity : AppCompatActivity() {
 
             if (clickOrNotSelectedDate) {
                 clearData()
+                Log.d("NUM_WEEK", "$numWeek")
+                Log.d("NUM_WEEK.1", "$groupType")
                 getReposStar(ownerName.toString(), reposName.toString(), groupType, numWeek)
+
             }
 
             if (!clickOrNotSelectedDate) {
@@ -124,7 +129,7 @@ class ChartActivity : AppCompatActivity() {
                     "year" -> groupType = EnumRange.Companion.GroupType.YEAR
                 }
                 dateSelected = calendar.timeInMillis
-                Log.d("RESPONSE_CHART_VIEW", "$numWeek")
+                Log.d("NUM_WEEK1", "$numWeek")
                 clickOrNotSelectedDate = true
 
             }
@@ -134,25 +139,55 @@ class ChartActivity : AppCompatActivity() {
     }
 
     private fun barChartData() {
-        val listBarChart = ArrayList<Int>()
+        val listBarChart = ArrayList<ArrayList<Int>>()
         val getGroupType = groupsType(groupType)
         val getRange = UniqueDate().getUniqueArrayList(getGroupType, numWeek)
 
-        Log.d("BAR_CHART", "${dateResponseList[0]}")
-        Log.d("BAR_CHART", "${numWeek}")
+        Log.d("BAR_CHART1", "${dateResponseList[0]}")
+        Log.d("NUM_WEEK2", "$numWeek")
+        Log.d("NUM_WEEK2.2", "$getGroupType")
 
         var group = dateResponseList.groupBy {
             it.uniqueDate
         }
+        Log.d("BAR_CHART3", "${group.keys.size}")
+        Log.d("BAR_CHART4", "${group.keys}")
+        Log.d("BAR_CHART5", "${group.keys.elementAt(1)}")
+        Log.d("BAR_CHART6", "${group.values.elementAt(1).size}")
+        Log.d("BAR_CHART7", "${group.keys.elementAt(3)}")
+        Log.d("BAR_CHART7", "${getRange}")
+        Log.d("BAR_CHART7", "${getRange.size}")
+        Log.d("BAR_CHART7", "${getRange.size}")
 
-        if(getGroupType == 14) {
            for (i in 0 until getRange.size) {
 
-               for (ind in 0..group.keys.size) {
-                   if (getRange[i] )
+            listBarChart.add(ArrayList())
+
+               for (ind in 0 until group.keys.size) {
+
+                   Log.d("SRAVNENIE", "${getRange[i]}")
+                   Log.d("SRAVNENIE1", "${getRange}")
+                   Log.d("SRAVNENIE2", "${group.keys.elementAt(ind)}")
+                   Log.d("SRAVNENIE3", "${listBarChart.size}")
+                   Log.d("SIZE_KEY", "${group.keys.size}")
+                   Log.d("SRAVNENIE4", "${listBarChart}")
+
+                   if (getRange[i] == group.keys.elementAt(ind)) {
+                       listBarChart[i].add(group.values.elementAt(ind).size)
+
+                   } else {
+                       listBarChart[i].add(0)
+                   }
+
                }
 
-           }
+               for (ind in 0 until listBarChart.size) {
+                   Log.d("SRAVNENIE4", "${listBarChart}")
+                   Log.d("SRAVNENIE5", "${group.values.elementAt(ind).size.toFloat()}")
+                   barEntriesList.add(BarEntry(ind.toFloat(), group.values.elementAt(ind).size.toFloat()))
+               }
+
+
         }
 
     }
@@ -191,8 +226,9 @@ class ChartActivity : AppCompatActivity() {
                 if (numDateList < 0) {
                     numDateList = 2
                 }
-                binding.selectedDate.text = dateList[numDateList]
                 numDateList++
+                binding.selectedDate.text = dateList[numDateList]
+
             }
 
             if (clickOrNotSelectedDate) {

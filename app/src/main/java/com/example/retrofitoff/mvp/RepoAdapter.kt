@@ -1,4 +1,4 @@
-package com.example.retrofitoff.ui.main
+package com.example.retrofitoff.mvp
 
 import android.view.LayoutInflater
 import android.view.View
@@ -27,7 +27,7 @@ class RepoAdapter(private val listener: Listener): RecyclerView.Adapter<RepoAdap
 
         holder.binding.name.text = repoList[position].name
         holder.itemView.setOnClickListener {
-            listener.onClick(repoList[position])
+            listener.onClickAdapter(repoList[position])
         }
 
     }
@@ -41,6 +41,6 @@ class RepoAdapter(private val listener: Listener): RecyclerView.Adapter<RepoAdap
 
     }
     interface  Listener{
-        fun onClick(list: RepoUser)
+        fun onClickAdapter(list: RepoUser)
     }
 }

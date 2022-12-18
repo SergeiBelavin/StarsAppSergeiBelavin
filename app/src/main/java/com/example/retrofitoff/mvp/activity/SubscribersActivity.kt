@@ -1,4 +1,4 @@
-package com.example.retrofitoff.ui.subscribers
+package com.example.retrofitoff.mvp.activity
 
 import android.content.Context
 import android.content.Intent
@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.WindowManager
 import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.databinding.SubscribersActivityBinding
+import com.example.retrofitoff.mvp.SubscribersAdapter
 import java.io.Serializable
 
 class SubscribersActivity : AppCompatActivity() {
@@ -22,7 +23,7 @@ class SubscribersActivity : AppCompatActivity() {
         private val KEY_AVATAR = "KeyAVATAR"
 
         fun createSubscribeIntent(context: Context, list: List<StarGroup>): Intent {
-            return Intent(context,SubscribersActivity::class.java)
+            return Intent(context, SubscribersActivity::class.java)
                 .putExtra(KEY_NAME, list as Serializable)
         }
     }

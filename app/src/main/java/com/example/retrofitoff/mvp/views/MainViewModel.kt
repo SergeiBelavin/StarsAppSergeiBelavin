@@ -1,4 +1,4 @@
-package com.example.retrofitoff.ui.main.view
+package com.example.retrofitoff.mvp.views
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -9,7 +9,6 @@ import com.example.retrofitoff.model.RepoUser
 import com.example.retrofitoff.data.repository.Repository
 import kotlinx.coroutines.launch
 
-import okhttp3.OkHttpClient
 import java.io.IOException
 
 class MainViewModel(

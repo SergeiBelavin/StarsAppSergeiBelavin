@@ -1,42 +1,55 @@
-package com.example.retrofitoff.ui.main.view
+package com.example.retrofitoff.mvp.activity
 
-import android.os.Build.VERSION_CODES.M
 import android.os.Bundle
+import android.os.Message
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModelProvider
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.PresenterType
+import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.retrofitoff.model.RepoUser
 import com.example.retrofitoff.databinding.ActivityMainBinding
 import com.example.retrofitoff.data.repository.Repository
 import com.example.retrofitoff.data.repository.UniqueDate
+import com.example.retrofitoff.mvp.views.MainView
 import com.example.retrofitoff.model.StarGroup
-import com.example.retrofitoff.ui.chart.ChartActivity
-import com.example.retrofitoff.ui.main.MainViewFactory
-import com.example.retrofitoff.ui.main.RepoAdapter
-import java.text.SimpleDateFormat
-import java.time.YearMonth
+import com.example.retrofitoff.mvp.MainViewFactory
+import com.example.retrofitoff.mvp.RepoAdapter
+import com.example.retrofitoff.mvp.presenters.MainPresenter
+import com.example.retrofitoff.mvp.views.MainViewModel
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.time.days
 
 
-class MainActivity : AppCompatActivity(), RepoAdapter.Listener {
+class MainActivity : AppCompatActivity(), RepoAdapter.Listener, MainView {
 
-    //private lateinit var findName: Button
+    lateinit var findName: Button
+
     //private lateinit var addName: EditText
     //private lateinit var rcView: RecyclerView
     //private lateinit var progressBar: ProgressBar
+    private val repository = Repository()
+    //Presenter setup
+    @InjectPresenter(presenterId = "", tag = "", type = PresenterType.GLOBAL)
+    lateinit var mainPresenter: MainPresenter
 
+    @ProvidePresenter
+    fun provideMainPresenter(): MainPresenter {
+        return MainPresenter(mainRepository = repository)
+    }
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
-    private val repository = Repository()
+
     private val viewModelFactory = MainViewFactory(repository)
     private val adapter = RepoAdapter(this)
 
+    @Override
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -49,35 +62,41 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener {
 
         binding.rcView.adapter = adapter
 
-        viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
+        // viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
 
         binding.findName.setOnClickListener {
 
             if (binding.addName.text.isNotEmpty()) {
                 binding.addName.hint = "Find a user"
-                viewModel.repoList(binding.addName.text.toString())
 
-                viewModel.myResponse.observe(this) { response ->
-                    Log.d("MainViewAdapter", "$response")
+                val getList = provideMainPresenter().getRepoList(userName = binding.addName.text.toString())
 
-                    response.let {
+                adapter.setList(getList)
+        /*
+                 viewModel.myResponse.observe(this) { response ->
+                     Log.d("MainViewAdapter", "$response")
+
+                  response.let {
                         adapter.setList(response!!)
                     }
                 }
+
+         */
             } else {
                 binding.addName.error = "Enter a name"
                 binding.addName.hint = "Enter a name"
             }
         }
-        errorToast()
+
     }
 
-    override fun onClick(list: RepoUser) {
+    override fun onClickAdapter(list: RepoUser) {
         val chartIntent = ChartActivity.createIntent(this@MainActivity, list.user.name, list.name)
         startActivity(chartIntent)
     }
 
-    private fun errorToast() {
+    override fun showError(message: String) {
+
         viewModel.error.observe(this) { error ->
             binding.errorText.text = error
             if (error != "") {
@@ -110,7 +129,7 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener {
         Log.d("TEST_WEEK3", "${calWeek.time}")
     }
 
-    fun paging(list: ArrayList<StarGroup>,  ) {
+    fun paging(list: ArrayList<StarGroup>) {
 
 
     }

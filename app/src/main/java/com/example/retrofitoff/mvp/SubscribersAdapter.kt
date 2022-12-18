@@ -1,4 +1,4 @@
-package com.example.retrofitoff.ui.subscribers
+package com.example.retrofitoff.mvp
 
 import android.view.LayoutInflater
 import android.view.View

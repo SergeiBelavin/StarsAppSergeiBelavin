@@ -22,14 +22,14 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.subscribers.SubscribersActivity"
+            android:name=".mvp.activity.SubscribersActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.chart.ChartActivity"
+            android:name=".mvp.activity.ChartActivity"
             android:exported="false"
             android:label="@string/title_activity_repo_gra"
             android:theme="@style/Theme.RetrofitOff.NoActionBar">
@@ -38,9 +38,9 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.main.view.MainActivity"
+            android:name=".mvp.activity.MainActivity"
             android:exported="true"
-            android:parentActivityName=".ui.main.view.MainActivity">
+            android:parentActivityName=".mvp.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

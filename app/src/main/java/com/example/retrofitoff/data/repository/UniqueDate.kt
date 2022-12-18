@@ -10,17 +10,18 @@ class UniqueDate {
     fun getUniqueArrayList(range: Int, date: Int): ArrayList<Int> {
         val uniqDaysList = ArrayList<Int>()
         var weekRange = date*7
-
+        Log.d("NUM_WEEK_@!@!@!@", "${range}")
         when (range) {
 
             14 -> {
 
                 val calWeek = Calendar.getInstance()
-                calWeek.add(Calendar.DAY_OF_YEAR, -weekRange)
+                calWeek.add(Calendar.DAY_OF_YEAR, weekRange)
                 Log.d("TEST_WEEK1", "${calWeek.time}")
+                Log.d("TEST_WEEK2", "${weekRange}")
 
                 calWeek.add(Calendar.DAY_OF_YEAR, -calWeek.time.day+1)
-                Log.d("TEST_WEEK2", "${calWeek.time}")
+                Log.d("TEST_WEEK3", "${calWeek.time}")
                 var num = 0
 
                 for (i in 0..6) {
@@ -28,7 +29,7 @@ class UniqueDate {
                     val dateInt = calWeek.time
                     uniqDaysList.add(getUniqueDate(dateInt))
                 }
-                Log.d("TEST_WEEK3", "${calWeek.time}")
+                Log.d("TEST_WEEK4", "${calWeek.time}")
 
             }
             30 -> {
@@ -91,6 +92,7 @@ class UniqueDate {
         }
         Log.d("TEST_1", "$uniqDaysList")
         Log.d("TEST_2", "${uniqDaysList.size}")
+        Log.d("TEST_YEAR222", "${uniqDaysList}")
         return uniqDaysList
 
     }

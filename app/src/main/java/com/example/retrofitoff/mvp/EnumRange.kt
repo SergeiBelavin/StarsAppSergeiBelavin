@@ -1,4 +1,4 @@
-package com.example.retrofitoff.ui.chart
+package com.example.retrofitoff.mvp
 
 class EnumRange {
     companion object {

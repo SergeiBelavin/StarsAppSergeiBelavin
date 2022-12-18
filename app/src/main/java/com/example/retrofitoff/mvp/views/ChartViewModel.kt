@@ -1,4 +1,4 @@
-package com.example.retrofitoff.ui.chart
+package com.example.retrofitoff.mvp.views
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -6,11 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.data.repository.Repository
-import com.google.gson.annotations.Until
+import com.example.retrofitoff.mvp.EnumRange
 
 import kotlinx.coroutines.launch
 import java.io.IOException
-import java.util.Date
 
 
 class ChartViewModel(

@@ -9,7 +9,7 @@ import com.example.retrofitoff.model.RepoUser
 import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.model.User
 import com.example.retrofitoff.data.entity.constructor.ConstructorRepo
-import com.example.retrofitoff.ui.chart.EnumRange
+import com.example.retrofitoff.mvp.EnumRange
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -23,7 +23,7 @@ open class Repository() {
     private val listResponseGrouping = ArrayList<StarGroup>()
     private var stopPaging = 0
 
-    suspend fun getListRepository(userName: String): List<RepoUser> {
+     fun getListRepository(userName: String): List<RepoUser> {
         val nameOnTheSheet = ArrayList<String>()
         val responseList = ArrayList<RepoUser>()
         val responseListSize = ArrayList<ConstructorRepo>()
@@ -93,9 +93,7 @@ open class Repository() {
                 Log.d("REPO_PAGE", "$pageNumberStar")
 
 
-            } while (starsList.size == MIN_PAGE_SIZE || stopPaging == 1 || UniqueDate().getUniqueDate(
-                    response[0].starredAt) < lastData
-            )
+            } while (starsList.size == MIN_PAGE_SIZE || stopPaging == 1)
 
             listResponseGrouping
 
@@ -110,12 +108,13 @@ open class Repository() {
         dateSelected: Int
     ) {
         val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType),dateSelected)
+
         val lastData = daysResponseInt[daysResponseInt.size - 1]
 
         list.forEach {
 
             val dateToInt = UniqueDate().getUniqueDate(it.starredAt)
-
+            Log.d("LOGGGG", "${lastData}")
             if (dateToInt >= lastData) {
 
                 val starGroup = object : StarGroup {
@@ -130,30 +129,32 @@ open class Repository() {
                 }
 
                 listResponse.add(starGroup)
-                Log.d("LOGGGG", "${starGroup.starredAt}")
+                Log.d("LOGGGG1", "${starGroup.starredAt}")
 
-                val barChartList = listResponse.groupBy {
-                    starGroup.uniqueDate
+                if(listResponse.isNotEmpty()) {
+
+                    val barChartList = listResponse.groupBy {
+                        starGroup.uniqueDate
+                    }
+
+                    val starListGroup = object : StarGroup {
+                        override val starredAt: Date
+                            get() = it.starredAt
+                        override val user: User
+                            get() = it.user
+                        override val uniqueDate: Int?
+                            get() = dateToInt
+                        var barChartList: Map<Int?, List<StarGroup>>? = null
+                            get() = barChartList
+                    }
+
+                    listResponseGrouping.add(starListGroup)
                 }
 
-                val starListGroup = object : StarGroup {
-                    override val starredAt: Date
-                        get() = it.starredAt
-                    override val user: User
-                        get() = it.user
-                    override val uniqueDate: Int?
-                        get() = dateToInt
-                    var barChartList: Map<Int?, List<StarGroup>>? = null
-                        get() = barChartList
-                }
-
-                listResponseGrouping.add(starListGroup)
-
-                Log.d("GROUP_LIST", "${barChartList}")
                 Log.d("GROUP_LIST1", "${starGroup.barChartList}")
                 Log.d("GROUP_LIST2", "${starGroup}")
-                Log.d("GROUP_LIST2_GG", "${starListGroup.barChartList}")
-                Log.d("GROUP_LIST2_GG", "${starListGroup}")
+                Log.d("GROUP_LIST3", "${listResponseGrouping.size}")
+
 //gulihua10010
 
             } else {
