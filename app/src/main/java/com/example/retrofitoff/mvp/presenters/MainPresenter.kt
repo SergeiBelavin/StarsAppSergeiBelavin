@@ -14,14 +14,8 @@ import java.io.IOException
 class MainPresenter(private val mainRepository: Repository) : MvpPresenter<MainView>(), RepoAdapter.Listener {
     private val TAG = MainPresenter::class.java.simpleName
 
-
-
     private var repoList = emptyList<RepoUser>()
 
-
-    fun getRepoListForRcView(userName: String) {
-        getRepoList(userName)
-    }
 
      fun getRepoList(userName: String): List<RepoUser> {
         viewState.startSending()

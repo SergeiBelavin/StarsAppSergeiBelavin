@@ -1,11 +1,9 @@
-plugins {
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: "org.jetbrains.kotlin.kapt"
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-    id "org.jetbrains.kotlin.kapt"
-    id 'kotlin-android'
-    id 'kotlin-kapt'
-}
 
 
 android {
@@ -18,9 +16,8 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
+        multiDexEnabled true
 
     }
 
@@ -51,7 +48,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        multiDexEnabled true
     }
 
 }
@@ -113,6 +110,8 @@ dependencies {
     annotationProcessor 'com.arello-mobile:moxy-compiler:1.5.5'
     implementation 'com.arello-mobile:moxy-android:1.5.5'
     implementation 'com.arello-mobile:moxy-app-compat:1.5.5'
+    implementation 'com.android.support:multidex:1.0.3'
+
 
     //implementation "com.github.moxy-community:moxy-androidx:2.2.2"
     //implementation "com.github.moxy-community:moxy-material:2.2.2"

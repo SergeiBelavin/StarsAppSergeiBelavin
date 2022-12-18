@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity(), RepoAdapter.Listener, MainView {
 
 
     //Presenter setup
-    @InjectPresenter(presenterId = "", tag = "")
+    @InjectPresenter
     lateinit var mainPresenter: MainPresenter
 
     private val repository = Repository()
