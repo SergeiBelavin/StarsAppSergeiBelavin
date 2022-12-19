@@ -1,4 +1,4 @@
-package com.example.retrofitoff.mvp.views
+package com.example.retrofitoff.data.ui
 
 import com.arellomobile.mvp.MvpView
 import com.example.retrofitoff.model.RepoUser

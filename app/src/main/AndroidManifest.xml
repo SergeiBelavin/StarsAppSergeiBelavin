@@ -38,9 +38,9 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".mvp.activity.MainActivity"
+            android:name=".data.ui.MainActivity"
             android:exported="true"
-            android:parentActivityName=".mvp.activity.MainActivity">
+            android:parentActivityName=".data.ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

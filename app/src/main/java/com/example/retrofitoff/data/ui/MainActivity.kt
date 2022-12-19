@@ -1,19 +1,16 @@
-package com.example.retrofitoff.mvp.activity
+package com.example.retrofitoff.data.ui
 
 import android.os.Bundle
-import android.view.TextureView
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.retrofitoff.model.RepoUser
 import com.example.retrofitoff.databinding.ActivityMainBinding
 import com.example.retrofitoff.data.repository.Repository
-import com.example.retrofitoff.mvp.views.MainView
 import com.example.retrofitoff.mvp.RepoAdapter
-import com.example.retrofitoff.mvp.presenters.MainPresenter
+import com.example.retrofitoff.mvp.activity.ChartActivity
 
 
 class MainActivity : AppCompatActivity(), RepoAdapter.Listener, MainView {

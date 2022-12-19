@@ -1,4 +1,4 @@
-package com.example.retrofitoff.mvp.presenters
+package com.example.retrofitoff.data.ui
 
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
@@ -7,7 +7,7 @@ import com.arellomobile.mvp.MvpPresenter
 import com.example.retrofitoff.data.repository.Repository
 import com.example.retrofitoff.model.RepoUser
 import com.example.retrofitoff.mvp.RepoAdapter
-import com.example.retrofitoff.mvp.views.MainView
+import com.example.retrofitoff.data.ui.MainView
 import java.io.IOException
 
 @InjectViewState
