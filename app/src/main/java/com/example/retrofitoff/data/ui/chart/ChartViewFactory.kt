@@ -1,4 +1,4 @@
-package com.example.retrofitoff.mvp.views
+package com.example.retrofitoff.data.ui.chart
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

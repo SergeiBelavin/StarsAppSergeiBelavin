@@ -1,4 +1,4 @@
-package com.example.retrofitoff.mvp.views
+package com.example.retrofitoff.data.ui.main
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData

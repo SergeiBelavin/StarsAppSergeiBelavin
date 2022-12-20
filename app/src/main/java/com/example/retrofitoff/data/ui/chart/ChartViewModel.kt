@@ -1,4 +1,4 @@
-package com.example.retrofitoff.mvp.views
+package com.example.retrofitoff.data.ui.chart
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.data.repository.Repository
-import com.example.retrofitoff.mvp.EnumRange
+import com.example.retrofitoff.data.ui.main.EnumRange
 
 import kotlinx.coroutines.launch
 import java.io.IOException

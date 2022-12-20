@@ -1,13 +1,13 @@
-package com.example.retrofitoff.data.ui
+package com.example.retrofitoff.data.ui.main
 
 import android.util.Log
-import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
+import androidx.lifecycle.lifecycleScope
 
 import com.example.retrofitoff.data.repository.Repository
 import com.example.retrofitoff.model.RepoUser
-import com.example.retrofitoff.mvp.RepoAdapter
-import com.example.retrofitoff.data.ui.MainView
+import kotlinx.coroutines.launch
+import moxy.InjectViewState
+import moxy.MvpPresenter
 import java.io.IOException
 
 @InjectViewState
@@ -17,39 +17,49 @@ class MainPresenter(private val mainRepository: Repository) : MvpPresenter<MainV
     private var repoList = emptyList<RepoUser>()
 
 
-     fun getRepoList(userName: String): List<RepoUser> {
-        viewState.startSending()
+     suspend fun getRepoList(userName: String): List<RepoUser> {
+
+
         try {
+            viewState.startSending(false)
             val response: List<RepoUser> = mainRepository.getListRepository(userName)
             repoList = response
-            viewState.endSending()
+            Log.d("BBBBBB", "Ebbb")
+            getListToMain(repoList)
+            viewState.startSending(true)
             return repoList
+
 
         } catch (e: IOException) {
             Log.d("${TAG}_ERROR_GET_REPO", "Exception: $e")
             if (e.localizedMessage?.hashCode() == 964672022) {
+                viewState.startSending(false)
                 viewState.showError("Отсутствует подключение к интернету")
-
             }
-            viewState.endSending()
             return repoList
 
         } catch (e: Exception) {
             Log.d("${TAG}_ERROR_GET_REPO", "Exception: $e")
 
             if (e.localizedMessage?.hashCode() == -1358142848) {
+                viewState.startSending(false)
                 viewState.showError("Пользователь не найден")
             }
 
             if (e.localizedMessage?.hashCode() == -1358142879) {
+                viewState.startSending(false)
                 viewState.showError("Лимит запросов закончился")
             }
-            viewState.endSending()
             return repoList
         }
+
+    }
+
+    fun getListToMain(list: List<RepoUser>) {
+
     }
 
     override fun onClickAdapter(list: RepoUser) {
-        TODO("Not yet implemented")
+
     }
 }

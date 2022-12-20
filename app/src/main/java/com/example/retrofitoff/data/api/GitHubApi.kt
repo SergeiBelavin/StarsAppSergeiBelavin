@@ -10,7 +10,7 @@ import retrofit2.http.Query
 
 interface GitHubApi {
     @GET("/users/{user}/repos?per_page=100")
-     fun getRepoList(
+    suspend fun getRepoList(
         @Path("user") userName: String,
         @Query("page") page: Int,
         ): List<RepoUserItem>

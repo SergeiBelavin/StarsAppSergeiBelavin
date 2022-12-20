@@ -1,4 +1,4 @@
-package com.example.retrofitoff.mvp.activity
+package com.example.retrofitoff.data.ui.sub
 
 import android.content.Context
 import android.content.Intent
@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.WindowManager
 import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.databinding.SubscribersActivityBinding
-import com.example.retrofitoff.mvp.SubscribersAdapter
 import java.io.Serializable
 
 class SubscribersActivity : AppCompatActivity() {

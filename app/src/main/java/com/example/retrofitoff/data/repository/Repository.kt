@@ -9,7 +9,7 @@ import com.example.retrofitoff.model.RepoUser
 import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.model.User
 import com.example.retrofitoff.data.entity.constructor.ConstructorRepo
-import com.example.retrofitoff.mvp.EnumRange
+import com.example.retrofitoff.data.ui.main.EnumRange
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -23,7 +23,7 @@ open class Repository() {
     private val listResponseGrouping = ArrayList<StarGroup>()
     private var stopPaging = 0
 
-     fun getListRepository(userName: String): List<RepoUser> {
+      suspend fun getListRepository(userName: String): List<RepoUser> {
         val nameOnTheSheet = ArrayList<String>()
         val responseList = ArrayList<RepoUser>()
         val responseListSize = ArrayList<ConstructorRepo>()
@@ -44,7 +44,6 @@ open class Repository() {
                 pageNumberUser++
                 Log.d("PAGE_NUM_REPO", "$pageNumberUser")
 
-
             } while (nameOnTheSheet.size == MIN_PAGE_SIZE)
             responseList
 
@@ -52,6 +51,8 @@ open class Repository() {
 
         }
     }
+
+
 
     suspend fun getStarRepo(
         userName: String,

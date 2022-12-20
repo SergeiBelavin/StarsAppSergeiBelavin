@@ -1,4 +1,4 @@
-package com.example.retrofitoff.mvp.activity
+package com.example.retrofitoff.data.ui.chart
 
 import android.content.Context
 import android.content.Intent
@@ -16,10 +16,9 @@ import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.data.repository.Repository
 import com.example.retrofitoff.data.repository.UniqueDate
 import com.example.retrofitoff.databinding.ChartActivityBinding
-import com.example.retrofitoff.mvp.EnumRange
-import com.example.retrofitoff.mvp.EnumRange.Companion.groupsType
-import com.example.retrofitoff.mvp.views.ChartViewFactory
-import com.example.retrofitoff.mvp.views.ChartViewModel
+import com.example.retrofitoff.data.ui.main.EnumRange
+import com.example.retrofitoff.data.ui.main.EnumRange.Companion.groupsType
+import com.example.retrofitoff.data.ui.sub.SubscribersActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
