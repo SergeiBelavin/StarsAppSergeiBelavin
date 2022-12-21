@@ -1,5 +1,6 @@
 package com.example.retrofitoff.data.ui.main
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
 
@@ -25,7 +26,6 @@ class MainPresenter(private val mainRepository: Repository) : MvpPresenter<MainV
             val response: List<RepoUser> = mainRepository.getListRepository(userName)
             repoList = response
             Log.d("BBBBBB", "Ebbb")
-            getListToMain(repoList)
             viewState.startSending(true)
             return repoList
 
@@ -52,10 +52,6 @@ class MainPresenter(private val mainRepository: Repository) : MvpPresenter<MainV
             }
             return repoList
         }
-
-    }
-
-    fun getListToMain(list: List<RepoUser>) {
 
     }
 

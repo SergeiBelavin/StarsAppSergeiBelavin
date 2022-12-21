@@ -18,7 +18,4 @@ interface MainView: MvpView {
 
     @AddToEndSingle
     fun startSending(boolean: Boolean)
-
-    @AddToEndSingle
-    fun endSending()
 }

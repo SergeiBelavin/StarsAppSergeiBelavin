@@ -142,34 +142,15 @@ class ChartActivity : AppCompatActivity() {
         val getGroupType = groupsType(groupType)
         val getRange = UniqueDate().getUniqueArrayList(getGroupType, numWeek)
 
-        Log.d("BAR_CHART1", "${dateResponseList[0]}")
-        Log.d("NUM_WEEK2", "$numWeek")
-        Log.d("NUM_WEEK2.2", "$getGroupType")
-
-        var group = dateResponseList.groupBy {
+        val group = dateResponseList.groupBy {
             it.uniqueDate
         }
-        Log.d("BAR_CHART3", "${group.keys.size}")
-        Log.d("BAR_CHART4", "${group.keys}")
-        Log.d("BAR_CHART5", "${group.keys.elementAt(1)}")
-        Log.d("BAR_CHART6", "${group.values.elementAt(1).size}")
-        Log.d("BAR_CHART7", "${group.keys.elementAt(3)}")
-        Log.d("BAR_CHART7", "${getRange}")
-        Log.d("BAR_CHART7", "${getRange.size}")
-        Log.d("BAR_CHART7", "${getRange.size}")
 
            for (i in 0 until getRange.size) {
 
             listBarChart.add(ArrayList())
 
                for (ind in 0 until group.keys.size) {
-
-                   Log.d("SRAVNENIE", "${getRange[i]}")
-                   Log.d("SRAVNENIE1", "${getRange}")
-                   Log.d("SRAVNENIE2", "${group.keys.elementAt(ind)}")
-                   Log.d("SRAVNENIE3", "${listBarChart.size}")
-                   Log.d("SIZE_KEY", "${group.keys.size}")
-                   Log.d("SRAVNENIE4", "${listBarChart}")
 
                    if (getRange[i] == group.keys.elementAt(ind)) {
                        listBarChart[i].add(group.values.elementAt(ind).size)
@@ -181,8 +162,6 @@ class ChartActivity : AppCompatActivity() {
                }
 
                for (ind in 0 until listBarChart.size) {
-                   Log.d("SRAVNENIE4", "${listBarChart}")
-                   Log.d("SRAVNENIE5", "${group.values.elementAt(ind).size.toFloat()}")
                    barEntriesList.add(BarEntry(ind.toFloat(), group.values.elementAt(ind).size.toFloat()))
                }
 
@@ -250,6 +229,7 @@ class ChartActivity : AppCompatActivity() {
 
             }
         }
+
         binding.weekBack.setOnClickListener {
             if (!clickOrNotSelectedDate) {
 

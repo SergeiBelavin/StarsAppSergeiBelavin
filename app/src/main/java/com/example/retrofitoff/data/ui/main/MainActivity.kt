@@ -67,14 +67,6 @@ class MainActivity : MvpAppCompatActivity(), RepoAdapter.Listener, MainView {
         binding.findName.isEnabled = boolean
     }
 
-    override fun endSending(){
-        binding.progressBar.isInvisible = true
-        binding.rcView.isVisible = true
-        binding.addName.isEnabled = false
-        binding.findName.isEnabled = false
-       // return false
-    }
-
     fun getRepoList() {
 
         binding.findName.setOnClickListener {
@@ -83,7 +75,7 @@ class MainActivity : MvpAppCompatActivity(), RepoAdapter.Listener, MainView {
                 binding.addName.hint = "Find a user"
 
                 lifecycleScope.launch {
-                    adapter.setList( moxyPresenter.getRepoList(binding.addName.text.toString()))
+                   adapter.setList( moxyPresenter.getRepoList(binding.addName.text.toString()))
                 }
 
 
