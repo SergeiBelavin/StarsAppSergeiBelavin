@@ -13,6 +13,6 @@ object DateConverter {
 
 
     fun convertTimestampToDate(date: String?): Date? {
-        return date?.let { simpleDateFormat.parse(it) }
+        return date.let { simpleDateFormat.parse(it) }
     }
 }

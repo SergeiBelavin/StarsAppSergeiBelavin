@@ -7,10 +7,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
-import com.example.retrofitoff.R
+import com.example.retrofitoff.data.repository.DateConverter
 import com.example.retrofitoff.model.StarGroup
 
 import com.example.retrofitoff.data.repository.Repository
@@ -23,12 +23,13 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import java.text.SimpleDateFormat
+import moxy.MvpAppCompatActivity
+import moxy.ktx.moxyPresenter
 import java.util.*
 import kotlin.collections.ArrayList
 
 @Suppress("UNREACHABLE_CODE")
-class ChartActivity : AppCompatActivity() {
+class ChartActivity : MvpAppCompatActivity(), ChartView {
 
     companion object {
 
@@ -54,17 +55,18 @@ class ChartActivity : AppCompatActivity() {
     private var dateResponseList = emptyList<StarGroup>()
     private var dayRangeCalendar = ArrayList<Int>()
     private var getDayRangeCalendar = ArrayList<ArrayList<Int>>()
-    private val weekBack = 7
-    private val calendar = Calendar.getInstance()
-    private val parser = SimpleDateFormat("dd/MM/yyyy")
-    private var numWeek = 0
-    private var numMonth = 0
+    private var repository = Repository()
+
+    private var numDate = 0
 
 
     var clickOrNotSelectedDate = false
     val dateList = listOf("week", "month", "year")
     var numDateList = 0
 
+    private val moxyPresenter by moxyPresenter { ChartPresenter(repository) }
+
+    @Override
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -82,7 +84,8 @@ class ChartActivity : AppCompatActivity() {
         chartView = ViewModelProvider(this, viewModelFactory)[ChartViewModel::class.java]
 
         errorLog()
-        selectDateRange ()
+        selectRange()
+        showGraph()
 
         barEntriesList = ArrayList()
 
@@ -111,59 +114,93 @@ class ChartActivity : AppCompatActivity() {
         binding.barChart.setOnClickListener {
             startSubActivity()
         }
-        binding.showGraph.setOnClickListener {
 
-            if (clickOrNotSelectedDate) {
-                clearData()
-                Log.d("NUM_WEEK", "$numWeek")
-                Log.d("NUM_WEEK.1", "$groupType")
-                getReposStar(ownerName.toString(), reposName.toString(), groupType, numWeek)
 
+    }
+
+    private fun selectRange() {
+        binding.week.setOnClickListener {
+            groupType = EnumRange.Companion.GroupType.WEEK
+            selectedDate()
+        }
+        binding.month.setOnClickListener {
+            groupType = EnumRange.Companion.GroupType.MONTH
+            selectedDate()
+        }
+        binding.year.setOnClickListener {
+            groupType = EnumRange.Companion.GroupType.YEAR
+            selectedDate()
+        }
+    }
+
+    private fun clickSelectRange(boolean: Boolean) {
+        binding.week.isGone = boolean
+        binding.month.isGone = boolean
+        binding.year.isGone = boolean
+        binding.backClick.isVisible = boolean
+        binding.nextClick.isVisible = boolean
+        binding.dateTv.isVisible = boolean
+        binding.selectDateTv.isGone = boolean
+        binding.showGraph.isVisible = boolean
+    }
+
+    private fun selectedDate() {
+        clickSelectRange(true)
+        binding.dateTv.text = moxyPresenter.clickBackOrNext(numDate, groupType)
+
+        binding.nextClick.setOnClickListener {
+
+            if (numDate == 0) {
+                showError("Мы не можем смотреть в будущее :(")
+
+            } else {
+                numDate--
+                val getDateNext = moxyPresenter.clickBackOrNext(numDate, groupType)
+                binding.dateTv.text = getDateNext
             }
-
-            if (!clickOrNotSelectedDate) {
-                when (binding.selectedDate.text) {
-                    "week" -> groupType = EnumRange.Companion.GroupType.WEEK
-                    "month" -> groupType = EnumRange.Companion.GroupType.MONTH
-                    "year" -> groupType = EnumRange.Companion.GroupType.YEAR
-                }
-                dateSelected = calendar.timeInMillis
-                Log.d("NUM_WEEK1", "$numWeek")
-                clickOrNotSelectedDate = true
-
-            }
-
         }
 
+        binding.backClick.setOnClickListener {
+            numDate++
+            val getDateBack = moxyPresenter.clickBackOrNext(numDate, groupType)
+            binding.dateTv.text = getDateBack
+        }
+    }
+    private fun showGraph() {
+        binding.showGraph.setOnClickListener {
+            val dateSelectedParse = DateConverter.convertTimestampToDate(binding.dateTv.text.toString())
+
+        }
     }
 
     private fun barChartData() {
         val listBarChart = ArrayList<ArrayList<Int>>()
         val getGroupType = groupsType(groupType)
-        val getRange = UniqueDate().getUniqueArrayList(getGroupType, numWeek)
+        val getRange = UniqueDate().getUniqueArrayList(getGroupType, numDate)
 
         val group = dateResponseList.groupBy {
             it.uniqueDate
         }
 
-           for (i in 0 until getRange.size) {
+        for (i in 0 until getRange.size) {
 
             listBarChart.add(ArrayList())
 
-               for (ind in 0 until group.keys.size) {
+            for (ind in 0 until group.keys.size) {
 
-                   if (getRange[i] == group.keys.elementAt(ind)) {
-                       listBarChart[i].add(group.values.elementAt(ind).size)
+                if (getRange[i] == group.keys.elementAt(ind)) {
+                    listBarChart[i].add(group.values.elementAt(ind).size)
 
-                   } else {
-                       listBarChart[i].add(0)
-                   }
+                } else {
+                    listBarChart[i].add(0)
+                }
 
-               }
+            }
 
-               for (ind in 0 until listBarChart.size) {
-                   barEntriesList.add(BarEntry(ind.toFloat(), group.values.elementAt(ind).size.toFloat()))
-               }
+            for (ind in 0 until listBarChart.size) {
+                barEntriesList.add(BarEntry(ind.toFloat(),
+                    group.values.elementAt(ind).size.toFloat()))
+            }
 
 
         }
@@ -181,7 +218,7 @@ class ChartActivity : AppCompatActivity() {
         ownerName: String,
         reposName: String,
         groupType: EnumRange.Companion.GroupType,
-        dateSelected: Int
+        dateSelected: Int,
     ) {
         return chartView.getReposStars(ownerName, reposName, groupType, dateSelected)
     }
@@ -191,69 +228,6 @@ class ChartActivity : AppCompatActivity() {
         val chartIntent =
             SubscribersActivity.createSubscribeIntent(this@ChartActivity, dateResponseList)
         startActivity(chartIntent)
-    }
-
-    fun selectDateRange () {
-        binding.weekNext.setOnClickListener {
-            Log.d("DATE_MINUS", "${numWeek}")
-
-            if (!clickOrNotSelectedDate) {
-                if (numDateList > 2) {
-                    numDateList = 0
-                }
-                if (numDateList < 0) {
-                    numDateList = 2
-                }
-                numDateList++
-                binding.selectedDate.text = dateList[numDateList]
-
-            }
-
-            if (clickOrNotSelectedDate) {
-
-                binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.grey))
-
-                if (numWeek < 0) {
-                    binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
-                    numWeek++
-                    calendar.add(Calendar.DATE, +weekBack)
-                    binding.selectedDate.text = "${parser.format(Date(calendar.timeInMillis))}"
-                } else {
-                    binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.grey))
-                }
-
-                if (numWeek == 0) {
-                    binding.weekNext.setBackgroundColor(ContextCompat.getColor(this, R.color.grey))
-                    binding.selectedDate.text = "current week"
-                }
-
-            }
-        }
-
-        binding.weekBack.setOnClickListener {
-            if (!clickOrNotSelectedDate) {
-
-                if (numDateList < 0) {
-                    numDateList = 2
-                }
-                if (numDateList > 2) {
-                    numDateList = 1
-                }
-                binding.selectedDate.text = dateList[numDateList]
-                numDateList--
-
-            }
-
-            if (clickOrNotSelectedDate) {
-                binding.weekBack.setOnClickListener {
-                    numWeek--
-                    calendar.add(Calendar.DATE, -weekBack)
-                    binding.selectedDate.text = "${parser.format(Date(calendar.timeInMillis))}"
-                }
-            }
-
-        }
-
     }
 
     private fun errorLog() {
@@ -267,6 +241,14 @@ class ChartActivity : AppCompatActivity() {
             }
         }
         chartView.error.value = ""
+
+    }
+
+    override fun showError(message: String) {
+
+    }
+
+    override fun startSending(boolean: Boolean) {
 
     }
 

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EAEAEA"
+    android:background="#FFFFFF"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="10dp"
@@ -24,37 +24,79 @@
 
     </com.github.mikephil.charting.charts.BarChart>
 
-    <LinearLayout
-        android:layout_width="351dp"
+    <TextView
+        android:id="@+id/selectDateTv"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Выберете диапазон"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="363dp"
+        android:layout_height="83dp"
         android:background="#FFFFFF"
         android:gravity="center"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/weekBack"
+            android:id="@+id/week"
             android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:text="week"
+            android:visibility="visible"
+            app:backgroundTint="#FFFFFF" />
+
+        <Button
+            android:id="@+id/month"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="month"
+            android:visibility="visible"
+            app:backgroundTint="#FFFFFF" />
+
+        <Button
+            android:id="@+id/year"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="year"
+            android:visibility="visible"
+            app:backgroundTint="#FFFFFF" />
+
+        <Button
+            android:id="@+id/backClick"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
             android:text="back"
+            android:visibility="gone"
             app:backgroundTint="#FFFFFF" />
 
         <TextView
-            android:id="@+id/selectedDate"
-            android:layout_width="51dp"
-            android:layout_height="wrap_content"
+            android:id="@+id/dateTv"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="#FFFFFF"
             android:gravity="center"
-            android:text="selectDate"
+            android:text="текущая дата"
             android:textColor="#000000"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:visibility="gone" />
 
         <Button
-            android:id="@+id/weekNext"
+            android:id="@+id/nextClick"
             android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#FFFFFF"
             android:text="next"
+            android:visibility="gone"
             app:backgroundTint="#FFFFFF" />
     </LinearLayout>
 
@@ -62,7 +104,9 @@
         android:id="@+id/showGraph"
         android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:text="show graph" />
+        android:text="selected range"
+        android:visibility="gone"
+        app:backgroundTint="#FFFFFF" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
