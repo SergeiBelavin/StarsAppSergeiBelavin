@@ -8,14 +8,16 @@ class UniqueDate {
 
     fun getUniqueArrayList(range: Int, date: Int): ArrayList<Int> {
         val uniqDaysList = ArrayList<Int>()
-        var weekRange = date*7
+        val weekRange = date*7
         Log.d("NUM_WEEK_@!@!@!@", "${range}")
         when (range) {
 
             14 -> {
-
                 val calWeek = Calendar.getInstance()
-                calWeek.add(Calendar.DAY_OF_YEAR, weekRange)
+                calWeek.add(Calendar.DAY_OF_YEAR, -weekRange)
+                calWeek.add(Calendar.HOUR, -calWeek.time.hours)
+                calWeek.add(Calendar.MINUTE, -calWeek.time.minutes)
+                calWeek.add(Calendar.SECOND, -calWeek.time.seconds)
                 Log.d("TEST_WEEK1", "${calWeek.time}")
                 Log.d("TEST_WEEK2", "${weekRange}")
 
@@ -35,7 +37,11 @@ class UniqueDate {
 
                 val calMonth = Calendar.getInstance()
 
-                calMonth.get(Calendar.MONTH - date)
+                calMonth.add(Calendar.MONTH, -date)
+                calMonth.add(Calendar.DAY_OF_YEAR, -weekRange)
+                calMonth.add(Calendar.HOUR, -calMonth.time.hours)
+                calMonth.add(Calendar.MINUTE, -calMonth.time.minutes)
+                calMonth.add(Calendar.SECOND, -calMonth.time.seconds)
 
                 val dateTimeNow = calMonth.time
                 val dateTimeNowMonth = dateTimeNow.month
@@ -97,7 +103,7 @@ class UniqueDate {
     }
 
     fun getUniqueDate(date: Date): Int {
-        return date.date + 31 * date.month * date.year * 1000
+        return date.date + 31 * date.month * date.year
     }
 
 }

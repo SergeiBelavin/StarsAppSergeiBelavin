@@ -1,31 +1,25 @@
 package com.example.retrofitoff.data.ui.main
 
+import Repository
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.retrofitoff.model.RepoUser
 import com.example.retrofitoff.databinding.ActivityMainBinding
-import com.example.retrofitoff.data.repository.Repository
 import com.example.retrofitoff.data.ui.chart.ChartActivity
 import kotlinx.coroutines.launch
 import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
-import java.io.IOException
+import java.util.Calendar
 
 
 class MainActivity : MvpAppCompatActivity(), RepoAdapter.Listener, MainView {
 
-    //Presenter setup
-
     private val repository = Repository()
-    private var repoList = emptyList<RepoUser>()
     private lateinit var binding: ActivityMainBinding
     private val adapter = RepoAdapter(this)
     private val moxyPresenter by moxyPresenter { MainPresenter(repository) }
@@ -42,6 +36,8 @@ class MainActivity : MvpAppCompatActivity(), RepoAdapter.Listener, MainView {
         binding.rcView.adapter = adapter
 
         getRepoList()
+
+        test()
 
     }
 
@@ -60,7 +56,7 @@ class MainActivity : MvpAppCompatActivity(), RepoAdapter.Listener, MainView {
         }
     }
 
-    override fun startSending(boolean: Boolean){
+    override fun startSending(boolean: Boolean) {
         binding.progressBar.isInvisible = boolean
         binding.rcView.isVisible = boolean
         binding.addName.isEnabled = boolean
@@ -75,15 +71,35 @@ class MainActivity : MvpAppCompatActivity(), RepoAdapter.Listener, MainView {
                 binding.addName.hint = "Find a user"
 
                 lifecycleScope.launch {
-                   adapter.setList( moxyPresenter.getRepoList(binding.addName.text.toString()))
+                    adapter.setList(moxyPresenter.getRepoList(binding.addName.text.toString()))
                 }
-
 
             } else {
                 binding.addName.error = "Enter a name"
                 binding.addName.hint = "Enter a name"
             }
         }
+
+    }
+    fun test() {
+        val calendar = Calendar.getInstance()
+        var hours = calendar.time.hours
+        var minutes = calendar.time.minutes
+        var seconds = calendar.time.seconds
+
+        val date = calendar.time
+
+        val num = "${date.day}${date.month}${date.year}"
+       // var dateToInt = num.toInt()
+
+        //Log.d("LOOO", "$dateToInt")
+        Log.d("LOOO1", "$num")
+
+        Log.d("LOOO3", "${date.day}")
+        Log.d("LOOO3", "${date.month}")
+        Log.d("LOOO3", "${date.year}")
+
+
 
     }
 

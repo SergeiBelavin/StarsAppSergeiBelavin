@@ -1,5 +1,6 @@
 package com.example.retrofitoff.data.ui.chart
 
+import Repository
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -10,10 +11,11 @@ import android.view.WindowManager
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.retrofitoff.data.repository.DateConverter
 import com.example.retrofitoff.model.StarGroup
 
-import com.example.retrofitoff.data.repository.Repository
+
 import com.example.retrofitoff.data.repository.UniqueDate
 import com.example.retrofitoff.databinding.ChartActivityBinding
 import com.example.retrofitoff.data.ui.main.EnumRange
@@ -23,6 +25,7 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import kotlinx.coroutines.launch
 import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
 import java.util.*
@@ -44,26 +47,14 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
     }
 
     private lateinit var binding: ChartActivityBinding
-    private lateinit var chartView: ChartViewModel
-
     lateinit var barChart: BarChart
     lateinit var barData: BarData
     lateinit var barDataSet: BarDataSet
     lateinit var barEntriesList: ArrayList<BarEntry>
-
     private var groupType = EnumRange.Companion.GroupType.WEEK
     private var dateResponseList = emptyList<StarGroup>()
-    private var dayRangeCalendar = ArrayList<Int>()
-    private var getDayRangeCalendar = ArrayList<ArrayList<Int>>()
     private var repository = Repository()
-
     private var numDate = 0
-
-
-    var clickOrNotSelectedDate = false
-    val dateList = listOf("week", "month", "year")
-    var numDateList = 0
-
     private val moxyPresenter by moxyPresenter { ChartPresenter(repository) }
 
     @Override
@@ -73,43 +64,18 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
         super.onCreate(savedInstanceState)
         binding = ChartActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val ownerName = intent.getSerializableExtra(KEY_NAME)
-        val reposName = intent.getSerializableExtra(KEY_REPOS)
-        val repository = Repository()
-        val viewModelFactory = ChartViewFactory(repository)
-        var dateSelected: Long = 0
 
-
-
-        chartView = ViewModelProvider(this, viewModelFactory)[ChartViewModel::class.java]
-
-        errorLog()
         selectRange()
         showGraph()
 
         barEntriesList = ArrayList()
-
-        chartView.chartResponse.observe(this) { dateList ->
-
-            dateResponseList = dateList
+        barEntriesList.add(BarEntry(1f, 1f))
 
             barEntriesList = ArrayList()
 
             Log.d("RESPONSE_CHART_VIEW", "$dateResponseList")
 
             barChartData()
-
-            barChart = binding.barChart
-            barDataSet = BarDataSet(barEntriesList, "Количество звезд")
-            barDataSet.valueTextColor = Color.BLACK
-            barData = BarData(barDataSet)
-            barChart.setFitBars(true)
-            barChart.data = barData
-            barChart.description.text = "Количество звезд по датам"
-            barDataSet.valueTextSize = 16f
-            barChart.animateY(2000)
-
-        }
 
         binding.barChart.setOnClickListener {
             startSubActivity()
@@ -146,81 +112,49 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
 
     private fun selectedDate() {
         clickSelectRange(true)
-        binding.dateTv.text = moxyPresenter.clickBackOrNext(numDate, groupType)
+        binding.dateTv.text = moxyPresenter.clickBackOrNext(numDate, groupType,
+            minusOrPlus = true,
+            firstQuest = true)
 
         binding.nextClick.setOnClickListener {
-
-            if (numDate == 0) {
-                showError("Мы не можем смотреть в будущее :(")
-
-            } else {
-                numDate--
-                val getDateNext = moxyPresenter.clickBackOrNext(numDate, groupType)
+                val getDateNext = moxyPresenter.clickBackOrNext(numDate, groupType,
+                    minusOrPlus = true,
+                    firstQuest = false)
                 binding.dateTv.text = getDateNext
-            }
         }
 
         binding.backClick.setOnClickListener {
             numDate++
-            val getDateBack = moxyPresenter.clickBackOrNext(numDate, groupType)
+            val getDateBack = moxyPresenter.clickBackOrNext(numDate, groupType,
+                minusOrPlus = false,
+                firstQuest = false)
             binding.dateTv.text = getDateBack
         }
     }
-    private fun showGraph() {
-        binding.showGraph.setOnClickListener {
-            val dateSelectedParse = DateConverter.convertTimestampToDate(binding.dateTv.text.toString())
 
+    private fun showGraph() {
+        val ownerName = intent.getSerializableExtra(KEY_NAME)
+        val reposName = intent.getSerializableExtra(KEY_REPOS)
+
+        binding.showGraph.setOnClickListener {
+            lifecycleScope.launch {
+                moxyPresenter.getReposStars(ownerName.toString(),
+                    reposName.toString(),
+                    groupType,)
+            }
         }
     }
 
     private fun barChartData() {
-        val listBarChart = ArrayList<ArrayList<Int>>()
-        val getGroupType = groupsType(groupType)
-        val getRange = UniqueDate().getUniqueArrayList(getGroupType, numDate)
-
-        val group = dateResponseList.groupBy {
-            it.uniqueDate
-        }
-
-        for (i in 0 until getRange.size) {
-
-            listBarChart.add(ArrayList())
-
-            for (ind in 0 until group.keys.size) {
-
-                if (getRange[i] == group.keys.elementAt(ind)) {
-                    listBarChart[i].add(group.values.elementAt(ind).size)
-
-                } else {
-                    listBarChart[i].add(0)
-                }
-
-            }
-
-            for (ind in 0 until listBarChart.size) {
-                barEntriesList.add(BarEntry(ind.toFloat(),
-                    group.values.elementAt(ind).size.toFloat()))
-            }
-
-
-        }
-
-    }
-
-    fun clearData() {
-        dateResponseList = emptyList<StarGroup>()
-        barEntriesList = ArrayList()
-        dayRangeCalendar = ArrayList<Int>()
-        getDayRangeCalendar = ArrayList<ArrayList<Int>>()
-    }
-
-    fun getReposStar(
-        ownerName: String,
-        reposName: String,
-        groupType: EnumRange.Companion.GroupType,
-        dateSelected: Int,
-    ) {
-        return chartView.getReposStars(ownerName, reposName, groupType, dateSelected)
+        barChart = binding.barChart
+        barDataSet = BarDataSet(barEntriesList, "Количество звезд")
+        barDataSet.valueTextColor = Color.BLACK
+        barData = BarData(barDataSet)
+        barChart.setFitBars(true)
+        barChart.data = barData
+        barChart.description.text = "Количество звезд по датам"
+        barDataSet.valueTextSize = 16f
+        barChart.animateY(2000)
     }
 //gulihua10010
 
@@ -230,22 +164,17 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
         startActivity(chartIntent)
     }
 
-    private fun errorLog() {
-        chartView.error.observe(this) { error ->
-            binding.error.text = error
-            if (error != "") {
-                binding.cardError.visibility = View.VISIBLE
-            }
-            binding.cardError.setOnClickListener {
-                binding.cardError.visibility = View.GONE
-            }
-        }
-        chartView.error.value = ""
-
-    }
-
     override fun showError(message: String) {
+        binding.ErrorView.visibility = View.VISIBLE
+        binding.error.text = message
+        binding.selectRangeDate.visibility = View.GONE
+        binding.showGraph.visibility = View.GONE
 
+        binding.okError.setOnClickListener {
+            binding.ErrorView.visibility = View.INVISIBLE
+            binding.selectRangeDate.visibility = View.VISIBLE
+            binding.showGraph.visibility = View.VISIBLE
+        }
     }
 
     override fun startSending(boolean: Boolean) {
