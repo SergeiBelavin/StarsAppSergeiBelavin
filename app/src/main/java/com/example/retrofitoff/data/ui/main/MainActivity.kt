@@ -14,7 +14,13 @@ import com.example.retrofitoff.data.ui.chart.ChartActivity
 import kotlinx.coroutines.launch
 import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.Calendar
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 
 class MainActivity : MvpAppCompatActivity(), RepoAdapter.Listener, MainView {
@@ -89,17 +95,9 @@ class MainActivity : MvpAppCompatActivity(), RepoAdapter.Listener, MainView {
 
         val date = calendar.time
 
-        val num = "${date.day}${date.month}${date.year}"
-       // var dateToInt = num.toInt()
-
-        //Log.d("LOOO", "$dateToInt")
-        Log.d("LOOO1", "$num")
-
-        Log.d("LOOO3", "${date.day}")
-        Log.d("LOOO3", "${date.month}")
-        Log.d("LOOO3", "${date.year}")
-
-
+        date.minutes = date.minutes - date.minutes
+        date.hours = date.hours - date.hours
+        date.seconds = date.seconds - date.seconds
 
     }
 

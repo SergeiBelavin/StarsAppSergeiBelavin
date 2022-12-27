@@ -10,17 +10,12 @@ import android.view.View
 import android.view.WindowManager
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.example.retrofitoff.data.repository.DateConverter
 import com.example.retrofitoff.model.StarGroup
 
 
-import com.example.retrofitoff.data.repository.UniqueDate
 import com.example.retrofitoff.databinding.ChartActivityBinding
 import com.example.retrofitoff.data.ui.main.EnumRange
-import com.example.retrofitoff.data.ui.main.EnumRange.Companion.groupsType
-import com.example.retrofitoff.data.ui.sub.SubscribersActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -59,28 +54,25 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
 
     @Override
     override fun onCreate(savedInstanceState: Bundle?) {
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
         super.onCreate(savedInstanceState)
+
         binding = ChartActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         selectRange()
-        showGraph()
+        //showGraph()
 
         barEntriesList = ArrayList()
         barEntriesList.add(BarEntry(1f, 1f))
 
-            barEntriesList = ArrayList()
+        barEntriesList = ArrayList()
 
-            Log.d("RESPONSE_CHART_VIEW", "$dateResponseList")
-
-            barChartData()
-
-        binding.barChart.setOnClickListener {
-            startSubActivity()
-        }
-
+        barChartData()
+        getChart()
 
     }
 
@@ -112,37 +104,34 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
 
     private fun selectedDate() {
         clickSelectRange(true)
-        binding.dateTv.text = moxyPresenter.clickBackOrNext(numDate, groupType,
+        binding.dateTv.text = moxyPresenter.clickBackOrNext(
+            numDate, groupType,
             minusOrPlus = true,
-            firstQuest = true)
+            firstQuest = true
+        )
 
         binding.nextClick.setOnClickListener {
-                val getDateNext = moxyPresenter.clickBackOrNext(numDate, groupType,
-                    minusOrPlus = true,
-                    firstQuest = false)
-                binding.dateTv.text = getDateNext
+            val getDateNext = moxyPresenter.clickBackOrNext(
+                numDate, groupType,
+                minusOrPlus = true,
+                firstQuest = false
+            )
+            binding.dateTv.text = getDateNext
         }
 
         binding.backClick.setOnClickListener {
             numDate++
-            val getDateBack = moxyPresenter.clickBackOrNext(numDate, groupType,
+            val getDateBack = moxyPresenter.clickBackOrNext(
+                numDate, groupType,
                 minusOrPlus = false,
-                firstQuest = false)
+                firstQuest = false
+            )
             binding.dateTv.text = getDateBack
         }
     }
 
     private fun showGraph() {
-        val ownerName = intent.getSerializableExtra(KEY_NAME)
-        val reposName = intent.getSerializableExtra(KEY_REPOS)
 
-        binding.showGraph.setOnClickListener {
-            lifecycleScope.launch {
-                moxyPresenter.getReposStars(ownerName.toString(),
-                    reposName.toString(),
-                    groupType,)
-            }
-        }
     }
 
     private fun barChartData() {
@@ -158,10 +147,37 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
     }
 //gulihua10010
 
-    fun startSubActivity() {
-        val chartIntent =
-            SubscribersActivity.createSubscribeIntent(this@ChartActivity, dateResponseList)
-        startActivity(chartIntent)
+    fun getChart() {
+        binding.showGraph.setOnClickListener {
+
+            //val chartIntent =
+            //    SubscribersActivity.createSubscribeIntent(this@ChartActivity, dateResponseList)
+            //startActivity(chartIntent)
+            moxyPresenter.dayForTheSchedule()
+
+            val ownerName = intent.getSerializableExtra(KEY_NAME)
+            val reposName = intent.getSerializableExtra(KEY_REPOS)
+            var chartDateList = emptyList<Int>()
+
+            lifecycleScope.launch {
+
+                val chartDate = moxyPresenter.getReposStars(
+                    ownerName.toString(),
+                    reposName.toString(),
+                    groupType,
+                )
+                Log.d("CHART_0", "$chartDate")
+
+                barEntriesList.clear()
+
+                for (i in 0 until chartDate.size) {
+                    barEntriesList.add(BarEntry(i.toFloat(), chartDate[i].toFloat()))
+                }
+                Log.d("CHART_0", "$chartDate")
+                barChartData()
+            }
+
+        }
     }
 
     override fun showError(message: String) {

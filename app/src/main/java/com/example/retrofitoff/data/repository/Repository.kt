@@ -1,8 +1,8 @@
 import com.example.retrofitoff.data.repository.RetrofitInstance
 import com.example.retrofitoff.data.repository.UniqueDate
 
-import android.net.wifi.WifiManager.LocalOnlyHotspotCallback
 import android.util.Log
+import androidx.lifecycle.viewmodel.viewModelFactory
 
 
 import com.example.retrofitoff.model.RepoUser
@@ -13,7 +13,6 @@ import com.example.retrofitoff.model.User
 import com.example.retrofitoff.data.ui.main.EnumRange
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.time.Duration.Companion.milliseconds
 
 
 open class Repository() {
@@ -72,13 +71,15 @@ open class Repository() {
         Log.d("DATE_LIST_LASTDATE1", "$lastData")
         Log.d("DATE_LIST_LASTDATE2", "$daysResponseInt")
 
-        return try {
+        try {
 
             do {
                 dataVerification(userName, repoName, groupType, dateSelected)
+                return listResponse
 
             } while (stopPaging == 0 || starsList.size == MIN_PAGE_SIZE)
-            listResponseGrouping
+
+            listResponse
 
         } finally {
 
@@ -117,62 +118,88 @@ open class Repository() {
         groupType: EnumRange.Companion.GroupType,
         dateSelected: Int,
     ) {
-        val daysResponseInt =
+        val rangeList =
             UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType), dateSelected)
-        val lastData = daysResponseInt[daysResponseInt.size - 1]
-        val calendar = Calendar.getInstance()
-        var chartList = ArrayList<Int>()
+
+        val lastIndex = rangeList[rangeList.size - 1]
+        val firstIndex = rangeList[0]
+        Log.d("START_processing", "processingStart")
+        val dateToInt = list[0].starredAt.time
+
+        if(dateToInt < lastIndex) {
+            Log.d("START_processing", "stop")
+            stopPaging = 1
+        }
 
         list.forEach {
 
-            val dateToInt = UniqueDate().getUniqueDate(it.starredAt)
-            val dateToIntUnix = it.starredAt.time
+            val dateToInt = it.starredAt
+            dateToInt.hours = dateToInt.hours - dateToInt.hours
+            dateToInt.minutes = dateToInt.minutes - dateToInt.minutes
+            dateToInt.seconds = dateToInt.seconds - dateToInt.seconds
+            val starredAtUnix = dateToInt.time
+
+            Log.d("REPO_DATE_STARRED_AT", "$starredAtUnix")
+            Log.d("REPO_DATE_RANGE_LIST", "$rangeList")
+            Log.d("REPO_DATE_LAST_IND", "$lastIndex")
+            Log.d("REPO_DATE_FIRST_IND", "$firstIndex")
 
 
-            var unixDateLast: Long = 0
-
-            if (EnumRange.groupsType(groupType) == 14) {
-                calendar.clear()
-                calendar.add(Calendar.DAY_OF_YEAR, -dateSelected * 7)
-                unixDateLast = calendar.timeInMillis
-                Log.d("GROUP_WEEK", "$dateToIntUnix")
+            if (starredAtUnix <= lastIndex && starredAtUnix >= firstIndex) {
+                Log.d("REPO_DATE", "math $starredAtUnix date $lastIndex - $firstIndex")
+                listResponse.add(it)
             }
-            if (EnumRange.groupsType(groupType) == 30) {
-                calendar.clear()
-                calendar.add(Calendar.MONTH, -dateSelected)
-                unixDateLast = calendar.timeInMillis
-                Log.d("GROUP_MONTH", "$dateToIntUnix")
-            }
-            if (EnumRange.groupsType(groupType) == 60) {
-                calendar.clear()
-                calendar.add(Calendar.YEAR, -dateSelected)
-                Log.d("GROUP_YEAR", "$dateToIntUnix")
-                unixDateLast = calendar.timeInMillis
-            }
-
-            if (dateToIntUnix >= unixDateLast) {
-                Log.d("REPO_DATE_NOW", "$dateToIntUnix")
-                Log.d("REPO_DATE_LOST", "$unixDateLast")
-                Log.d("REPO_DATE_CALENDAR", "${calendar.time}")
-
-                val starGroup = object : StarGroup {
-                    override val starredAt: Date
-                        get() = it.starredAt
-                    override val user: User
-                        get() = it.user
-                    override val uniqueDate: Int?
-                        get() = dateToInt
-                }
-
-                listResponse.add(starGroup)
 //gulihua10010
 
-            } else {
-                stopPaging = 1
+
+
+            val logList = ArrayList<Long?>()
+            for (i in 0 until listResponse.size) {
+                logList.add(listResponse[i].starredAt.time)
             }
-            Log.d("TEST_NEW_REP", "${listResponse[0]}")
+            Log.d("TEST_NEW_REP", "${logList}")
             Log.d("TEST_NEW_REP", "${listResponse}")
         }
+    }
+
+    suspend fun getChartDate(
+        userName: String,
+        repoName: String,
+        groupType: EnumRange.Companion.GroupType,
+        dateSelected: Int,
+    ): List<Int> {
+
+        val dateToGroup = getStarRepo(userName, repoName, groupType, dateSelected)
+        val rangeList = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType), dateSelected)
+        Log.d("MyLogChartGood", "$rangeList")
+        val chartIntDate = ArrayList<Int>()
+        chartIntDate.clear()
+        val chartListDate = ArrayList<ArrayList<Int>>()
+        chartListDate.clear()
+
+        for(i in 0 until rangeList.size) {
+            chartListDate.add(ArrayList())
+        }
+
+        for (element in 0 until dateToGroup.size) {
+
+            for (i in 0 until rangeList.size) {
+
+                if (rangeList[i] == dateToGroup[element].starredAt.time) {
+                    chartListDate[i].add(1)
+                }
+            }
+
+        }
+
+        for (i in 0 until chartListDate.size) {
+            chartIntDate.add(chartListDate[i].size)
+        }
+
+        Log.d("UNIQ_DATE_TEST", "$chartListDate")
+        Log.d("UNIQ_DATE_INT", "$chartIntDate")
+
+        return chartIntDate
     }
 
 }

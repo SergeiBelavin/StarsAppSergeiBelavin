@@ -13,7 +13,4 @@ data class StarGroupItem(
     @Json(name = "user")
     override val user: UserItem,
 
-    override val uniqueDate: Int?,
-
-
     ): StarGroup

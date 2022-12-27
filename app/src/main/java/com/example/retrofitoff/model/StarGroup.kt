@@ -6,5 +6,4 @@ import java.util.Date
 interface StarGroup: Serializable {
     val starredAt: Date
     val user: User
-    val uniqueDate: Int?
 }
