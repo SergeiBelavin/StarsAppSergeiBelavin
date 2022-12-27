@@ -119,7 +119,7 @@ open class Repository() {
             UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType), dateSelected)
 
         val lastIndex = rangeList[rangeList.size - 1]
-
+        listResponse.clear()
         val firstIndex = rangeList[0]
 
 
