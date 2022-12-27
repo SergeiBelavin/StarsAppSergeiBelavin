@@ -63,7 +63,7 @@ class MainPresenter(private val mainRepository: Repository) : MvpPresenter<MainV
         } catch (e: IOException) {
             Log.d("${TAG}_ERROR_GET_REPO", "IOException: $e")
 
-            if (e.hashCode() == -1358142848) {
+            if (e.localizedMessage?.hashCode() == -1358142848) {
                 viewState.startSending(true)
                 viewState.showError("Пользователь не найден")
             }

@@ -21,7 +21,6 @@ open class Repository() {
     private val MIN_PAGE_SIZE = 0
 
     private val listResponse = ArrayList<StarGroup>()
-    private val listResponseGrouping = ArrayList<StarGroup>()
     private var stopPaging = 0
     private var pageNumberStar = 1
     private var starsList = ArrayList<StarGroup>()
@@ -78,8 +77,7 @@ open class Repository() {
                 return listResponse
 
             } while (stopPaging == 0 || starsList.size == MIN_PAGE_SIZE)
-
-            listResponse
+            return listResponse
 
         } finally {
 
@@ -102,12 +100,11 @@ open class Repository() {
         if (starsList.size == MAX_PAGE_SIZE) {
             pageNumberStar++
             starsList.clear()
-
             processingResponse(response, groupType, dateSelected)
 
         } else {
-            stopPaging = 1
             processingResponse(response, groupType, dateSelected)
+            stopPaging = 1
         }
 
         Log.d("REPO_PAGE", "$pageNumberStar")
@@ -122,7 +119,10 @@ open class Repository() {
             UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType), dateSelected)
 
         val lastIndex = rangeList[rangeList.size - 1]
+
         val firstIndex = rangeList[0]
+
+
         Log.d("START_processing", "processingStart")
         val dateToInt = list[0].starredAt.time
 
@@ -145,7 +145,7 @@ open class Repository() {
             Log.d("REPO_DATE_FIRST_IND", "$firstIndex")
 
 
-            if (starredAtUnix <= lastIndex && starredAtUnix >= firstIndex) {
+            if (starredAtUnix in firstIndex..lastIndex) {
                 Log.d("REPO_DATE", "math $starredAtUnix date $lastIndex - $firstIndex")
                 listResponse.add(it)
             }
@@ -170,10 +170,15 @@ open class Repository() {
     ): List<Int> {
 
         val dateToGroup = getStarRepo(userName, repoName, groupType, dateSelected)
+
         val rangeList = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType), dateSelected)
+
         Log.d("MyLogChartGood", "$rangeList")
+        Log.d("MyLogChartGood", "${dateToGroup.size}")
+
         val chartIntDate = ArrayList<Int>()
         chartIntDate.clear()
+
         val chartListDate = ArrayList<ArrayList<Int>>()
         chartListDate.clear()
 

@@ -83,11 +83,11 @@ class ChartPresenter(private val chartRepo: Repository) : MvpPresenter<ChartView
         repoName: String,
         groupType: EnumRange.Companion.GroupType,
     ): List<Int> {
-
+        responseList.clear()
         try {
             val response: List<Int> =
                 chartRepo.getChartDate(userName, repoName, groupType, numDate)
-            responseList.clear()
+
             responseList.addAll(response)
             Log.d("RESPONCE_LIST", "Exception: $responseList")
 
