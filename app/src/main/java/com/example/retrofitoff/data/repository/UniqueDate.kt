@@ -1,5 +1,6 @@
 package com.example.retrofitoff.data.repository
 
+import android.os.Build.VERSION_CODES.M
 import android.util.Log
 import java.util.*
 import kotlin.collections.ArrayList
@@ -10,42 +11,51 @@ class UniqueDate {
 
     fun getUniqueArrayList(range: Int, date: Int): ArrayList<Long> {
         val uniqDaysList = ArrayList<Long>()
-        val weekRange = date*7
-        Log.d("NUM_WEEK_@!@!@!@", "${range}")
+        var weekRange = date*7
+
+        if(date == 0) {
+            weekRange = 7
+        }
+
+
+        Log.d("LIST_WEEK_DATE++", "$weekRange")
+
         when (range) {
 
             14 -> {
                 uniqDaysList.clear()
                 val calWeek = Calendar.getInstance()
-                calWeek.add(Calendar.DAY_OF_YEAR, -weekRange)
-                calWeek.add(Calendar.HOUR, -calWeek.time.hours)
-                calWeek.add(Calendar.MINUTE, -calWeek.time.minutes)
-                calWeek.add(Calendar.SECOND, -calWeek.time.seconds)
-                calWeek.add(Calendar.MILLISECOND, -Calendar.MILLISECOND)
-                calWeek.add(Calendar.DAY_OF_YEAR, -calWeek.time.day+1)
+                val day = calWeek.time.date - weekRange
+                calWeek.set(Calendar.DATE, day)
+                calWeek.set(Calendar.HOUR, -12)
+                calWeek.set(Calendar.MINUTE, 0)
+                calWeek.set(Calendar.SECOND, 0)
+                calWeek.set(Calendar.MILLISECOND, 0)
 
-                Log.d("TEST_WEEK3", "${calWeek.time}")
-
+                Log.d("LIST_WEEK_CALENDAR_SET","${calWeek.time.date}")
+                Log.d("LIST_WEEK_CALENDAR_SET","${calWeek.time}")
+                Log.d("LIST_WEEK_CALENDAR_SET","${calWeek.timeInMillis}")
+                var num = 0
                 for (i in 0..6) {
                     calWeek.add(Calendar.DAY_OF_YEAR, +1)
-                    val dateUnix = calWeek.timeInMillis.toString().replaceRange(9..12, "0000").toLong()
+                    val dateUnix = calWeek.timeInMillis
                     uniqDaysList.add(dateUnix)
                 }
-                Log.d("TEST_WEEK5", "${uniqDaysList}")
-
+                Log.d("LIST_WEEK_DAY_UNIQ", "${uniqDaysList}")
             }
             30 -> {
 
                 val calMonth = Calendar.getInstance()
-
-                calMonth.add(Calendar.MONTH, -date)
-                calMonth.add(Calendar.HOUR, -calMonth.time.hours)
-                calMonth.add(Calendar.MINUTE, -calMonth.time.minutes)
-                calMonth.add(Calendar.SECOND, -calMonth.time.seconds)
+                calMonth.set(Calendar.MONTH, -date)
+                calMonth.set(Calendar.HOUR, 0)
+                calMonth.set(Calendar.MINUTE, 0)
+                calMonth.set(Calendar.SECOND, 0)
                 uniqDaysList.clear()
                 val dateTimeNow = calMonth.time
                 val dateTimeNowMonth = dateTimeNow.month
                 var monthDaySize = 0
+
+
 
                 if (dateTimeNow.year % 4 == 0) {
                     monthDaySize = when (dateTimeNowMonth) {
@@ -82,18 +92,13 @@ class UniqueDate {
 
             60 -> {
                 val calYear = Calendar.getInstance()
-                calYear.add(Calendar.YEAR, -date)
-                calYear.add(Calendar.HOUR, -calYear.time.hours)
-                calYear.add(Calendar.MINUTE, -calYear.time.minutes)
-                calYear.add(Calendar.SECOND, -calYear.time.seconds)
-                var yearSize = 0
-                uniqDaysList.clear()
+                calYear.set(Calendar.YEAR, -date)
+                calYear.set(Calendar.HOUR, 0)
+                calYear.set(Calendar.MINUTE, 0)
+                calYear.set(Calendar.SECOND, 0)
 
-                if (calYear.time.year % 4 == 0) {
-                    yearSize = 366
-                } else {
-                    yearSize = 365
-                }
+                val yearSize = calYear.getActualMaximum(Calendar.DAY_OF_YEAR)
+                uniqDaysList.clear()
 
                 for (i in 0 until yearSize) {
                     uniqDaysList.add(calYear.timeInMillis.toString().replaceRange(9..12, "0000").toLong())
@@ -104,11 +109,6 @@ class UniqueDate {
             }
         }
         return uniqDaysList
-
-    }
-
-    fun getUniqueDate(date: Date): Int {
-        return date.date + 31 * date.month * date.year
     }
 
 }

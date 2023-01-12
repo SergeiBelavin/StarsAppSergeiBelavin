@@ -9,7 +9,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="10dp"
-    tools:context=".data.ui.chart.ChartActivity">
+    tools:context=".ui.chart.ChartActivity">
 
     <TextView
         android:id="@+id/test"
@@ -19,8 +19,8 @@
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/barChart"
-        android:layout_width="389dp"
-        android:layout_height="436dp">
+        android:layout_width="match_parent"
+        android:layout_height="400dp">
 
     </com.github.mikephil.charting.charts.BarChart>
 
@@ -35,8 +35,8 @@
 
     <LinearLayout
         android:id="@+id/selectRangeDate"
-        android:layout_width="363dp"
-        android:layout_height="83dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="#FFFFFF"
         android:gravity="center"
         android:orientation="horizontal"
@@ -44,7 +44,7 @@
 
         <Button
             android:id="@+id/week"
-            android:layout_width="20dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="week"
@@ -53,7 +53,7 @@
 
         <Button
             android:id="@+id/month"
-            android:layout_width="20dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="month"
@@ -62,7 +62,7 @@
 
         <Button
             android:id="@+id/year"
-            android:layout_width="20dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="year"
@@ -71,18 +71,19 @@
 
         <Button
             android:id="@+id/backClick"
-            android:layout_width="20dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#FFFFFF"
             android:text="back"
+            android:textSize="10sp"
             android:visibility="gone"
             app:backgroundTint="#FFFFFF" />
 
         <TextView
             android:id="@+id/dateTv"
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#FFFFFF"
             android:gravity="center"
@@ -93,18 +94,19 @@
 
         <Button
             android:id="@+id/nextClick"
-            android:layout_width="20dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#FFFFFF"
             android:text="next"
+            android:textSize="10sp"
             android:visibility="gone"
             app:backgroundTint="#FFFFFF" />
     </LinearLayout>
 
     <Button
         android:id="@+id/showGraph"
-        android:layout_width="170dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="selected range"
         android:visibility="gone"
@@ -127,8 +129,8 @@
 
             <ImageView
                 android:id="@+id/shrekError"
-                android:layout_width="148dp"
-                android:layout_height="151dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 app:srcCompat="@drawable/shrek_error2" />
 
             <TextView
@@ -140,8 +142,8 @@
 
             <Button
                 android:id="@+id/okError"
-                android:layout_width="100dp"
-                android:layout_height="50dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:text="Ok" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>

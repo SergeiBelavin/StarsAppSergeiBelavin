@@ -1,4 +1,4 @@
-package com.example.retrofitoff.data.ui.sub
+package com.example.retrofitoff.ui.sub
 
 import android.content.Context
 import android.content.Intent

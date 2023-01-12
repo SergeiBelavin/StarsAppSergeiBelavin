@@ -1,4 +1,4 @@
-package com.example.retrofitoff.data.ui.chart
+package com.example.retrofitoff.ui.chart
 
 import Repository
 import android.content.Context
@@ -15,7 +15,7 @@ import com.example.retrofitoff.model.StarGroup
 
 
 import com.example.retrofitoff.databinding.ChartActivityBinding
-import com.example.retrofitoff.data.ui.main.EnumRange
+import com.example.retrofitoff.ui.main.EnumRange
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -47,9 +47,7 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
     lateinit var barDataSet: BarDataSet
     lateinit var barEntriesList: ArrayList<BarEntry>
     private var groupType = EnumRange.Companion.GroupType.WEEK
-    private var dateResponseList = emptyList<StarGroup>()
     private var repository = Repository()
-    private var numDate = 0
     private val moxyPresenter by moxyPresenter { ChartPresenter(repository) }
 
     @Override
@@ -64,7 +62,6 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
         setContentView(binding.root)
 
         selectRange()
-        //showGraph()
 
         barEntriesList = ArrayList()
         barEntriesList.add(BarEntry(1f, 1f))
@@ -105,14 +102,14 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
     private fun selectedDate() {
         clickSelectRange(true)
         binding.dateTv.text = moxyPresenter.clickBackOrNext(
-            numDate, groupType,
+            groupType,
             minusOrPlus = true,
             firstQuest = true
         )
 
         binding.nextClick.setOnClickListener {
             val getDateNext = moxyPresenter.clickBackOrNext(
-                numDate, groupType,
+                groupType,
                 minusOrPlus = true,
                 firstQuest = false
             )
@@ -120,9 +117,8 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
         }
 
         binding.backClick.setOnClickListener {
-            numDate++
             val getDateBack = moxyPresenter.clickBackOrNext(
-                numDate, groupType,
+                groupType,
                 minusOrPlus = false,
                 firstQuest = false
             )
@@ -130,11 +126,8 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
         }
     }
 
-    private fun showGraph() {
-
-    }
-
     private fun barChartData() {
+        barEntriesList.clear()
         barChart = binding.barChart
         barDataSet = BarDataSet(barEntriesList, "Количество звезд")
         barDataSet.valueTextColor = Color.BLACK
@@ -150,14 +143,10 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
     fun getChart() {
         binding.showGraph.setOnClickListener {
 
-            //val chartIntent =
-            //    SubscribersActivity.createSubscribeIntent(this@ChartActivity, dateResponseList)
-            //startActivity(chartIntent)
             moxyPresenter.dayForTheSchedule()
 
             val ownerName = intent.getSerializableExtra(KEY_NAME)
             val reposName = intent.getSerializableExtra(KEY_REPOS)
-            var chartDateList = emptyList<Int>()
 
             lifecycleScope.launch {
 
@@ -166,13 +155,14 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
                     reposName.toString(),
                     groupType,
                 )
-                Log.d("CHART_0", "$chartDate")
 
+                Log.d("CHART_0", "$chartDate")
                 barEntriesList.clear()
 
                 for (i in 0 until chartDate.size) {
                     barEntriesList.add(BarEntry(i.toFloat(), chartDate[i].toFloat()))
                 }
+
                 Log.d("CHART_0", "$chartDate")
                 barChartData()
             }

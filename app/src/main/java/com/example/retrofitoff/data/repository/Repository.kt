@@ -10,16 +10,16 @@ import com.example.retrofitoff.model.RepoUser
 
 import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.model.User
-import com.example.retrofitoff.data.ui.main.EnumRange
+import com.example.retrofitoff.ui.main.EnumRange
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.time.Duration.Companion.hours
 
 
 open class Repository() {
 
     private val MAX_PAGE_SIZE = 100
     private val MIN_PAGE_SIZE = 0
-
     private val listResponse = ArrayList<StarGroup>()
     private var stopPaging = 0
     private var pageNumberStar = 1
@@ -54,7 +54,6 @@ open class Repository() {
         }
     }
 
-
     suspend fun getStarRepo(
         userName: String,
         repoName: String,
@@ -62,8 +61,7 @@ open class Repository() {
         dateSelected: Int,
     ): List<StarGroup> {
 
-        val daysResponseInt =
-            UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType), dateSelected)
+        val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType), dateSelected)
 
         val lastData = daysResponseInt[daysResponseInt.size - 1]
 
@@ -117,7 +115,7 @@ open class Repository() {
     ) {
         val rangeList =
             UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType), dateSelected)
-
+        Log.d("LIST_WEEK_date_selected","${dateSelected}")
         val lastIndex = rangeList[rangeList.size - 1]
         listResponse.clear()
         val firstIndex = rangeList[0]
@@ -125,8 +123,9 @@ open class Repository() {
 
         Log.d("START_processing", "processingStart")
         val dateToInt = list[0].starredAt.time
+        Log.d("DATE_TO_INT", "$dateToInt")
 
-        if(dateToInt < lastIndex) {
+        if(dateToInt > lastIndex) {
             Log.d("START_processing", "stop")
             stopPaging = 1
         }
@@ -137,21 +136,19 @@ open class Repository() {
             dateToInt.hours = dateToInt.hours - dateToInt.hours
             dateToInt.minutes = dateToInt.minutes - dateToInt.minutes
             dateToInt.seconds = dateToInt.seconds - dateToInt.seconds
-            val starredAtUnix = dateToInt.time
+            val starredAtUnix = 0
 
-            Log.d("REPO_DATE_STARRED_AT", "$starredAtUnix")
+            Log.d("REPO_DATE_RANGE_LIST", "$dateToInt")
             Log.d("REPO_DATE_RANGE_LIST", "$rangeList")
             Log.d("REPO_DATE_LAST_IND", "$lastIndex")
             Log.d("REPO_DATE_FIRST_IND", "$firstIndex")
 
 
-            if (starredAtUnix in firstIndex..lastIndex) {
-                Log.d("REPO_DATE", "math $starredAtUnix date $lastIndex - $firstIndex")
+            if (dateToInt.time >= firstIndex && starredAtUnix <= lastIndex) {
+                Log.d("REPO_DATE_MATH", "math $dateToInt date $lastIndex - $firstIndex")
                 listResponse.add(it)
             }
 //gulihua10010
-
-
 
             val logList = ArrayList<Long?>()
             for (i in 0 until listResponse.size) {
@@ -170,31 +167,32 @@ open class Repository() {
     ): List<Int> {
 
         val dateToGroup = getStarRepo(userName, repoName, groupType, dateSelected)
-
         val rangeList = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType), dateSelected)
 
         Log.d("MyLogChartGood", "$rangeList")
         Log.d("MyLogChartGood", "${dateToGroup.size}")
+        Log.d("MyLogChartGood", "${dateToGroup}")
 
         val chartIntDate = ArrayList<Int>()
-        chartIntDate.clear()
-
         val chartListDate = ArrayList<ArrayList<Int>>()
-        chartListDate.clear()
 
         for(i in 0 until rangeList.size) {
             chartListDate.add(ArrayList())
         }
 
+        Log.d("MyLogChartGoodSize", "${chartListDate.size}")
+
         for (element in 0 until dateToGroup.size) {
+            Log.d("START_CIKLE", "start")
+            Log.d("START_CIKLE1", "${dateToGroup[0].starredAt.time}")
+            Log.d("START_CIKLE2", "${dateToGroup[1].starredAt.time}")
 
             for (i in 0 until rangeList.size) {
-
                 if (rangeList[i] == dateToGroup[element].starredAt.time) {
                     chartListDate[i].add(1)
-                }
+                    Log.d("CIKLE", "DANE")
+                } else {Log.d("CIKLE", "${rangeList[i]}, ${dateToGroup[element].starredAt.time}")}
             }
-
         }
 
         for (i in 0 until chartListDate.size) {

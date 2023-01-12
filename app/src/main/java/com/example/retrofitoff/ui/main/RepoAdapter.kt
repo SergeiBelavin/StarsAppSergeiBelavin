@@ -1,4 +1,4 @@
-package com.example.retrofitoff.data.ui.main
+package com.example.retrofitoff.ui.main
 
 import android.view.LayoutInflater
 import android.view.View

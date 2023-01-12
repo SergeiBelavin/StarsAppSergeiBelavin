@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    tools:context=".data.ui.main.MainActivity">
+    tools:context=".ui.main.MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcView"
-        android:layout_width="405dp"
-        android:layout_height="257dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,8 +22,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewFindName"
-        android:layout_width="368dp"
-        android:layout_height="125dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,8 +41,8 @@
 
             <EditText
                 android:id="@+id/addName"
-                android:layout_width="354dp"
-                android:layout_height="63dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:ems="10"
                 android:gravity="center"
                 android:hint="Find a user"
@@ -80,8 +80,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewError"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="77dp"
         android:layout_marginBottom="59dp"
         android:foregroundGravity="center"
@@ -94,7 +94,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:foregroundGravity="center"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -102,6 +103,7 @@
                 android:id="@+id/imageView"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
+                android:foregroundGravity="center"
                 app:srcCompat="@drawable/shrek_error" />
 
             <TextView
@@ -115,8 +117,9 @@
 
             <Button
                 android:id="@+id/errorOk"
-                android:layout_width="100dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:foregroundGravity="center"
                 android:text="Ok" />
         </LinearLayout>
 

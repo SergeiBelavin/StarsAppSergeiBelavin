@@ -1,4 +1,4 @@
-package com.example.retrofitoff.data.ui.main
+package com.example.retrofitoff.ui.main
 
 import com.example.retrofitoff.model.RepoUser
 import moxy.MvpView
@@ -17,5 +17,8 @@ interface MainView: MvpView {
     fun showError(message: String)
 
     @AddToEndSingle
-    fun startSending(boolean: Boolean)
+    fun unlockedClick(boolean: Boolean)
+
+    @AddToEndSingle
+    fun getNameRepo(name: String)
 }

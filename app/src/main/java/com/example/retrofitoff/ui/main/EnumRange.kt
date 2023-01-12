@@ -1,4 +1,4 @@
-package com.example.retrofitoff.data.ui.main
+package com.example.retrofitoff.ui.main
 
 class EnumRange {
     companion object {

@@ -1,4 +1,4 @@
-package com.example.retrofitoff.data.ui.chart
+package com.example.retrofitoff.ui.chart
 
 import moxy.MvpView
 import moxy.viewstate.strategy.alias.AddToEndSingle

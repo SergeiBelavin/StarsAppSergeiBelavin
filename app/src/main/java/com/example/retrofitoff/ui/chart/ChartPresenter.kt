@@ -1,4 +1,4 @@
-package com.example.retrofitoff.data.ui.chart
+package com.example.retrofitoff.ui.chart
 
 import Repository
 import android.icu.util.Calendar
@@ -8,7 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
 import com.example.retrofitoff.data.repository.DateConverter
 import com.example.retrofitoff.data.repository.UniqueDate
-import com.example.retrofitoff.data.ui.main.EnumRange
+import com.example.retrofitoff.ui.main.EnumRange
 import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.model.StarGroupForChart
 import kotlinx.coroutines.launch
@@ -16,6 +16,7 @@ import kotlinx.serialization.json.JsonNull.boolean
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import java.io.IOException
+import java.net.UnknownHostException
 import java.util.Date
 
 @InjectViewState
@@ -25,7 +26,6 @@ class ChartPresenter(private val chartRepo: Repository) : MvpPresenter<ChartView
     var group = 0
 
     fun clickBackOrNext(
-        num: Int,
         groupDate: EnumRange.Companion.GroupType,
         minusOrPlus: Boolean,
         firstQuest: Boolean,
@@ -89,39 +89,25 @@ class ChartPresenter(private val chartRepo: Repository) : MvpPresenter<ChartView
                 chartRepo.getChartDate(userName, repoName, groupType, numDate)
 
             responseList.addAll(response)
-            Log.d("RESPONCE_LIST", "Exception: $responseList")
+            Log.d("RESPONSE_LIST", "Exception: $responseList")
 
             return responseList
 
-        } catch (e: IOException) {
-            Log.d("EXCEPTION_CHART_VIEW", "Exception: $e")
-            Log.d("EXCEPTION_CHART_VIEW", "Exception: ${e.message}")
-            Log.d("EXCEPTION_CHART_VIEW", "Exception: ${e.localizedMessage?.hashCode()}")
-
-            if (e.localizedMessage?.hashCode() == 964672022) {
-                viewState.showError("Отсутствует подключение к интернету")
-                viewState.startSending(true)
-            }
-            return responseList
-
-        } catch (e: Exception) {
-            Log.d("EXCEPTION_CHART_VIEW", "Exception: $e")
-            Log.d("EXCEPTION_CHART_VIEW", "Exception: ${e.message}")
-            Log.d("EXCEPTION_CHART_VIEW", "Exception: ${e.localizedMessage?.hashCode()}")
-
-            if (e.localizedMessage?.hashCode() == -1358142879) {
-                viewState.showError("Лимит запросов закончился")
-                viewState.startSending(true)
-            }
-            return responseList
         }
-
+        catch (e: UnknownHostException) {
+            viewState.showError("Нет подключения к интернету")
+        }
+        catch (e: retrofit2.HttpException) {
+            when(e.code()) {
+                404 -> viewState.showError("Пользователь не найден")
+            }
+        }
+        return responseList
 
     }
 
     fun dayForTheSchedule() {
         UniqueDate().getUniqueArrayList(group, numDate)
-
     }
 
 }
