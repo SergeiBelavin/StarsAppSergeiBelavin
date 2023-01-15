@@ -96,13 +96,18 @@ class ChartPresenter(private val chartRepo: Repository) : MvpPresenter<ChartView
 
         }
         catch (e: UnknownHostException) {
+            Log.d("CHART_PRESENTER_ER", "UnknownException: $e")
             viewState.showError("Нет подключения к интернету")
         }
         catch (e: retrofit2.HttpException) {
             when(e.code()) {
                 404 -> viewState.showError("Пользователь не найден")
+                403 -> viewState.showError("Лимит запросов закончился")
             }
+
+            Log.d("CHART_PRESENTER_ER", "ExceptionRetrof2: $e")
         }
+
         return responseList
 
     }

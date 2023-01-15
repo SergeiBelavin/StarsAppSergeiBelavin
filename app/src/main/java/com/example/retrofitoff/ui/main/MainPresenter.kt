@@ -39,6 +39,7 @@ class MainPresenter(private val mainRepository: Repository) : MvpPresenter<MainV
 
             when(e.code()) {
                 404 -> viewState.showError("Пользователь не найден")
+                403 -> viewState.showError("Лимит запросов закончился")
             }
         }
 
