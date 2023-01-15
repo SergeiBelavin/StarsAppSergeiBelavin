@@ -3,6 +3,8 @@ import com.example.retrofitoff.data.repository.UniqueDate
 
 import android.util.Log
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.retrofitoff.data.entity.ChartListItem
+import com.example.retrofitoff.model.ChartList
 
 
 import com.example.retrofitoff.model.RepoUser
@@ -24,6 +26,7 @@ open class Repository() {
     private var stopPaging = 0
     private var pageNumberStar = 1
     private var starsList = ArrayList<StarGroup>()
+    private var chartRepoList = ArrayList<ChartList>()
 
     suspend fun getListRepository(userName: String): List<RepoUser> {
         val nameOnTheSheet = ArrayList<String>()
@@ -59,7 +62,10 @@ open class Repository() {
         repoName: String,
         groupType: EnumRange.Companion.GroupType,
         dateSelected: Int,
-    ): List<StarGroup> {
+    ): ArrayList<ChartList> {
+
+        listResponse.clear()
+        starsList.clear()
 
         val daysResponseInt = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType), dateSelected)
 
@@ -72,10 +78,11 @@ open class Repository() {
 
             do {
                 dataVerification(userName, repoName, groupType, dateSelected)
-                return listResponse
+
+                return chartRepoList
 
             } while (stopPaging == 0 || starsList.size == MIN_PAGE_SIZE)
-            return listResponse
+            return chartRepoList
 
         } finally {
 
@@ -98,10 +105,12 @@ open class Repository() {
         if (starsList.size == MAX_PAGE_SIZE) {
             pageNumberStar++
             starsList.clear()
-            processingResponse(response, groupType, dateSelected)
+            //processingResponse(response, groupType, dateSelected)
+            getChartDate(response, groupType,dateSelected)
 
         } else {
-            processingResponse(response, groupType, dateSelected)
+            //processingResponse(response, groupType, dateSelected)
+            getChartDate(response, groupType,dateSelected)
             stopPaging = 1
         }
 
@@ -159,50 +168,46 @@ open class Repository() {
         }
     }
 
-    suspend fun getChartDate(
-        userName: String,
-        repoName: String,
+    private fun getChartDate(
+        listResponse: List<StarGroup>,
         groupType: EnumRange.Companion.GroupType,
         dateSelected: Int,
-    ): List<Int> {
-
-        val dateToGroup = getStarRepo(userName, repoName, groupType, dateSelected)
+    ): ChartList {
+        chartRepoList.clear()
         val rangeList = UniqueDate().getUniqueArrayList(EnumRange.groupsType(groupType), dateSelected)
-
-        Log.d("MyLogChartGood", "$rangeList")
-        Log.d("MyLogChartGood", "${dateToGroup.size}")
-        Log.d("MyLogChartGood", "${dateToGroup}")
-
         val chartIntDate = ArrayList<Int>()
         val chartListDate = ArrayList<ArrayList<Int>>()
-
+        val avatarList = ArrayList<String?>()
+        Log.d("CIKLE_size", "${rangeList.size}")
         for(i in 0 until rangeList.size) {
             chartListDate.add(ArrayList())
         }
 
-        Log.d("MyLogChartGoodSize", "${chartListDate.size}")
+        for (element in 0 until listResponse.size) {
 
-        for (element in 0 until dateToGroup.size) {
-            Log.d("START_CIKLE", "start")
-            Log.d("START_CIKLE1", "${dateToGroup[0].starredAt.time}")
-            Log.d("START_CIKLE2", "${dateToGroup[1].starredAt.time}")
 
             for (i in 0 until rangeList.size) {
-                if (rangeList[i] == dateToGroup[element].starredAt.time) {
+                if (rangeList[i] == listResponse[element].starredAt.time) {
                     chartListDate[i].add(1)
+                    avatarList.add(listResponse[element].user.avatar)
                     Log.d("CIKLE", "DANE")
-                } else {Log.d("CIKLE", "${rangeList[i]}, ${dateToGroup[element].starredAt.time}")}
+
+                    Log.d("CIKLE", "${rangeList[element]}")
+                } else {Log.d("CIKLE", "${rangeList[i]}, ${listResponse[element].starredAt.time}")}
             }
         }
 
         for (i in 0 until chartListDate.size) {
             chartIntDate.add(chartListDate[i].size)
         }
+        val chartDateList = ChartListItem(chartIntDate,avatarList)
 
         Log.d("UNIQ_DATE_TEST", "$chartListDate")
         Log.d("UNIQ_DATE_INT", "$chartIntDate")
 
-        return chartIntDate
+        chartRepoList.add(chartDateList)
+
+        return chartDateList
     }
 
 }

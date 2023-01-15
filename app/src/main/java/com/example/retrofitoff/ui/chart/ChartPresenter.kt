@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
 import com.example.retrofitoff.data.repository.DateConverter
 import com.example.retrofitoff.data.repository.UniqueDate
+import com.example.retrofitoff.model.ChartList
 import com.example.retrofitoff.ui.main.EnumRange
 import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.model.StarGroupForChart
@@ -22,7 +23,7 @@ import java.util.Date
 @InjectViewState
 class ChartPresenter(private val chartRepo: Repository) : MvpPresenter<ChartView>() {
     var numDate = 0
-    val responseList = ArrayList<Int>()
+    val responseList = ArrayList<ChartList>()
     var group = 0
 
     fun clickBackOrNext(
@@ -82,11 +83,11 @@ class ChartPresenter(private val chartRepo: Repository) : MvpPresenter<ChartView
         userName: String,
         repoName: String,
         groupType: EnumRange.Companion.GroupType,
-    ): List<Int> {
+    ): ArrayList<ChartList> {
         responseList.clear()
         try {
-            val response: List<Int> =
-                chartRepo.getChartDate(userName, repoName, groupType, numDate)
+            val response: ArrayList<ChartList> =
+                chartRepo.getStarRepo(userName, repoName, groupType, numDate)
 
             responseList.addAll(response)
             Log.d("RESPONSE_LIST", "Exception: $responseList")

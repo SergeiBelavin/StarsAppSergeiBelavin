@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Half.toFloat
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
@@ -16,6 +17,7 @@ import com.example.retrofitoff.model.StarGroup
 
 import com.example.retrofitoff.databinding.ChartActivityBinding
 import com.example.retrofitoff.ui.main.EnumRange
+import com.example.retrofitoff.ui.sub.SubscribersActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -70,6 +72,10 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
 
         barChartData()
         getChart()
+
+        barChart.setOnClickListener {
+            //SubscribersActivity.createSubscribeIntent(this@ChartActivity, )
+        }
 
     }
 
@@ -127,7 +133,6 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
     }
 
     private fun barChartData() {
-        barEntriesList.clear()
         barChart = binding.barChart
         barDataSet = BarDataSet(barEntriesList, "Количество звезд")
         barDataSet.valueTextColor = Color.BLACK
@@ -156,13 +161,13 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
                     groupType,
                 )
 
-                Log.d("CHART_0", "$chartDate")
+                Log.d("CHART_0", "${chartDate[0].starredAt}")
+
                 barEntriesList.clear()
-
-                for (i in 0 until chartDate.size) {
-                    barEntriesList.add(BarEntry(i.toFloat(), chartDate[i].toFloat()))
+                for (i in 0 until chartDate[0].starredAt.size) {
+                    barEntriesList.add(BarEntry(i.toFloat(), chartDate[0].starredAt[i].toFloat()))
+                    Log.d("BAR_ENTR", "$barEntriesList")
                 }
-
                 Log.d("CHART_0", "$chartDate")
                 barChartData()
             }
