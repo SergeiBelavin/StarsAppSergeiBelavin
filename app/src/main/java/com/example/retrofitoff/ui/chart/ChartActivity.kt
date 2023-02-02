@@ -25,6 +25,7 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.omega_r.libs.omegatypes.Text
 import kotlinx.coroutines.launch
 import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
@@ -36,8 +37,8 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
 
     companion object {
 
-        private val KEY_NAME = "UserName"
-        private val KEY_REPOS = "RepoName"
+        private val KEY_NAME = Text.from(R.string.intent_user_name).toString()
+        private val KEY_REPOS = Text.from(R.string.intent_repo_name).toString()
 
         fun createIntent(context: Context, name: String, repo: String): Intent {
             return Intent(context, ChartActivity::class.java).putExtra(KEY_NAME, name)
@@ -45,7 +46,7 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
         }
 
     }
-    private val chartLog = getString(R.string.log_chart_activity)
+    private val chartLog = Text.from(R.string.log_chart_activity)
 
     private lateinit var binding: ChartActivityBinding
     lateinit var barChart: BarChart
@@ -63,7 +64,7 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
-        var string = getString(R.string.log_chart_activity)
+
         super.onCreate(savedInstanceState)
 
         binding = ChartActivityBinding.inflate(layoutInflater)
@@ -194,9 +195,9 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
         }
     }
 
-    override fun showError(message: String) {
+    override fun showError(message: Text) {
         binding.ErrorView.visibility = View.VISIBLE
-        binding.error.text = message
+        binding.error.text = message.toString()
         binding.selectRangeDate.visibility = View.GONE
         binding.showGraph.visibility = View.GONE
         binding.okError.setOnClickListener {

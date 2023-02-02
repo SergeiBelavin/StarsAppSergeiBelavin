@@ -2,6 +2,7 @@ import com.example.retrofitoff.data.repository.RetrofitInstance
 import com.example.retrofitoff.data.repository.RequiredDates
 
 import android.util.Log
+import com.example.retrofitoff.R
 import com.example.retrofitoff.data.entity.ChartListItem
 import com.example.retrofitoff.model.ChartList
 
@@ -12,6 +13,7 @@ import com.example.retrofitoff.model.RepoUser
 import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.ui.main.EnumRange
 import com.omega_r.libs.omegatypes.Image
+import com.omega_r.libs.omegatypes.Text
 import kotlin.collections.ArrayList
 
 object Repository {
@@ -22,6 +24,7 @@ object Repository {
     private var pageNumberStar = 1
     private var starsList = ArrayList<StarGroup>()
     private var dateToChart = ArrayList<ChartListItem>()
+    private val logRepository = Text.from(R.string.log_repository)
 
     suspend fun getListRepository(userName: String): List<RepoUser> {
         val nameOnTheSheet = ArrayList<String>()
@@ -128,7 +131,7 @@ object Repository {
                     nameUser.add(listResponse[element].user.name)
 
                 } else {
-                    Log.d("CIKLE", "neeed ${rangeList[i]},")
+                    Log.d("$logRepository"+ "_CIKLE", "neeed ${rangeList[i]},")
                 }
             }
         }

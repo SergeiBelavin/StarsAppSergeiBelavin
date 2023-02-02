@@ -31,7 +31,6 @@ class SubscribersAdapter(): RecyclerView.Adapter<SubscribersAdapter.UserAvatar>(
 
             holder.binding.nameUser.text = userList[position]
 
-            Log.d("SubList", "${userList[position]},")
             Picasso.get()
                 .load(avatarList[position].toString())
                 .error(R.drawable.shrek)

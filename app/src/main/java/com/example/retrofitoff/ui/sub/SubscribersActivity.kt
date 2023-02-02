@@ -6,9 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
+import com.example.retrofitoff.R
 import com.example.retrofitoff.data.entity.ChartListItem
 import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.databinding.SubscribersActivityBinding
+import com.omega_r.libs.omegatypes.Text
 import java.io.Serializable
 
 class SubscribersActivity : AppCompatActivity() {
@@ -17,7 +19,7 @@ class SubscribersActivity : AppCompatActivity() {
 
     companion object{
 
-        private val LOG_ACTIVITY = "SUB_ACTIVITY"
+        private val LOG_ACTIVITY = Text.from(R.string.log_sub_activity)
         private val KEY_NAME = "KeyNAME"
 
         fun createSubscribeIntent(context: Context, list: List<ChartListItem>): Intent {

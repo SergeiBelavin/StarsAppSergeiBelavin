@@ -1,6 +1,7 @@
 package com.example.retrofitoff.ui.main
 
 import com.example.retrofitoff.model.RepoUser
+import com.omega_r.libs.omegatypes.Text
 import moxy.MvpView
 import moxy.viewstate.strategy.OneExecutionStateStrategy
 import moxy.viewstate.strategy.StateStrategyType
@@ -14,7 +15,7 @@ import moxy.viewstate.strategy.alias.AddToEndSingle
 interface MainView: MvpView {
 
     @AddToEndSingle
-    fun showError(message: String)
+    fun showError(message: Text)
 
     @AddToEndSingle
     fun unlockedClick(boolean: Boolean)

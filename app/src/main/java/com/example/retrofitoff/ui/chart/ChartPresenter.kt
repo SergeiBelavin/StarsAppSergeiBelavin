@@ -10,6 +10,7 @@ import com.example.retrofitoff.data.repository.DateConverter
 import com.example.retrofitoff.data.repository.RequiredDates
 import com.example.retrofitoff.model.ChartList
 import com.example.retrofitoff.ui.main.EnumRange
+import com.omega_r.libs.omegatypes.Text
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import java.net.UnknownHostException
@@ -18,7 +19,7 @@ import java.net.UnknownHostException
 class ChartPresenter(private val chartRepo: Repository) : MvpPresenter<ChartView>() {
     var numDate = 0
     var group = EnumRange.Companion.GroupType.WEEK
-
+    var logChartPresenter = Text.from(R.string.log_chart_activity)
     fun clickBackOrNext(
         groupDate: EnumRange.Companion.GroupType,
         minusOrPlus: Boolean,
@@ -35,21 +36,17 @@ class ChartPresenter(private val chartRepo: Repository) : MvpPresenter<ChartView
         } else {
             numDate++
         }
-        Log.d("NUM_CHART", "$numDate")
+        Log.d("$logChartPresenter" + "_NUM_CHART", "$numDate")
 
         if (numDate < 0) {
-
-            viewState.showError("Мы не можем смотреть в будущее :(")
+            val errorText = Text.from(R.string.error_view_in_the_future)
+            viewState.showError(errorText)
             numDate = 0
             return ""
         }
 
 
         val calendarNumDate = java.util.Calendar.getInstance()
-
-        when {
-            numDate < 0 -> viewState.showError("Мы не можем смотреть в будущее :)")
-        }
 
         when (groupDate) {
 
@@ -84,23 +81,26 @@ class ChartPresenter(private val chartRepo: Repository) : MvpPresenter<ChartView
                 chartRepo.getStarRepo(userName, repoName, groupType, numDate)
 
             responseList.addAll(response)
-            Log.d("RESPONSE_LIST", "Exception: $response")
-            Log.d("RESPONSE_LIST", "Exception: $responseList")
+            Log.d("$logChartPresenter" + "RESPONSE_LIST", "Exception: $response")
+            Log.d("$logChartPresenter" + "RESPONSE_LIST", "Exception: $responseList")
 
             return responseList
 
         }
         catch (e: UnknownHostException) {
-            Log.d("CHART_PRESENTER_ER", "UnknownException: $e")
-            viewState.showError("Нет подключения к интернету")
+
+            val errorTextNoInternetConnection = Text.from(R.string.error_no_internet_connection)
+            viewState.showError(errorTextNoInternetConnection)
         }
         catch (e: retrofit2.HttpException) {
+            val errorNoInternet = Text.from(R.string.error_no_internet_connection)
+            val errorRequestLimitHasEnded = Text.from(R.string.error_the_request_limit_has_ended)
             when(e.code()) {
-                404 -> viewState.showError("Пользователь не найден")
-                403 -> viewState.showError("Лимит запросов закончился")
+                404 -> viewState.showError(errorNoInternet)
+                403 -> viewState.showError(errorRequestLimitHasEnded)
             }
 
-            Log.d("CHART_PRESENTER_ER", "ExceptionRetrof2: $e")
+            Log.d("$logChartPresenter" + "_ER", "ExceptionRetrof2: $e")
         }
 
         return responseList

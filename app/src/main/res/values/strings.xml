@@ -12,6 +12,16 @@
     <string name="number_of_stars">Количество звезд</string>
     <string name="number_of_stars_by_date">Количество звезд по датам</string>
     <string name="log_chart_activity">CHART_ACTIVITY</string>
+    <string name="log_chart_presenter">CHART_PRESENTER</string>
+    <string name="log_repository">REPOSITORY</string>
+    <string name="log_main_presenter">MAIN_PRESENTER</string>
+    <string name="log_sub_activity">SUBSCRIBERS_ACTIVITY</string>
     <string name="intent_user_name">UserName</string>
-    <string name="error_view_in_the_future">"Мы не можем смотреть в будущее :("</string>
+    <string name="intent_repo_name">RepoName</string>
+    <string name="error_view_in_the_future">Мы не можем смотреть в будущее :(</string>
+    <string name="error_no_internet_connection">Нет подключения к интернету</string>
+    <string name="error_user_not_found">Пользователь не найден</string>
+    <string name="error_the_request_limit_has_ended">Лимит запросов закончился</string>
+    <string name="find_a_user">Find a user</string>
+    <string name="enter_a_name">Enter a name</string>
 </resources>

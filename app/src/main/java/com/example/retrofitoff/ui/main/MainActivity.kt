@@ -12,6 +12,7 @@ import com.example.retrofitoff.R
 import com.example.retrofitoff.model.RepoUser
 import com.example.retrofitoff.databinding.ActivityMainBinding
 import com.example.retrofitoff.ui.chart.ChartActivity
+import com.omega_r.libs.omegatypes.Text
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonNull.boolean
 import moxy.MvpAppCompatActivity
@@ -46,8 +47,8 @@ class MainActivity : MvpAppCompatActivity(), RepoAdapter.Listener, MainView {
         startActivity(chartIntent)
     }
 
-    override fun showError(message: String) {
-        binding.errorText.text = message
+    override fun showError(message: Text) {
+        binding.errorText.text = message.toString()
         binding.cardViewError.visibility = View.VISIBLE
         binding.errorOk.setOnClickListener {
             binding.cardViewError.visibility = View.GONE
@@ -67,15 +68,15 @@ class MainActivity : MvpAppCompatActivity(), RepoAdapter.Listener, MainView {
         binding.findName.setOnClickListener {
 
             if (binding.addName.text.isNotEmpty()) {
-                binding.addName.hint = "Find a user"
+                binding.addName.hint = Text.from(R.string.find_a_user).toString()
 
                 lifecycleScope.launch {
                     adapter.setList(moxyPresenter.getRepoList(binding.addName.text.toString()))
                 }
 
             } else {
-                binding.addName.error = "Enter a name"
-                binding.addName.hint = "Enter a name"
+                binding.addName.error = Text.from(R.string.find_a_user).toString()
+                binding.addName.hint = Text.from(R.string.enter_a_name).toString()
             }
         }
 
