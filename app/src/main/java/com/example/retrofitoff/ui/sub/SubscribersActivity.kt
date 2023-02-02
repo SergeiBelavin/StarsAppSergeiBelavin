@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
+import com.example.retrofitoff.data.entity.ChartListItem
 import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.databinding.SubscribersActivityBinding
 import java.io.Serializable
@@ -17,11 +18,9 @@ class SubscribersActivity : AppCompatActivity() {
     companion object{
 
         private val LOG_ACTIVITY = "SUB_ACTIVITY"
-
         private val KEY_NAME = "KeyNAME"
-        private val KEY_AVATAR = "KeyAVATAR"
 
-        fun createSubscribeIntent(context: Context, list: List<StarGroup>): Intent {
+        fun createSubscribeIntent(context: Context, list: List<ChartListItem>): Intent {
             return Intent(context, SubscribersActivity::class.java)
                 .putExtra(KEY_NAME, list as Serializable)
         }
@@ -38,11 +37,9 @@ class SubscribersActivity : AppCompatActivity() {
         val adapter = SubscribersAdapter()
         binding.subList.adapter = adapter
 
-        var avatarList = intent.getSerializableExtra(KEY_NAME) as List<StarGroup>
-        Log.d("$LOG_ACTIVITY + AVATAR", "${avatarList.toString()}")
-
+        val avatarList = intent.getSerializableExtra(KEY_NAME) as List<ChartListItem>
+        Log.d("$LOG_ACTIVITY + AVATAR", "${avatarList[0].avatarUrl.toString()}")
         adapter.setList(avatarList)
-        avatarList = emptyList()
 
     }
 

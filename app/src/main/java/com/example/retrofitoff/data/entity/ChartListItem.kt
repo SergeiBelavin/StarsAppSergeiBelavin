@@ -10,5 +10,11 @@ class ChartListItem(
     override var starredAt: List<Int>,
 
     @Json(name = "avatarUrl")
-    override var avatarUrl: List<String?>): ChartList {
+    override var avatarUrl: List<String?>,
+
+    @Json(name = "nameUser")
+    override var name: List<String?>
+): ChartList
+
+{
 }

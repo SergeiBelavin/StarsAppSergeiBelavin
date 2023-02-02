@@ -1,29 +1,19 @@
 package com.example.retrofitoff.ui.chart
 
 import Repository
-import android.icu.util.Calendar
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.lifecycle.viewModelScope
+import com.example.retrofitoff.data.entity.ChartListItem
 import com.example.retrofitoff.data.repository.DateConverter
-import com.example.retrofitoff.data.repository.UniqueDate
+import com.example.retrofitoff.data.repository.RequiredDates
 import com.example.retrofitoff.model.ChartList
 import com.example.retrofitoff.ui.main.EnumRange
-import com.example.retrofitoff.model.StarGroup
-import com.example.retrofitoff.model.StarGroupForChart
-import kotlinx.coroutines.launch
-import kotlinx.serialization.json.JsonNull.boolean
 import moxy.InjectViewState
 import moxy.MvpPresenter
-import java.io.IOException
 import java.net.UnknownHostException
-import java.util.Date
 
 @InjectViewState
 class ChartPresenter(private val chartRepo: Repository) : MvpPresenter<ChartView>() {
     var numDate = 0
-    val responseList = ArrayList<ChartList>()
     var group = 0
 
     fun clickBackOrNext(
@@ -83,13 +73,14 @@ class ChartPresenter(private val chartRepo: Repository) : MvpPresenter<ChartView
         userName: String,
         repoName: String,
         groupType: EnumRange.Companion.GroupType,
-    ): ArrayList<ChartList> {
-        responseList.clear()
+    ): ArrayList<ChartListItem> {
+        val responseList = ArrayList<ChartListItem>()
         try {
-            val response: ArrayList<ChartList> =
+            val response: ArrayList<ChartListItem> =
                 chartRepo.getStarRepo(userName, repoName, groupType, numDate)
 
             responseList.addAll(response)
+            Log.d("RESPONSE_LIST", "Exception: $response")
             Log.d("RESPONSE_LIST", "Exception: $responseList")
 
             return responseList
@@ -113,7 +104,7 @@ class ChartPresenter(private val chartRepo: Repository) : MvpPresenter<ChartView
     }
 
     fun dayForTheSchedule() {
-        UniqueDate().getUniqueArrayList(group, numDate)
+        RequiredDates().getUniqueArrayList(group, numDate)
     }
 
 }

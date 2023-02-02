@@ -8,4 +8,5 @@ import java.util.*
 interface ChartList: Serializable {
     var starredAt: List<Int>
     var avatarUrl: List<String?>
+    var name: List<String?>
 }

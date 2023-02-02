@@ -12,6 +12,7 @@ import android.view.WindowManager
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import com.example.retrofitoff.data.entity.ChartListItem
 import com.example.retrofitoff.model.StarGroup
 
 
@@ -50,6 +51,7 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
     lateinit var barEntriesList: ArrayList<BarEntry>
     private var groupType = EnumRange.Companion.GroupType.WEEK
     private var repository = Repository()
+    private var listStarRepo = emptyList<ChartListItem>()
     private val moxyPresenter by moxyPresenter { ChartPresenter(repository) }
 
     @Override
@@ -62,19 +64,16 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
 
         binding = ChartActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         selectRange()
-
         barEntriesList = ArrayList()
         barEntriesList.add(BarEntry(1f, 1f))
-
         barEntriesList = ArrayList()
-
         barChartData()
         getChart()
 
         barChart.setOnClickListener {
-            //SubscribersActivity.createSubscribeIntent(this@ChartActivity, )
+            val avatarList = SubscribersActivity.createSubscribeIntent(this@ChartActivity, listStarRepo)
+            startActivity(avatarList)
         }
 
     }
@@ -154,21 +153,37 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
             val reposName = intent.getSerializableExtra(KEY_REPOS)
 
             lifecycleScope.launch {
-
                 val chartDate = moxyPresenter.getReposStars(
                     ownerName.toString(),
                     reposName.toString(),
                     groupType,
                 )
+                listStarRepo = chartDate
 
-                Log.d("CHART_0", "${chartDate[0].starredAt}")
+                Log.d("CHART_0", "rabotaet")
+                Log.d("CHART_1", "${chartDate}")
+                if (chartDate.isEmpty()) {
+                    Log.d("CHART_2", "empty")
+                } else {
+                    Log.d("CHART_3", "empty")
+                }
 
                 barEntriesList.clear()
-                for (i in 0 until chartDate[0].starredAt.size) {
-                    barEntriesList.add(BarEntry(i.toFloat(), chartDate[0].starredAt[i].toFloat()))
-                    Log.d("BAR_ENTR", "$barEntriesList")
+
+                if (chartDate[0].starredAt.isNotEmpty()) {
+                    Log.d("CHART_0_EMPTY", "${chartDate[0].starredAt}")
+                    for (i in 0 until chartDate[0].starredAt.size) {
+                        barEntriesList.add(
+                            BarEntry(
+                                i.toFloat(),
+                                chartDate[0].starredAt[i].toFloat()
+                            )
+                        )
+                        Log.d("BAR_ENTR", "$barEntriesList")
+                    }
+                } else {
+                    Log.d("CHART_EMPTY", "CHART_EMPTY")
                 }
-                Log.d("CHART_0", "$chartDate")
                 barChartData()
             }
 
@@ -180,7 +195,6 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
         binding.error.text = message
         binding.selectRangeDate.visibility = View.GONE
         binding.showGraph.visibility = View.GONE
-
         binding.okError.setOnClickListener {
             binding.ErrorView.visibility = View.INVISIBLE
             binding.selectRangeDate.visibility = View.VISIBLE
