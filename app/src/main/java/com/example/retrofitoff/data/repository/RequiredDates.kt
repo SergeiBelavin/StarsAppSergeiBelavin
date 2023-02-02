@@ -1,11 +1,12 @@
 package com.example.retrofitoff.data.repository
 
+import com.example.retrofitoff.ui.main.EnumRange
 import java.util.*
 import kotlin.collections.ArrayList
 
-class RequiredDates {
+object RequiredDates {
 
-    fun getUniqueArrayList(range: Int, date: Int): ArrayList<Long> {
+    fun getUniqueArrayList(range: EnumRange.Companion.GroupType, date: Int): ArrayList<Long> {
         val uniqDaysList = ArrayList<Long>()
         var weekRange = date * 7
 
@@ -15,11 +16,10 @@ class RequiredDates {
 
         when (range) {
 
-            14 -> {
+            EnumRange.Companion.GroupType.WEEK -> {
                 uniqDaysList.clear()
                 val calWeek = Calendar.getInstance()
                 val day = calWeek.time.date - weekRange
-
                 resetMinutesHoursSeconds(calWeek, day, range, date)
 
                 for (i in 0..6) {
@@ -29,7 +29,7 @@ class RequiredDates {
                 }
             }
 
-            30 -> {
+            EnumRange.Companion.GroupType.MONTH -> {
 
                 val calMonth = Calendar.getInstance()
                 resetMinutesHoursSeconds(calMonth, 0, range, date)
@@ -67,7 +67,7 @@ class RequiredDates {
                 }
             }
 
-            60 -> {
+            EnumRange.Companion.GroupType.YEAR -> {
                 val calYear = Calendar.getInstance()
                 resetMinutesHoursSeconds(calYear, 0, range, date)
                 val yearSize = calYear.getActualMaximum(Calendar.DAY_OF_YEAR)
@@ -86,14 +86,14 @@ class RequiredDates {
     private fun resetMinutesHoursSeconds(
         calendar: Calendar,
         day: Int,
-        range: Int,
+        range: EnumRange.Companion.GroupType,
         date: Int
     ): Calendar {
 
         when (range) {
-            14 -> calendar.set(Calendar.DATE, day)
-            30 -> calendar.set(Calendar.MONTH, -date)
-            60 -> calendar.set(Calendar.YEAR, -date)
+            EnumRange.Companion.GroupType.WEEK -> calendar.set(Calendar.DATE, day)
+            EnumRange.Companion.GroupType.MONTH -> calendar.set(Calendar.MONTH, -date)
+            EnumRange.Companion.GroupType.YEAR -> calendar.set(Calendar.YEAR, -date)
         }
 
         calendar.set(Calendar.HOUR, -12)

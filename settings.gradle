@@ -16,6 +16,12 @@ pluginManagement {
         mavenCentral()
         maven { url "https://kotlin.bintray.com/kotlinx" }
     }
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+    }
 
 
 

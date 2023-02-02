@@ -1,7 +1,10 @@
 package com.example.retrofitoff.ui.chart
 
 import Repository
+import android.provider.Settings.Secure.getString
+
 import android.util.Log
+import com.example.retrofitoff.R
 import com.example.retrofitoff.data.entity.ChartListItem
 import com.example.retrofitoff.data.repository.DateConverter
 import com.example.retrofitoff.data.repository.RequiredDates
@@ -14,7 +17,7 @@ import java.net.UnknownHostException
 @InjectViewState
 class ChartPresenter(private val chartRepo: Repository) : MvpPresenter<ChartView>() {
     var numDate = 0
-    var group = 0
+    var group = EnumRange.Companion.GroupType.WEEK
 
     fun clickBackOrNext(
         groupDate: EnumRange.Companion.GroupType,
@@ -35,6 +38,7 @@ class ChartPresenter(private val chartRepo: Repository) : MvpPresenter<ChartView
         Log.d("NUM_CHART", "$numDate")
 
         if (numDate < 0) {
+
             viewState.showError("Мы не можем смотреть в будущее :(")
             numDate = 0
             return ""
@@ -50,19 +54,19 @@ class ChartPresenter(private val chartRepo: Repository) : MvpPresenter<ChartView
         when (groupDate) {
 
             EnumRange.Companion.GroupType.WEEK -> {
-                group = 14
+                group = EnumRange.Companion.GroupType.WEEK
                 calendarNumDate.add(java.util.Calendar.DAY_OF_YEAR, -numDate * 7)
                 return DateConverter.convertDateToTimestamp(calendarNumDate.time)
             }
 
             EnumRange.Companion.GroupType.MONTH -> {
-                group = 30
+                group = EnumRange.Companion.GroupType.MONTH
                 calendarNumDate.add(java.util.Calendar.MONTH, -numDate)
                 return DateConverter.convertDateToTimestamp(calendarNumDate.time)
             }
 
             EnumRange.Companion.GroupType.YEAR -> {
-                group = 60
+                group = EnumRange.Companion.GroupType.YEAR
                 calendarNumDate.add(java.util.Calendar.YEAR, -numDate)
                 return DateConverter.convertDateToTimestamp(calendarNumDate.time)
             }
@@ -104,7 +108,7 @@ class ChartPresenter(private val chartRepo: Repository) : MvpPresenter<ChartView
     }
 
     fun dayForTheSchedule() {
-        RequiredDates().getUniqueArrayList(group, numDate)
+        RequiredDates.getUniqueArrayList(group, numDate)
     }
 
 }

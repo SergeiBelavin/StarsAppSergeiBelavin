@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.provider.Settings.Global.getString
 import android.util.Half.toFloat
 import android.util.Log
 import android.view.View
@@ -12,6 +13,7 @@ import android.view.WindowManager
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import com.example.retrofitoff.R
 import com.example.retrofitoff.data.entity.ChartListItem
 import com.example.retrofitoff.model.StarGroup
 
@@ -43,6 +45,7 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
         }
 
     }
+    private val chartLog = getString(R.string.log_chart_activity)
 
     private lateinit var binding: ChartActivityBinding
     lateinit var barChart: BarChart
@@ -50,7 +53,7 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
     lateinit var barDataSet: BarDataSet
     lateinit var barEntriesList: ArrayList<BarEntry>
     private var groupType = EnumRange.Companion.GroupType.WEEK
-    private var repository = Repository()
+    private var repository = Repository
     private var listStarRepo = emptyList<ChartListItem>()
     private val moxyPresenter by moxyPresenter { ChartPresenter(repository) }
 
@@ -60,6 +63,7 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
+        var string = getString(R.string.log_chart_activity)
         super.onCreate(savedInstanceState)
 
         binding = ChartActivityBinding.inflate(layoutInflater)
@@ -133,12 +137,12 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
 
     private fun barChartData() {
         barChart = binding.barChart
-        barDataSet = BarDataSet(barEntriesList, "Количество звезд")
+        barDataSet = BarDataSet(barEntriesList, R.string.number_of_stars.toString())
         barDataSet.valueTextColor = Color.BLACK
         barData = BarData(barDataSet)
         barChart.setFitBars(true)
         barChart.data = barData
-        barChart.description.text = "Количество звезд по датам"
+        barChart.description.text = R.string.number_of_stars_by_date.toString()
         barDataSet.valueTextSize = 16f
         barChart.animateY(2000)
     }
@@ -160,18 +164,18 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
                 )
                 listStarRepo = chartDate
 
-                Log.d("CHART_0", "rabotaet")
-                Log.d("CHART_1", "${chartDate}")
+                Log.d("${chartLog}_0", "rabotaet")
+                Log.d("${chartLog}_1", "${chartDate}")
                 if (chartDate.isEmpty()) {
-                    Log.d("CHART_2", "empty")
+                    Log.d("${chartLog}_2", "empty")
                 } else {
-                    Log.d("CHART_3", "empty")
+                    Log.d("${chartLog}_3", "empty")
                 }
 
                 barEntriesList.clear()
 
                 if (chartDate[0].starredAt.isNotEmpty()) {
-                    Log.d("CHART_0_EMPTY", "${chartDate[0].starredAt}")
+                    Log.d("${chartLog}_0_EMPTY", "${chartDate[0].starredAt}")
                     for (i in 0 until chartDate[0].starredAt.size) {
                         barEntriesList.add(
                             BarEntry(
@@ -179,10 +183,10 @@ class ChartActivity : MvpAppCompatActivity(), ChartView {
                                 chartDate[0].starredAt[i].toFloat()
                             )
                         )
-                        Log.d("BAR_ENTR", "$barEntriesList")
+                        Log.d("${chartLog}_BAR_ENTR", "$barEntriesList")
                     }
                 } else {
-                    Log.d("CHART_EMPTY", "CHART_EMPTY")
+                    Log.d("${chartLog}_CHART_EMPTY", "CHART_EMPTY")
                 }
                 barChartData()
             }

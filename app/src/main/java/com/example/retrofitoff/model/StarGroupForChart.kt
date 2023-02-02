@@ -5,5 +5,4 @@ import java.util.*
 interface StarGroupForChart: StarGroup {
     override val starredAt: Date
     override val user: User
-    val dateTo: Long?
 }

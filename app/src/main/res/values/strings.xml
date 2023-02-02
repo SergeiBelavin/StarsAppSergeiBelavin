@@ -9,4 +9,9 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="number_of_stars">Количество звезд</string>
+    <string name="number_of_stars_by_date">Количество звезд по датам</string>
+    <string name="log_chart_activity">CHART_ACTIVITY</string>
+    <string name="intent_user_name">UserName</string>
+    <string name="error_view_in_the_future">"Мы не можем смотреть в будущее :("</string>
 </resources>

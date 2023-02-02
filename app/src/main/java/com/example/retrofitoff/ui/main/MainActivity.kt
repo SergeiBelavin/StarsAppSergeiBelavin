@@ -2,11 +2,13 @@ package com.example.retrofitoff.ui.main
 
 import Repository
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import com.example.retrofitoff.R
 import com.example.retrofitoff.model.RepoUser
 import com.example.retrofitoff.databinding.ActivityMainBinding
 import com.example.retrofitoff.ui.chart.ChartActivity
@@ -18,22 +20,23 @@ import moxy.ktx.moxyPresenter
 
 class MainActivity : MvpAppCompatActivity(), RepoAdapter.Listener, MainView {
 
-    private val repository = Repository()
+    private val repository = Repository
     private lateinit var binding: ActivityMainBinding
     private val adapter = RepoAdapter(this)
     private val moxyPresenter by moxyPresenter { MainPresenter(repository) }
 
     @Override
     override fun onCreate(savedInstanceState: Bundle?) {
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.rcView.adapter = adapter
-
         getRepoList()
 
     }
@@ -46,7 +49,6 @@ class MainActivity : MvpAppCompatActivity(), RepoAdapter.Listener, MainView {
     override fun showError(message: String) {
         binding.errorText.text = message
         binding.cardViewError.visibility = View.VISIBLE
-
         binding.errorOk.setOnClickListener {
             binding.cardViewError.visibility = View.GONE
             unlockedClick(true)
@@ -60,7 +62,7 @@ class MainActivity : MvpAppCompatActivity(), RepoAdapter.Listener, MainView {
         binding.findName.isEnabled = boolean
     }
 
-   fun getRepoList() {
+    fun getRepoList() {
 
         binding.findName.setOnClickListener {
 
@@ -78,6 +80,7 @@ class MainActivity : MvpAppCompatActivity(), RepoAdapter.Listener, MainView {
         }
 
     }
+
     override fun getNameRepo(name: String) {
 
     }

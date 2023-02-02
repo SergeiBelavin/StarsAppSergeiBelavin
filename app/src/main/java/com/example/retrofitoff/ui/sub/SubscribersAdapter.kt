@@ -9,11 +9,12 @@ import com.example.retrofitoff.R
 import com.example.retrofitoff.data.entity.ChartListItem
 import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.databinding.SubscribersAdapterBinding
+import com.omega_r.libs.omegatypes.Image
 import com.squareup.picasso.Picasso
 
 class SubscribersAdapter(): RecyclerView.Adapter<SubscribersAdapter.UserAvatar>() {
     private var userList= emptyList<String?>()
-    private var avatarList= emptyList<String?>()
+    private var avatarList= emptyList<Image?>()
 
 
     class UserAvatar(item: View): RecyclerView.ViewHolder(item) {
@@ -32,7 +33,7 @@ class SubscribersAdapter(): RecyclerView.Adapter<SubscribersAdapter.UserAvatar>(
 
             Log.d("SubList", "${userList[position]},")
             Picasso.get()
-                .load(avatarList[position])
+                .load(avatarList[position].toString())
                 .error(R.drawable.shrek)
                 .into(holder.binding.avatarUser)
 

@@ -11,9 +11,10 @@ import com.example.retrofitoff.model.RepoUser
 
 import com.example.retrofitoff.model.StarGroup
 import com.example.retrofitoff.ui.main.EnumRange
+import com.omega_r.libs.omegatypes.Image
 import kotlin.collections.ArrayList
 
-open class Repository() {
+object Repository {
 
     private val MAX_PAGE_SIZE = 100
     private val MIN_PAGE_SIZE = 0
@@ -27,7 +28,6 @@ open class Repository() {
         val responseList = ArrayList<RepoUser>()
         val responseListSize = ArrayList<RepoUser>()
         var pageNumberUser = 1
-        var stopPaging = 0
 
         do {
             val response: List<RepoUser> =
@@ -73,20 +73,25 @@ open class Repository() {
         userName: String, repoName: String, groupType: EnumRange.Companion.GroupType,
         dateSelected: Int) {
 
-        val response: List<StarGroup> =
-            RetrofitInstance.api.getRepoStars(userName, repoName, pageNumberStar)
+        getResponse(userName, repoName, pageNumberStar)
 
-        starsList.addAll(response)
+        //val response: List<StarGroup> = RetrofitInstance.api.getRepoStars(userName, repoName, pageNumberStar)
+
+        starsList.addAll(getResponse(userName, repoName, pageNumberStar))
 
         if (starsList.size == MAX_PAGE_SIZE) {
             pageNumberStar++
             starsList.clear()
-            dateToChart = getChartDate(response, groupType, dateSelected)
+            dateToChart = getChartDate(getResponse(userName, repoName, pageNumberStar), groupType, dateSelected)
 
         } else {
-            dateToChart = getChartDate(response, groupType, dateSelected)
+            dateToChart = getChartDate(getResponse(userName, repoName, pageNumberStar), groupType, dateSelected)
             stopPaging = 1
         }
+    }
+
+    suspend fun getResponse(userName: String, repoName: String, pageNumberStar: Int): List<StarGroup> {
+        return RetrofitInstance.api.getRepoStars(userName, repoName, pageNumberStar)
     }
     //gulihua10010
 
@@ -96,10 +101,10 @@ open class Repository() {
         dateSelected: Int,
     ): ArrayList<ChartListItem> {
         val rangeList =
-            RequiredDates().getUniqueArrayList(EnumRange.groupsType(groupType), dateSelected)
+            RequiredDates.getUniqueArrayList(groupType, dateSelected)
         val chartIntDate = ArrayList<Int>()
         val chartListDate = ArrayList<ArrayList<Int>>()
-        val avatarList = ArrayList<String?>()
+        val avatarList = ArrayList<Image?>()
         val nameUser = ArrayList<String?>()
 
         val chartRepoList = ArrayList<ChartListItem>()

@@ -1,6 +1,7 @@
 package com.example.retrofitoff.data.entity
 
 import com.example.retrofitoff.model.User
+import com.omega_r.libs.omegatypes.Image
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -13,5 +14,5 @@ data class UserItem(
     override val name: String,
 
     @Json(name = "avatar_url")
-    override val avatar: String?
+    override val avatar: Image?
 ): User
